@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.gson)
     implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
