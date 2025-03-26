@@ -10,13 +10,13 @@ data class BodySize(
     val gender: String,      // 성별
     val height: Float?,      // 키 (cm)
     val weight: Float?,      // 몸무게 (kg)
-    val chest: Float?,       // 가슴둘레
-    val waist: Float?,       // 허리둘레
-    val hip: Float?,         // 엉덩이둘레
-    val neck: Float?,        // 목둘레
-    val shoulder: Float?,    // 어깨너비
-    val thigh: Float?,       // 허벅지둘레
-    val calf: Float?,        // 종아리둘레
+    val chest: Float?,       // 가슴 둘레
+    val waist: Float?,       // 허리 둘레
+    val hip: Float?,         // 엉덩이 둘레
+    val neck: Float?,        // 목 둘레
+    val shoulder: Float?,    // 어깨 너비
+    val arm: Float?,         // 팔 길이
+    val leg: Float?,         // 다리 안쪽 길이
     val date: LocalDate      // 측정일
 ) : Size
 
@@ -31,8 +31,8 @@ fun BodySize.toEntity(): BodySizeEntity {
         hip = hip,
         neck = neck,
         shoulder = shoulder,
-        thigh = thigh,
-        calf = calf,
+        arm = arm,
+        leg = leg,
         date = date
     )
 }
@@ -50,8 +50,8 @@ fun BodySize.toUi(): SizeCardUiModel {
             hip?.let { "엉덩이둘레: ${it.toInt()}cm" },
             neck?.let { "목둘레: ${it.toInt()}cm" },
             shoulder?.let { "어깨너비: ${it.toInt()}cm" },
-            thigh?.let { "허벅지둘레: ${it.toInt()}cm" },
-            calf?.let { "종아리둘레: ${it.toInt()}cm" }
+            arm?.let { "팔 길이: ${it.toInt()}cm" },
+            leg?.let { "다리 안쪽 길이: ${it.toInt()}cm" }
         )
     )
 }

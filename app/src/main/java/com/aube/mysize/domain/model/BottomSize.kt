@@ -13,7 +13,7 @@ data class BottomSize(
     val waist: Float?,         // 허리 단면
     val rise: Float?,          // 밑위
     val hip: Float?,           // 엉덩이 단면
-    val thigh: Float?,         // 허벅지 단면
+    val arm: Float?,         // 허벅지 단면
     val hem: Float?,           // 밑단 단면
     val length: Float?,        // 총장
     val note: String?,
@@ -29,7 +29,7 @@ fun BottomSize.toEntity(): BottomSizeEntity {
         waist = waist,
         rise = rise,
         hip = hip,
-        thigh = thigh,
+        arm = arm,
         hem = hem,
         length = length,
         note = note,
@@ -48,7 +48,7 @@ fun BottomSize.toUi(): SizeCardUiModel {
             waist?.let { "허리 단면: ${it.toInt()}cm" },
             rise?.let { "밑위: ${it.toInt()}cm" },
             hip?.let { "엉덩이 단면: ${it.toInt()}cm" },
-            thigh?.let { "허벅지 단면: ${it.toInt()}cm" },
+            arm?.let { "허벅지 단면: ${it.toInt()}cm" },
             hem?.let { "밑단 단면: ${it.toInt()}cm" },
             length?.let { "총장: ${it.toInt()}cm" },
             note?.takeIf { it.isNotBlank() }?.let { "비고: $note" }

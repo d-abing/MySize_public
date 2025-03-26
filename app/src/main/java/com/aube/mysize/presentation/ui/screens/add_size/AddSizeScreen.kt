@@ -1,14 +1,15 @@
 package com.aube.mysize.presentation.ui.screens.add_size
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,23 +49,33 @@ fun AddSizeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        // ───── 선택 탭 or 드롭다운 ─────
-        Text("사이즈 종류 선택", style = MaterialTheme.typography.titleMedium)
-        Row {
-            SizeCategory.values().forEach { category ->
-                Text(
-                    text = category.label,
+        // ───── 선택 chip ─────
+        LazyRow(
+            modifier = Modifier
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            items(SizeCategory.entries.toTypedArray()) { category ->
+                FilterChip(
+                    selected = selectedCategory == category,
+                    onClick = { selectedCategory = category },
+                    shape = RoundedCornerShape(50),
+                    label = {
+                        Text(
+                            fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                            text = category.label
+                        )
+                    },
                     modifier = Modifier
-                        .padding(end = 8.dp)
-                        .clickable { selectedCategory = category }
+                        .height(32.dp)
+                    ,
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // ───── 카테고리별 입력 UI 분기 ─────
         when (selectedCategory) {

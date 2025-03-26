@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -74,7 +75,7 @@ fun MySizeScreen(
             .padding(16.dp)
     ) {
         items(sizeCards) { card ->
-            Text(card.title, style = MaterialTheme.typography.titleLarge)
+            Text(card.title, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
             SizeCard(
                 title = card.title,
@@ -107,6 +108,7 @@ fun SizeCard(
                 painter = painterResource(imageRes),
                 contentDescription = title,
                 modifier = Modifier
+                    .align(Alignment.CenterVertically)
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
@@ -117,7 +119,7 @@ fun SizeCard(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 contents.forEach { text ->
-                    Text(text, style = MaterialTheme.typography.bodyMedium)
+                    Text(text, style = MaterialTheme.typography.labelSmall)
                 }
             }
         }

@@ -29,6 +29,7 @@ object DatabaseModule {
             MySizeDatabase::class.java,
             "my_size_database"
         )
+            .fallbackToDestructiveMigration()
 //            .addMigrations(MIGRATION_1_2)
             .build()
     }

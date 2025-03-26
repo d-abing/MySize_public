@@ -16,7 +16,7 @@ import com.aube.mysize.data.model.size.OuterSizeEntity
 import com.aube.mysize.data.model.size.ShoeSizeEntity
 import com.aube.mysize.data.model.size.TopSizeEntity
 
-const val DATABASE_VERSION = 1
+const val DATABASE_VERSION = 2
 
 @Database(
     entities = [

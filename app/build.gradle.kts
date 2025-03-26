@@ -46,6 +46,7 @@ android {
 
 dependencies {
     implementation(libs.hilt.android)
+    implementation(libs.androidx.appcompat)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
@@ -56,6 +57,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.accompanist.systemuicontroller)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

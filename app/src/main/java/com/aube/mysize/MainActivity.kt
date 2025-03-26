@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.aube.mysize.presentation.ui.nav.MainScreen
+import com.aube.mysize.presentation.ui.nav.MySizeApp
+import com.aube.mysize.presentation.ui.nav.StatusBar
 import com.aube.mysize.ui.theme.MySizeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +16,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MySizeTheme {
-                MainScreen()
+                StatusBar()
+                MySizeApp()
             }
         }
     }
