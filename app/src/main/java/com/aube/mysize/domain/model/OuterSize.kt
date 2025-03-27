@@ -12,8 +12,8 @@ data class OuterSize(
     val sizeLabel: String,
     val shoulder: Float?,
     val chest: Float?,
-    val length: Float?,
     val sleeve: Float?,
+    val length: Float?,
     val fit: String?,
     val note: String?,
     val date: LocalDate
@@ -27,8 +27,8 @@ fun OuterSize.toEntity(): OuterSizeEntity {
         sizeLabel = sizeLabel,
         shoulder = shoulder,
         chest = chest,
-        length = length,
         sleeve = sleeve,
+        length = length,
         fit = fit,
         note = note,
         date = date
@@ -45,8 +45,8 @@ fun OuterSize.toUi(): SizeCardUiModel {
             "사이즈 라벨: $sizeLabel",
             shoulder?.let { "어깨 사이즈: ${it.toInt()}cm" },
             chest?.let { "가슴 단면: ${it.toInt()}cm" },
-            length?.let { "총장: ${it.toInt()}cm" },
             sleeve?.let { "소매 길이: ${it.toInt()}cm" },
+            length?.let { "총장: ${it.toInt()}cm" },
             fit?.takeIf { it.isNotBlank() }?.let { "핏: $fit" },
             note?.takeIf { it.isNotBlank() }?.let { "비고: $note" }
         )

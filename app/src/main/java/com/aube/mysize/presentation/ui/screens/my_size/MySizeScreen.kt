@@ -54,12 +54,12 @@ fun MySizeScreen(
     val accessorySizes by accessoryViewModel.sizes.collectAsState()
 
     val sizeCards = listOfNotNull(
-        bodySizes.lastOrNull()?.toUi(),
-        topSizes.lastOrNull()?.toUi(),
-        bottomSizes.lastOrNull()?.toUi(),
-        outerSizes.lastOrNull()?.toUi(),
-        shoeSizes.lastOrNull()?.toUi(),
-        accessorySizes.lastOrNull()?.toUi()
+        bodySizes.firstOrNull()?.toUi(),
+        topSizes.firstOrNull()?.toUi(),
+        bottomSizes.firstOrNull()?.toUi(),
+        outerSizes.firstOrNull()?.toUi(),
+        shoeSizes.firstOrNull()?.toUi(),
+        accessorySizes.firstOrNull()?.toUi()
     )
 
     MySizeScreen(sizeCards = sizeCards)
@@ -102,8 +102,8 @@ fun SizeCard(
         Row(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
-        ) {
+                .fillMaxWidth(),
+            ) {
             Image(
                 painter = painterResource(imageRes),
                 contentDescription = title,
@@ -113,10 +113,11 @@ fun SizeCard(
                     .clip(RoundedCornerShape(8.dp))
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(20.dp))
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 contents.forEach { text ->
                     Text(text, style = MaterialTheme.typography.labelSmall)

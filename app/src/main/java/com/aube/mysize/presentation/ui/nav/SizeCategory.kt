@@ -5,6 +5,7 @@ enum class SizeCategory(val label: String) {
     TOP("상의"),
     BOTTOM("하의"),
     OUTER("아우터"),
+    ONE_PIECE("일체형"),
     SHOES("신발"),
     ACCESSORY("악세사리")
 }

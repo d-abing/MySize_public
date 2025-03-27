@@ -6,14 +6,13 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -22,14 +21,17 @@ fun LabeledTextField(
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
+    isError: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Number,
     imeAction: ImeAction = ImeAction.Next,
-    onDone: () -> Unit = {}
+    onDone: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
 
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
+        isError = isError,
         textStyle = MaterialTheme.typography.labelSmall,
         label = {
             Text(
@@ -40,7 +42,10 @@ fun LabeledTextField(
         modifier = modifier
             .fillMaxWidth(),
         singleLine = true, // 한 줄 입력
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = keyboardType,
+            imeAction = imeAction
+        ),
         keyboardActions = KeyboardActions(
             onNext = {
                 if (imeAction == ImeAction.Next) {
@@ -53,10 +58,6 @@ fun LabeledTextField(
                     onDone()
                 }
             }
-        ),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent
         ),
         shape = RoundedCornerShape(8.dp),
     )

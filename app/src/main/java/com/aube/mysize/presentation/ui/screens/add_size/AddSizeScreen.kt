@@ -24,12 +24,14 @@ import com.aube.mysize.presentation.ui.nav.SizeCategory
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.AccessorySizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.BodySizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.BottomSizeInputForm
+import com.aube.mysize.presentation.ui.screens.add_size.input_form.OnePieceSizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.OuterSizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.ShoeSizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.TopSizeInputForm
 import com.aube.mysize.presentation.viewmodel.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.BodySizeViewModel
 import com.aube.mysize.presentation.viewmodel.BottomSizeViewModel
+import com.aube.mysize.presentation.viewmodel.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.OuterSizeViewModel
 import com.aube.mysize.presentation.viewmodel.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.TopSizeViewModel
@@ -40,6 +42,7 @@ fun AddSizeScreen(
     topViewModel: TopSizeViewModel = hiltViewModel(),
     bottomViewModel: BottomSizeViewModel = hiltViewModel(),
     outerViewModel: OuterSizeViewModel = hiltViewModel(),
+    onePieceViewModel: OnePieceSizeViewModel = hiltViewModel(),
     shoeViewModel: ShoeSizeViewModel = hiltViewModel(),
     accessoryViewModel: AccessorySizeViewModel = hiltViewModel(),
     onSaved: () -> Unit
@@ -83,6 +86,7 @@ fun AddSizeScreen(
             SizeCategory.TOP -> TopSizeInputForm(viewModel = topViewModel, onSaved)
             SizeCategory.BOTTOM -> BottomSizeInputForm(viewModel = bottomViewModel, onSaved)
             SizeCategory.OUTER -> OuterSizeInputForm(viewModel = outerViewModel, onSaved)
+            SizeCategory.ONE_PIECE -> OnePieceSizeInputForm(viewModel = onePieceViewModel, onSaved)
             SizeCategory.SHOES -> ShoeSizeInputForm(viewModel = shoeViewModel, onSaved)
             SizeCategory.ACCESSORY -> AccessorySizeInputForm(viewModel = accessoryViewModel, onSaved)
         }

@@ -9,9 +9,9 @@ import java.time.LocalDate
 data class AccessorySizeEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val type: String,            // 반지, 팔찌 등
-    val bodyPart: String,        // 손가락, 손목 등
+    val brand: String,
     val sizeLabel: String,       // 10호, M 등
-    val brand: String?,
+    val bodyPart: String?,        // 손가락, 손목 등
     val note: String?,
     val date: LocalDate
 )

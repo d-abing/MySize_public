@@ -13,8 +13,8 @@ data class TopSizeEntity(
     val sizeLabel: String,        // 예: M, L, 95
     val shoulder: Float?,
     val chest: Float?,
-    val length: Float?,
     val sleeve: Float?,
+    val length: Float?,
     val fit: String?,
     val note: String?,
     val date: LocalDate
@@ -28,8 +28,8 @@ fun TopSizeEntity.toDomain(): TopSize {
         sizeLabel = sizeLabel,
         shoulder = shoulder,
         chest = chest,
-        length = length,
         sleeve = sleeve,
+        length = length,
         fit = fit,
         note = note,
         date = date

@@ -12,8 +12,8 @@ data class TopSize(
     val sizeLabel: String,    // 예: M, L, 95
     val shoulder: Float?,     // 어깨 너비
     val chest: Float?,        // 가슴 단면
-    val length: Float?,       // 총장
     val sleeve: Float?,       // 소매 길이
+    val length: Float?,       // 총장
     val fit: String?,         // 슬림, 오버핏 등
     val note: String?,        // 착용감 등 자유기록
     val date: LocalDate
@@ -27,8 +27,8 @@ fun TopSize.toEntity(): TopSizeEntity {
         sizeLabel = sizeLabel,
         shoulder = shoulder,
         chest = chest,
-        length = length,
         sleeve = sleeve,
+        length = length,
         fit = fit,
         note = note,
         date = date

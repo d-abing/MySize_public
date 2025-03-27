@@ -13,7 +13,7 @@ interface AccessorySizeDao: BaseDao<AccessorySizeEntity> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     override suspend fun insert(item: AccessorySizeEntity)
 
-    @Query("SELECT * FROM accessory_size ORDER BY date DESC")
+    @Query("SELECT * FROM accessory_size ORDER BY id DESC")
     override fun getAll(): Flow<List<AccessorySizeEntity>>
 
     @Delete

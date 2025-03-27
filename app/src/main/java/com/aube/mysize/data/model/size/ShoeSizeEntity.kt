@@ -8,6 +8,7 @@ import java.time.LocalDate
 @Entity(tableName = "shoe_size")
 data class ShoeSizeEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val type: String,
     val brand: String,
     val sizeLabel: String,       // 245mm, US9 등
     val footLength: Float?,
@@ -20,6 +21,7 @@ data class ShoeSizeEntity(
 fun ShoeSizeEntity.toDomain(): ShoeSize {
     return ShoeSize(
         id = id,
+        type = type,
         brand = brand,
         sizeLabel = sizeLabel,
         footLength = footLength,

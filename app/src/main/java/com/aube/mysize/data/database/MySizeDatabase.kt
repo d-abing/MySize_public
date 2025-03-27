@@ -6,17 +6,21 @@ import androidx.room.TypeConverters
 import com.aube.mysize.data.database.dao.AccessorySizeDao
 import com.aube.mysize.data.database.dao.BodySizeDao
 import com.aube.mysize.data.database.dao.BottomSizeDao
+import com.aube.mysize.data.database.dao.BrandDao
+import com.aube.mysize.data.database.dao.OnePieceSizeDao
 import com.aube.mysize.data.database.dao.OuterSizeDao
 import com.aube.mysize.data.database.dao.ShoeSizeDao
 import com.aube.mysize.data.database.dao.TopSizeDao
 import com.aube.mysize.data.model.size.AccessorySizeEntity
 import com.aube.mysize.data.model.size.BodySizeEntity
 import com.aube.mysize.data.model.size.BottomSizeEntity
+import com.aube.mysize.data.model.size.BrandEntity
+import com.aube.mysize.data.model.size.OnePieceSizeEntity
 import com.aube.mysize.data.model.size.OuterSizeEntity
 import com.aube.mysize.data.model.size.ShoeSizeEntity
 import com.aube.mysize.data.model.size.TopSizeEntity
 
-const val DATABASE_VERSION = 2
+const val DATABASE_VERSION = 7
 
 @Database(
     entities = [
@@ -24,8 +28,10 @@ const val DATABASE_VERSION = 2
         TopSizeEntity::class,
         BottomSizeEntity::class,
         OuterSizeEntity::class,
+        OnePieceSizeEntity::class,
         ShoeSizeEntity::class,
-        AccessorySizeEntity::class
+        AccessorySizeEntity::class,
+        BrandEntity::class,
     ],
     version = DATABASE_VERSION
 )
@@ -36,6 +42,8 @@ abstract class MySizeDatabase : RoomDatabase() {
     abstract fun topSizeDao(): TopSizeDao
     abstract fun bottomSizeDao(): BottomSizeDao
     abstract fun outerSizeDao(): OuterSizeDao
+    abstract fun onePieceSizeDao(): OnePieceSizeDao
     abstract fun shoeSizeDao(): ShoeSizeDao
     abstract fun accessorySizeDao(): AccessorySizeDao
+    abstract fun brandDao(): BrandDao
 }

@@ -13,8 +13,8 @@ data class OuterSizeEntity(
     val sizeLabel: String,
     val shoulder: Float?,
     val chest: Float?,
-    val length: Float?,
     val sleeve: Float?,
+    val length: Float?,
     val fit: String?,
     val note: String?,
     val date: LocalDate
@@ -28,8 +28,8 @@ fun OuterSizeEntity.toDomain(): OuterSize {
         sizeLabel = sizeLabel,
         shoulder = shoulder,
         chest = chest,
-        length = length,
         sleeve = sleeve,
+        length = length,
         fit = fit,
         note = note,
         date = date

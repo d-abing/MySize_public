@@ -27,20 +27,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.aube.mysize.domain.model.OuterSize
+import com.aube.mysize.domain.model.OnePieceSize
 import com.aube.mysize.presentation.ui.component.BrandChipInput
 import com.aube.mysize.presentation.ui.component.InputBorderColumn
 import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
-import com.aube.mysize.presentation.viewmodel.OuterSizeViewModel
+import com.aube.mysize.presentation.viewmodel.OnePieceSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
-fun OuterSizeInputForm(
-    viewModel: OuterSizeViewModel,
+fun OnePieceSizeInputForm(
+    viewModel: OnePieceSizeViewModel,
     onSaved: () -> Unit
 ) {
     var type by remember { mutableStateOf("") }
@@ -49,7 +49,12 @@ fun OuterSizeInputForm(
     var sizeLabel by remember { mutableStateOf("") }
     var shoulder by remember { mutableStateOf("") }
     var chest by remember { mutableStateOf("") }
+    var waist by remember { mutableStateOf("") }
+    var hip by remember { mutableStateOf("") }
     var sleeve by remember { mutableStateOf("") }
+    var rise by remember { mutableStateOf("") }
+    var thigh by remember { mutableStateOf("") }
+    var hem by remember { mutableStateOf("") }
     var length by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
@@ -59,7 +64,12 @@ fun OuterSizeInputForm(
 
     val shoulderFloat = shoulder.toFloatOrNull()
     val chestFloat = chest.toFloatOrNull()
+    val waistFloat = waist.toFloatOrNull()
+    val hipFloat = hip.toFloatOrNull()
     val sleeveFloat = sleeve.toFloatOrNull()
+    val riseFloat = rise.toFloatOrNull()
+    val thighFloat = thigh.toFloatOrNull()
+    val hemFloat = hem.toFloatOrNull()
     val lengthFloat = length.toFloatOrNull()
 
     var typeError by remember { mutableStateOf(false) }
@@ -67,7 +77,12 @@ fun OuterSizeInputForm(
     var sizeLabelError by remember { mutableStateOf(false) }
     var shoulderError by remember { mutableStateOf(false) }
     var chestError by remember { mutableStateOf(false) }
+    var waistError by remember { mutableStateOf(false) }
+    var hipError by remember { mutableStateOf(false) }
     var sleeveError by remember { mutableStateOf(false) }
+    var riseError by remember { mutableStateOf(false) }
+    var thighError by remember { mutableStateOf(false) }
+    var hemError by remember { mutableStateOf(false) }
     var lengthError by remember { mutableStateOf(false) }
 
     val isTypeValid = type.isNotBlank()
@@ -75,7 +90,12 @@ fun OuterSizeInputForm(
     val isSizeLabelValid = sizeLabel.isNotBlank()
     val isShoulderValid = shoulder.isBlank() || shoulderFloat != null
     val isChestValid = chest.isBlank() || chestFloat != null
+    val isWaistValid = waist.isBlank() || waistFloat != null
+    val isHipValid = hip.isBlank() || hipFloat != null
     val isSleeveValid = sleeve.isBlank() || sleeveFloat != null
+    val isRiseValid = rise.isBlank() || riseFloat != null
+    val isThighValid = thigh.isBlank() || thighFloat != null
+    val isHemValid = hem.isBlank() || hemFloat != null
     val isLengthValid = length.isBlank() || lengthFloat != null
 
     typeError = !isTypeValid
@@ -83,11 +103,17 @@ fun OuterSizeInputForm(
     sizeLabelError = !isSizeLabelValid
     shoulderError = !isShoulderValid
     chestError = !isChestValid
+    waistError = !isWaistValid
+    hipError = !isHipValid
     sleeveError = !isSleeveValid
+    riseError = !isRiseValid
+    thighError = !isThighValid
+    hemError = !isHemValid
     lengthError = !isLengthValid
 
-    val isRequiredValid = isTypeValid && isBrandValid && isSizeLabelValid
-    val isFormValid = isRequiredValid && isShoulderValid && isChestValid && isSleeveValid && isLengthValid
+    val isRequiredValid = !typeError && !brandError && !sizeLabelError
+    val isFormValid = isRequiredValid && !shoulderError && !chestError && !waistError && !hipError
+            && !sleeveError && !riseError && !thighError && !hemError && !lengthError
 
     val typeBorderColor = if (typeError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
     val typeLabelColor = if (typeError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
@@ -101,16 +127,14 @@ fun OuterSizeInputForm(
     ) {
         InputBorderColumn(typeBorderColor) {
             Text(
-                text = "* 아우터 종류",
+                text = "* 일체형 종류",
                 style = MaterialTheme.typography.labelMedium,
-                color = typeLabelColor,
+                color = typeLabelColor
             )
             Spacer(Modifier.height(16.dp))
-            val outerTypes = listOf("환절기 코트", "겨울 코트", "롱 패딩", "숏 패딩", "패딩 베스트",
-                "카디건", "폴리스", "후드 집업", "블루종", "무스탕", "퍼 재킷", "아노락 재킷",
-                "트레이닝 재킷", "사파리 재킷", "스타디움 재킷", "레더 재킷", "트러커 재킷", "블레이저 재킷", "기타 아우터")
+            val types = listOf("원피스", "점프수트", "멜빵바지", "기타")
             SelectableChipGroup(
-                options = outerTypes,
+                options = types,
                 selectedOption = type,
                 onSelect = { type = it }
             )
@@ -122,7 +146,7 @@ fun OuterSizeInputForm(
             Text(
                 text = "* 브랜드",
                 style = MaterialTheme.typography.labelMedium,
-                color = typeLabelColor,
+                color = brandLabelColor,
             )
             Spacer(Modifier.height(16.dp))
             BrandChipInput(
@@ -130,31 +154,34 @@ fun OuterSizeInputForm(
                 selectedBrand = brand,
                 onSelect = { brand = it },
                 onDelete = { viewModel.deleteBrand(it) },
-                onAddBrand = { viewModel.insertBrand(it, "아우터") }
+                onAddBrand = { viewModel.insertBrand(it, "일체형") }
             )
         }
 
-        LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 라벨 (예: S, M, L / 90, 95, 100)",
-            isError = sizeLabelError, keyboardType = KeyboardType.Text)
-        LabeledTextField(shoulder, { shoulder = it }, "어깨 너비 (cm)", isError = shoulderError)
-        LabeledTextField(chest, { chest = it }, "가슴 단면 (cm)", isError = chestError)
-        LabeledTextField(sleeve, { sleeve = it }, "소매 길이 (cm)", isError = sleeveError)
-        LabeledTextField(length, { length = it }, "총장 (cm)", isError = lengthError)
+        LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 라벨",
+            isError = sizeLabelError,
+            keyboardType = KeyboardType.Text
+        )
+        LabeledTextField(shoulder, { shoulder = it }, "어깨 너비 (cm)")
+        LabeledTextField(chest, { chest = it }, "가슴 단면 (cm)")
+        LabeledTextField(waist, { waist = it }, "허리 단면 (cm)")
+        LabeledTextField(hip, { hip = it }, "엉덩이 단면 (cm)")
+        LabeledTextField(sleeve, { sleeve = it }, "소매 길이 (cm)")
+        LabeledTextField(rise, { rise = it }, "밑위 길이 (cm)")
+        LabeledTextField(thigh, { thigh = it }, "허벅지 단면 (cm)")
+        LabeledTextField(hem, { hem = it }, "밑단 단면 (cm)")
+        LabeledTextField(length, { length = it }, "총장 (cm)")
 
         Spacer(Modifier.height(8.dp))
         InputBorderColumn(MaterialTheme.colorScheme.outline) {
-            Text("핏", style = MaterialTheme.typography.labelMedium)
+            Text(
+                "핏", style = MaterialTheme.typography.labelMedium)
             Spacer(Modifier.height(16.dp))
             val fits = listOf("슬림핏", "레귤러핏", "오버핏")
-            SelectableChipGroup(
-                options = fits,
-                selectedOption = fit,
-                onSelect = { fit = it }
-            )
+            SelectableChipGroup(options = fits, selectedOption = fit, onSelect = { fit = it })
         }
 
-        LabeledTextField(note, { note = it }, "참고 사항", keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Done) {
+        LabeledTextField(note, { note = it }, "참고사항", imeAction = ImeAction.Done) {
             coroutineScope.launch {
                 delay(100)
                 scrollState.animateScrollTo(scrollState.maxValue)
@@ -165,18 +192,10 @@ fun OuterSizeInputForm(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             if (!isRequiredValid) {
                 Text(
-                    text = "종류, 브랜드, 사이즈 라벨은 필수 입력입니다.",
+                    text = "종류, 브랜드, 사이즈 라벨은 필수입니다.",
                     color = MaterialTheme.colorScheme.error,
                     fontSize = MaterialTheme.typography.bodySmall.fontSize,
                     modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-            if(!isFormValid && isRequiredValid) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    color = MaterialTheme.colorScheme.error,
-                    text = "사이즈는 숫자로 입력해주세요.",
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize
                 )
             }
             Spacer(Modifier.width(16.dp))
@@ -184,13 +203,18 @@ fun OuterSizeInputForm(
                 enabled = isFormValid,
                 onClick = {
                     viewModel.insert(
-                        OuterSize(
+                        OnePieceSize(
                             type = type,
                             brand = brand,
                             sizeLabel = sizeLabel,
                             shoulder = shoulderFloat,
                             chest = chestFloat,
+                            waist = waistFloat,
+                            hip = hipFloat,
                             sleeve = sleeveFloat,
+                            rise = riseFloat,
+                            thigh = thighFloat,
+                            hem = hemFloat,
                             length = lengthFloat,
                             fit = fit.ifBlank { null },
                             note = note.ifBlank { null },
@@ -203,4 +227,3 @@ fun OuterSizeInputForm(
         }
     }
 }
-
