@@ -47,6 +47,7 @@ android {
 dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.appcompat)
+    implementation(libs.play.services.mlkit.text.recognition.korean)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
@@ -58,6 +59,9 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.text.recognition)
+    implementation(libs.ucrop)
+    implementation(libs.canhub.android.image.cropper)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -11,6 +11,7 @@ data class AccessorySize(
     val brand: String,
     val sizeLabel: String,      // 10호, 14호 등
     val bodyPart: String?,       // 손가락, 손목 등
+    val fit: String?,           // 작음/정사이즈/큼 등
     val note: String?,
     val date: LocalDate
 ): Size
@@ -22,6 +23,7 @@ fun AccessorySize.toEntity(): AccessorySizeEntity {
         brand = brand,
         sizeLabel = sizeLabel,
         bodyPart = bodyPart,
+        fit = fit,
         note = note,
         date = date
     )
@@ -36,6 +38,7 @@ fun AccessorySize.toUi(): SizeCardUiModel {
             "브랜드: $brand",
             "사이즈 라벨: $sizeLabel",
             "착용 부위: $bodyPart",
+            fit?.takeIf { it.isNotBlank() }?.let { "핏: $fit" },
             note?.takeIf { it.isNotBlank() }?.let { "비고: $note" }
         )
     )

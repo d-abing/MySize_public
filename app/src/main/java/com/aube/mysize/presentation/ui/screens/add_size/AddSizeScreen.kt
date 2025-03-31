@@ -78,7 +78,7 @@ fun AddSizeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         // ───── 카테고리별 입력 UI 분기 ─────
         when (selectedCategory) {

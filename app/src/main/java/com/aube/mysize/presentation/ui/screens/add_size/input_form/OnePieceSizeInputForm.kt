@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -22,14 +21,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.OnePieceSize
 import com.aube.mysize.presentation.ui.component.BrandChipInput
-import com.aube.mysize.presentation.ui.component.InputBorderColumn
+import com.aube.mysize.presentation.ui.component.BorderColumn
 import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
@@ -125,13 +123,7 @@ fun OnePieceSizeInputForm(
             .verticalScroll(scrollState)
             .padding(WindowInsets.ime.asPaddingValues())
     ) {
-        InputBorderColumn(typeBorderColor) {
-            Text(
-                text = "* 일체형 종류",
-                style = MaterialTheme.typography.labelMedium,
-                color = typeLabelColor
-            )
-            Spacer(Modifier.height(16.dp))
+        BorderColumn("* 일체형 종류", typeBorderColor, typeLabelColor) {
             val types = listOf("원피스", "점프수트", "멜빵바지", "기타")
             SelectableChipGroup(
                 options = types,
@@ -142,13 +134,7 @@ fun OnePieceSizeInputForm(
 
         Spacer(Modifier.height(8.dp))
 
-        InputBorderColumn(brandBorderColor) {
-            Text(
-                text = "* 브랜드",
-                style = MaterialTheme.typography.labelMedium,
-                color = brandLabelColor,
-            )
-            Spacer(Modifier.height(16.dp))
+        BorderColumn("* 브랜드", brandBorderColor, brandLabelColor) {
             BrandChipInput(
                 brandList = brandList + "기타 브랜드",
                 selectedBrand = brand,
@@ -173,10 +159,7 @@ fun OnePieceSizeInputForm(
         LabeledTextField(length, { length = it }, "총장 (cm)")
 
         Spacer(Modifier.height(8.dp))
-        InputBorderColumn(MaterialTheme.colorScheme.outline) {
-            Text(
-                "핏", style = MaterialTheme.typography.labelMedium)
-            Spacer(Modifier.height(16.dp))
+        BorderColumn("핏") {
             val fits = listOf("슬림핏", "레귤러핏", "오버핏")
             SelectableChipGroup(options = fits, selectedOption = fit, onSelect = { fit = it })
         }
@@ -190,15 +173,6 @@ fun OnePieceSizeInputForm(
 
         Spacer(Modifier.height(16.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            if (!isRequiredValid) {
-                Text(
-                    text = "종류, 브랜드, 사이즈 라벨은 필수입니다.",
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-            Spacer(Modifier.width(16.dp))
             SaveButton(
                 enabled = isFormValid,
                 onClick = {

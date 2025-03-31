@@ -150,23 +150,6 @@ fun BodySizeInputForm(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            if(!isRequiredValid) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    color = MaterialTheme.colorScheme.error,
-                    text = "성별, 키, 몸무게는 필수 입력입니다.",
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize
-                )
-            }
-            if(!isFormValid && isRequiredValid) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    color = MaterialTheme.colorScheme.error,
-                    text = "사이즈는 숫자로 입력해주세요.",
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize
-                )
-            }
-            Spacer(Modifier.width(16.dp))
             SaveButton(
                 enabled = isFormValid,
                 onClick = {

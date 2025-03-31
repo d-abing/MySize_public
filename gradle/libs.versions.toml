@@ -1,6 +1,7 @@
 [versions]
 accompanistSystemuicontroller = "0.31.5-beta"
 agp = "8.8.2"
+androidImageCropperVersion = "4.3.2"
 converterGson = "2.9.0"
 gson = "2.10.1"
 hiltAndroid = "2.49"
@@ -18,6 +19,9 @@ retrofit = "2.9.0"
 roomRuntime = "2.6.1"
 roomKtx = "2.6.1"
 appcompat = "1.7.0"
+textRecognition = "16.0.1"
+playServicesMlkitTextRecognitionKorean = "16.0.1"
+ucrop = "2.2.9"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -27,6 +31,7 @@ androidx-material-icons-extended = { module = "androidx.compose.material:materia
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+canhub-android-image-cropper = { module = "com.github.CanHub:Android-Image-Cropper", version.ref = "androidImageCropperVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
@@ -47,6 +52,9 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "textRecognition" }
+play-services-mlkit-text-recognition-korean = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-korean", version.ref = "playServicesMlkitTextRecognitionKorean" }
+ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
