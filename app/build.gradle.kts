@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.text.recognition)
     implementation(libs.ucrop)
     implementation(libs.canhub.android.image.cropper)
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

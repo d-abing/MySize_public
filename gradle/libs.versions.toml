@@ -2,6 +2,8 @@
 accompanistSystemuicontroller = "0.31.5-beta"
 agp = "8.8.2"
 androidImageCropperVersion = "4.3.2"
+coil = "2.4.0"
+coilCompose = "2.4.0"
 converterGson = "2.9.0"
 gson = "2.10.1"
 hiltAndroid = "2.49"
@@ -32,6 +34,8 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 canhub-android-image-cropper = { module = "com.github.CanHub:Android-Image-Cropper", version.ref = "androidImageCropperVersion" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }

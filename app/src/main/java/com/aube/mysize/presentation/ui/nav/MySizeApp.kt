@@ -14,8 +14,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -27,6 +30,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aube.mysize.R
 import com.aube.mysize.presentation.ui.screens.add_size.AddSizeScreen
+import com.aube.mysize.presentation.ui.screens.closet.AddCloth.AddClothScreen
 import com.aube.mysize.presentation.ui.screens.closet.ClosetScreen
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeScreen
 import com.aube.mysize.presentation.ui.screens.recommend_size.RecommendSizeScreen
@@ -36,6 +40,7 @@ import com.aube.mysize.presentation.ui.screens.settings.SettingsScreen
 @Composable
 fun MySizeApp() {
     val navController = rememberNavController()
+    val snackbarHostState = remember { SnackbarHostState() }
     val items = listOf(
         Screen.Closet,
         Screen.Recommend,
@@ -45,6 +50,7 @@ fun MySizeApp() {
     )
 
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             Column {
                 TopAppBar(
@@ -97,17 +103,18 @@ fun MySizeApp() {
                     )
                 }
             }
-        }
+        },
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Screen.AddSize.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Closet.route) { ClosetScreen() }
+            composable(Screen.Closet.route) { ClosetScreen() { navController.navigate("add_cloth") } }
+            composable(Screen.AddCloth.route) { AddClothScreen() }
             composable(Screen.Recommend.route) { RecommendSizeScreen() }
             composable(Screen.MySize.route) { MySizeScreen() }
-            composable(Screen.AddSize.route) { AddSizeScreen { navController.navigate("my_size")} }
+            composable(Screen.AddSize.route) { AddSizeScreen(snackbarHostState) { navController.navigate("my_size")} }
             composable(Screen.Settings.route) { SettingsScreen() }
         }
     }

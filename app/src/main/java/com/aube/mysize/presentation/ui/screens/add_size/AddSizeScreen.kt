@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +39,7 @@ import com.aube.mysize.presentation.viewmodel.TopSizeViewModel
 
 @Composable
 fun AddSizeScreen(
+    snackbarHostState: SnackbarHostState,
     bodyViewModel: BodySizeViewModel = hiltViewModel(),
     topViewModel: TopSizeViewModel = hiltViewModel(),
     bottomViewModel: BottomSizeViewModel = hiltViewModel(),
@@ -67,7 +69,7 @@ fun AddSizeScreen(
                     shape = RoundedCornerShape(50),
                     label = {
                         Text(
-                            fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                            fontSize = MaterialTheme.typography.labelMedium.fontSize,
                             text = category.label
                         )
                     },
@@ -83,7 +85,7 @@ fun AddSizeScreen(
         // ───── 카테고리별 입력 UI 분기 ─────
         when (selectedCategory) {
             SizeCategory.BODY -> BodySizeInputForm(viewModel = bodyViewModel, onSaved)
-            SizeCategory.TOP -> TopSizeInputForm(viewModel = topViewModel, onSaved)
+            SizeCategory.TOP -> TopSizeInputForm(viewModel = topViewModel, snackbarHostState, onSaved)
             SizeCategory.BOTTOM -> BottomSizeInputForm(viewModel = bottomViewModel, onSaved)
             SizeCategory.OUTER -> OuterSizeInputForm(viewModel = outerViewModel, onSaved)
             SizeCategory.ONE_PIECE -> OnePieceSizeInputForm(viewModel = onePieceViewModel, onSaved)

@@ -1,8 +1,10 @@
 package com.aube.mysize.presentation.ui.screens.add_size.input_form
 
+import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,12 +17,14 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,30 +35,34 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.aube.mysize.domain.model.TopSize
-import com.aube.mysize.presentation.ui.component.BrandChipInput
 import com.aube.mysize.presentation.ui.component.BorderColumn
+import com.aube.mysize.presentation.ui.component.BrandChipInput
 import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.TopSizeViewModel
+import com.aube.mysize.utils.SizeExtractionResult
+import com.aube.mysize.utils.recognizeSizeFromImage
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.aube.mysize.utils.recognizeSizeFromImage
 import java.time.LocalDate
 
 @Composable
 fun TopSizeInputForm(
     viewModel: TopSizeViewModel,
+    snackbarHostState: SnackbarHostState,
     onSaved: () -> Unit
 ) {
     var type by remember { mutableStateOf("") }
@@ -105,6 +113,11 @@ fun TopSizeInputForm(
     val brandBorderColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
     val brandLabelColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
 
+    var extractedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var extractedSizeMap by remember { mutableStateOf<Map<String, Map<String, String>>>(emptyMap()) }
+    var extractedLabelList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var selectedExtractedLabel by remember { mutableStateOf("") }
+
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -113,18 +126,53 @@ fun TopSizeInputForm(
         contract = CropImageContract(),
         onResult = { result ->
             if (result.isSuccessful) {
-                Log.e("TopSizeInputFrom", "Success")
                 result.uriContent?.let { croppedUri ->
                     val image = InputImage.fromFilePath(context, croppedUri)
+                    extractedImageUri = croppedUri
+
                     recognizeSizeFromImage(
                         image = image,
-                        sizeLabel = sizeLabel,
-                        keyList = listOf("총장", "어깨너비", "가슴단면", "소매길이")
-                    ) { parsed ->
-                        length = parsed["총장"] ?: ""
-                        shoulder = parsed["어깨너비"] ?: ""
-                        chest = parsed["가슴단면"] ?: ""
-                        sleeve = parsed["소매길이"] ?: ""
+                        keyList = listOf(
+                            "총장", "어깨너비", "가슴단면", "소매길이", // 한글
+                            "LENGTH", "SHOULDER", "CHEST", "SLEEVE"  // 영어
+                        )
+                    ) { result ->
+                        when (result) {
+                            is SizeExtractionResult.Success -> {
+                                val sizeMap = result.sizeMap
+                                val selectedSize = sizeLabel.uppercase()
+                                sizeLabel = selectedSize
+                                extractedLabelList = result.sizeLabels
+
+                                if (sizeMap[selectedSize] != null) {
+                                    sizeMap[selectedSize]?.let { values ->
+                                        length = values["총장"] ?: values["LENGTH"] ?: ""
+                                        shoulder = values["어깨너비"] ?: values["SHOULDER"] ?: ""
+                                        chest = values["가슴단면"] ?: values["CHEST"] ?: ""
+                                        sleeve = values["소매길이"] ?: values["SLEEVE"] ?: ""
+                                        selectedExtractedLabel = selectedSize
+                                    }
+                                } else {
+                                    sizeLabel = ""
+                                    length = ""
+                                    shoulder = ""
+                                    chest = ""
+                                    sleeve = ""
+                                    selectedExtractedLabel = ""
+                                }
+                                extractedSizeMap = sizeMap
+                            }
+                            is SizeExtractionResult.Incomplete -> {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("사이즈 추출이 누락되어, 정확하지 않은 추출값을 제공할 수 있습니다.")
+                                }
+                            }
+                            is SizeExtractionResult.Failed -> {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("사이즈 추출에 실패했습니다.")
+                                }
+                            }
+                        }
                     }
                 }
             } else {
@@ -190,7 +238,6 @@ fun TopSizeInputForm(
                 .fillMaxWidth()
                 .height(80.dp),
             shape = MaterialTheme.shapes.small,
-            enabled = isSizeLabelValid,
             onClick = { galleryLauncher.launch("image/*") }
         ) {
             Column {
@@ -203,13 +250,39 @@ fun TopSizeInputForm(
                     Spacer(Modifier.width(4.dp))
                     Text("상세 사이즈 캡쳐화면으로 자동 입력하기")
                 }
-                if(sizeLabelError) {
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text =  "사이즈 라벨을 정확히 입력해 주세요.",
-                        fontSize = MaterialTheme.typography.bodySmall.fontSize
-                    )
-                }
+            }
+        }
+
+        extractedImageUri?.let {
+            Spacer(Modifier.height(8.dp))
+            AsyncImage(
+                model = it,
+                contentDescription = "미리보기",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(8.dp))
+            )
+        }
+
+        // 추출된 라벨 칩 선택
+        if (extractedSizeMap.isNotEmpty()) {
+            Spacer(Modifier.height(8.dp))
+            BorderColumn("추출된 사이즈 선택") {
+                SelectableChipGroup(
+                    options = extractedLabelList,
+                    selectedOption = selectedExtractedLabel,
+                    onSelect = { label ->
+                        selectedExtractedLabel = label
+                        sizeLabel = label
+                        extractedSizeMap[label]?.let {
+                            length = it["총장"] ?: it["LENGTH"] ?: ""
+                            shoulder = it["어깨너비"] ?: it["SHOULDER"] ?: ""
+                            chest = it["가슴단면"] ?: it["CHEST"] ?: ""
+                            sleeve = it["소매길이"] ?: it["SLEEVE"] ?: ""
+                        }
+                    },
+                )
             }
         }
 
