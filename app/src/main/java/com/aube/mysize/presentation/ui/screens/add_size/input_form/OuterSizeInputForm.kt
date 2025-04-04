@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,6 +33,7 @@ import com.aube.mysize.presentation.ui.component.BrandChipInput
 import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.viewmodel.OuterSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,6 +42,7 @@ import java.time.LocalDate
 @Composable
 fun OuterSizeInputForm(
     viewModel: OuterSizeViewModel,
+    snackbarHostState: SnackbarHostState,
     onSaved: () -> Unit
 ) {
     var type by remember { mutableStateOf("") }
@@ -50,9 +55,6 @@ fun OuterSizeInputForm(
     var length by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
-
-    val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
 
     val shoulderFloat = shoulder.toFloatOrNull()
     val chestFloat = chest.toFloatOrNull()
@@ -91,6 +93,10 @@ fun OuterSizeInputForm(
     val brandBorderColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
     val brandLabelColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
 
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    val focusRequester = remember { FocusRequester() }
+
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
@@ -109,7 +115,7 @@ fun OuterSizeInputForm(
 
         Spacer(Modifier.height(8.dp))
 
-        BorderColumn("* 브랜드", brandBorderColor, typeLabelColor) {
+        BorderColumn("* 브랜드", brandBorderColor, brandLabelColor) {
             BrandChipInput(
                 brandList = brandList + "기타 브랜드",
                 selectedBrand = brand,
@@ -120,13 +126,66 @@ fun OuterSizeInputForm(
         }
 
         LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 라벨 (예: S, M, L / 90, 95, 100)",
-            isError = sizeLabelError, keyboardType = KeyboardType.Text)
+            modifier = Modifier.focusRequester(focusRequester),
+            isError = sizeLabelError,
+            keyboardType = KeyboardType.Text
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        SizeOcrSelector(
+            keyList = listOf(
+                "어깨", "가슴", "소매길이", "총장", // 한글
+                "SHOULDER", "CHEST", "SLEEVE", "LENGTH"  // 영어
+            ),
+            keyMapping = ::normalizeOuterKey,
+            initialSizeLabel = sizeLabel.uppercase(),
+            snackbarHostState = snackbarHostState,
+            onExtracted = { extractedSizeMap  ->
+                val sizeMap = extractedSizeMap
+                val selectedSize = sizeLabel.uppercase()
+                sizeLabel = selectedSize
+
+                if (sizeMap[selectedSize] != null) {
+                    sizeMap[selectedSize]?.let { values ->
+                        length = values["LENGTH"] ?: ""
+                        shoulder = values["SHOULDER"] ?: ""
+                        chest = values["CHEST"] ?: ""
+                        sleeve = values["SLEEVE"] ?: ""
+                    }
+                } else {
+                    sizeLabel = ""
+                    shoulder = ""
+                    chest = ""
+                    sleeve = ""
+                    length = ""
+                }
+            },
+            onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
+                if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
+                    sizeLabel = selectedExtractedLabel
+                } else {
+                    focusRequester.requestFocus()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("정확한 사이즈 라벨이 기입되었는지 확인해주세요.")
+                    }
+                }
+                extractedSizeMap[selectedExtractedLabel]?.let {
+                    shoulder = it["SHOULDER"] ?: ""
+                    chest = it["CHEST"] ?: ""
+                    sleeve = it["SLEEVE"] ?: ""
+                    length = it["LENGTH"] ?: ""
+                }
+            }
+        )
+
         LabeledTextField(shoulder, { shoulder = it }, "어깨 너비 (cm)", isError = shoulderError)
         LabeledTextField(chest, { chest = it }, "가슴 단면 (cm)", isError = chestError)
         LabeledTextField(sleeve, { sleeve = it }, "소매 길이 (cm)", isError = sleeveError)
         LabeledTextField(length, { length = it }, "총장 (cm)", isError = lengthError)
 
         Spacer(Modifier.height(8.dp))
+
         BorderColumn("핏") {
             val fits = listOf("슬림핏", "레귤러핏", "오버핏")
             SelectableChipGroup(
@@ -136,16 +195,26 @@ fun OuterSizeInputForm(
             )
         }
 
-        LabeledTextField(note, { note = it }, "참고 사항", keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Done) {
-            coroutineScope.launch {
-                delay(100)
-                scrollState.animateScrollTo(scrollState.maxValue)
+        LabeledTextField(
+            value = note,
+            onValueChange = { note = it },
+            label = "참고 사항",
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done,
+            onDone = {
+                coroutineScope.launch {
+                    delay(100)
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
             }
-        }
+        )
 
         Spacer(Modifier.height(16.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
             SaveButton(
                 enabled = isFormValid,
                 onClick = {
@@ -170,3 +239,14 @@ fun OuterSizeInputForm(
     }
 }
 
+private fun normalizeOuterKey(original: String): String {
+    val upper = original.uppercase()
+
+    return when {
+        "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
+        "CHEST" in upper || "BUST" in upper || "가슴" in original -> "CHEST"
+        "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
+        "LENGTH" in upper || "총장" in original -> "LENGTH"
+        else -> upper
+    }
+}

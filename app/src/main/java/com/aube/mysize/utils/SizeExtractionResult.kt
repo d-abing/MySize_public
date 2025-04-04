@@ -7,5 +7,7 @@ sealed class SizeExtractionResult {
     ) : SizeExtractionResult()
 
     object Incomplete : SizeExtractionResult()
-    object Failed : SizeExtractionResult()
+    object NoHeaderFound : SizeExtractionResult()
+    object NoSizeLabelFound : SizeExtractionResult()
+    data class OcrFailed(val message: String?) : SizeExtractionResult()
 }

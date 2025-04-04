@@ -49,9 +49,9 @@ class OnePieceSizeViewModel @Inject constructor(
         viewModelScope.launch { deleteSizeUseCase(item) }
     }
 
-    fun insertBrand(brand: String, category: String) {
+    fun insertBrand(brand: String) {
         viewModelScope.launch {
-            insertBrandUseCase(brand, category)
+            insertBrandUseCase(brand, "일체형")
         }
     }
 

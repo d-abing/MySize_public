@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -38,6 +41,7 @@ import java.time.LocalDate
 @Composable
 fun AccessorySizeInputForm(
     viewModel: AccessorySizeViewModel,
+    snackbarHostState: SnackbarHostState,
     onSaved: () -> Unit
 ) {
     var type by remember { mutableStateOf("") }
@@ -47,10 +51,6 @@ fun AccessorySizeInputForm(
     var bodyPart by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
-
-    val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
-
     var typeError by remember { mutableStateOf(false) }
     var brandError by remember { mutableStateOf(false) }
     var sizeLabelError by remember { mutableStateOf(false) }
@@ -69,6 +69,10 @@ fun AccessorySizeInputForm(
     val typeLabelColor = if (typeError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
     val brandBorderColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
     val brandLabelColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    val focusRequester = remember { FocusRequester() }
 
     Column(
         modifier = Modifier
@@ -96,10 +100,15 @@ fun AccessorySizeInputForm(
             )
         }
 
-        LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 정보 (예: 9호, M, Free 등)", isError = sizeLabelError, keyboardType = KeyboardType.Text)
+        LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 정보 (예: 9호, M, Free 등)",
+            modifier = Modifier.focusRequester(focusRequester),
+            isError = sizeLabelError,
+            keyboardType = KeyboardType.Text
+        )
         LabeledTextField(bodyPart, { bodyPart = it }, "부위 (예: 약지 손가락)", keyboardType = KeyboardType.Text)
 
         Spacer(Modifier.height(8.dp))
+
         BorderColumn("핏") {
             val fits = listOf("작음", "딱 맞음", "큼")
             SelectableChipGroup(
@@ -109,14 +118,22 @@ fun AccessorySizeInputForm(
             )
         }
 
-        LabeledTextField(note, { note = it }, "참고 사항", keyboardType = KeyboardType.Text, imeAction = ImeAction.Done) {
-            coroutineScope.launch {
-                delay(100)
-                scrollState.animateScrollTo(scrollState.maxValue)
+        LabeledTextField(
+            value = note,
+            onValueChange = { note = it },
+            label = "참고 사항",
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done,
+            onDone = {
+                coroutineScope.launch {
+                    delay(100)
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
             }
-        }
+        )
 
         Spacer(Modifier.height(16.dp))
+
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             SaveButton(
                 enabled = isRequiredValid,

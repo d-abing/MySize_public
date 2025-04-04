@@ -1,10 +1,5 @@
 package com.aube.mysize.presentation.ui.screens.add_size.input_form
 
-import android.net.Uri
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,17 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Straighten
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,28 +21,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.aube.mysize.domain.model.TopSize
 import com.aube.mysize.presentation.ui.component.BorderColumn
 import com.aube.mysize.presentation.ui.component.BrandChipInput
 import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.viewmodel.TopSizeViewModel
-import com.aube.mysize.utils.SizeExtractionResult
-import com.aube.mysize.utils.recognizeSizeFromImage
-import com.canhub.cropper.CropImageContract
-import com.canhub.cropper.CropImageContractOptions
-import com.canhub.cropper.CropImageOptions
-import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -113,89 +93,9 @@ fun TopSizeInputForm(
     val brandBorderColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
     val brandLabelColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
 
-    var extractedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var extractedSizeMap by remember { mutableStateOf<Map<String, Map<String, String>>>(emptyMap()) }
-    var extractedLabelList by remember { mutableStateOf<List<String>>(emptyList()) }
-    var selectedExtractedLabel by remember { mutableStateOf("") }
-
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-
-    val cropLauncher = rememberLauncherForActivityResult(
-        contract = CropImageContract(),
-        onResult = { result ->
-            if (result.isSuccessful) {
-                result.uriContent?.let { croppedUri ->
-                    val image = InputImage.fromFilePath(context, croppedUri)
-                    extractedImageUri = croppedUri
-
-                    recognizeSizeFromImage(
-                        image = image,
-                        keyList = listOf(
-                            "총장", "어깨너비", "가슴단면", "소매길이", // 한글
-                            "LENGTH", "SHOULDER", "CHEST", "SLEEVE"  // 영어
-                        )
-                    ) { result ->
-                        when (result) {
-                            is SizeExtractionResult.Success -> {
-                                val sizeMap = result.sizeMap
-                                val selectedSize = sizeLabel.uppercase()
-                                sizeLabel = selectedSize
-                                extractedLabelList = result.sizeLabels
-
-                                if (sizeMap[selectedSize] != null) {
-                                    sizeMap[selectedSize]?.let { values ->
-                                        length = values["총장"] ?: values["LENGTH"] ?: ""
-                                        shoulder = values["어깨너비"] ?: values["SHOULDER"] ?: ""
-                                        chest = values["가슴단면"] ?: values["CHEST"] ?: ""
-                                        sleeve = values["소매길이"] ?: values["SLEEVE"] ?: ""
-                                        selectedExtractedLabel = selectedSize
-                                    }
-                                } else {
-                                    sizeLabel = ""
-                                    length = ""
-                                    shoulder = ""
-                                    chest = ""
-                                    sleeve = ""
-                                    selectedExtractedLabel = ""
-                                }
-                                extractedSizeMap = sizeMap
-                            }
-                            is SizeExtractionResult.Incomplete -> {
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("사이즈 추출이 누락되어, 정확하지 않은 추출값을 제공할 수 있습니다.")
-                                }
-                            }
-                            is SizeExtractionResult.Failed -> {
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("사이즈 추출에 실패했습니다.")
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                Log.e("TopSizeInputFrom", "Error: ${result.error}")
-            }
-        }
-    )
-
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let {
-            cropLauncher.launch(
-                CropImageContractOptions(
-                    uri,
-                    CropImageOptions().apply {
-                        // 필요한 옵션만 설정
-                        fixAspectRatio = false
-                    }
-                )
-            )
-        }
-    }
+    val focusRequester = remember { FocusRequester() }
 
     Column(
         modifier = Modifier
@@ -227,64 +127,58 @@ fun TopSizeInputForm(
         }
 
         LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 라벨 (예: S, M, L / 90, 95, 100)",
+            modifier = Modifier.focusRequester(focusRequester),
             isError = sizeLabelError,
             keyboardType = KeyboardType.Text
         )
 
         Spacer(Modifier.height(8.dp))
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp),
-            shape = MaterialTheme.shapes.small,
-            onClick = { galleryLauncher.launch("image/*") }
-        ) {
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Filled.Straighten,
-                        modifier = Modifier
-                            .rotate(45f),
-                        contentDescription = "자동 추출",
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text("상세 사이즈 캡쳐화면으로 자동 입력하기")
+        SizeOcrSelector(
+            keyList = listOf(
+                "어깨", "가슴", "소매길이", "총장", // 한글
+                "SHOULDER", "CHEST", "SLEEVE", "LENGTH"  // 영어
+            ),
+            keyMapping = ::normalizeTopKey,
+            initialSizeLabel = sizeLabel.uppercase(),
+            snackbarHostState = snackbarHostState,
+            onExtracted = { extractedSizeMap  ->
+                val sizeMap = extractedSizeMap
+                val selectedSize = sizeLabel.uppercase()
+                sizeLabel = selectedSize
+
+                if (sizeMap[selectedSize] != null) {
+                    sizeMap[selectedSize]?.let { values ->
+                        shoulder = values["SHOULDER"] ?: ""
+                        chest = values["CHEST"] ?: ""
+                        sleeve = values["SLEEVE"] ?: ""
+                        length = values["LENGTH"] ?: ""
+                    }
+                } else {
+                    sizeLabel = ""
+                    shoulder = ""
+                    chest = ""
+                    sleeve = ""
+                    length = ""
+                }
+            },
+            onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
+                if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
+                    sizeLabel = selectedExtractedLabel
+                } else {
+                    focusRequester.requestFocus()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("정확한 사이즈 라벨이 기입되었는지 확인해주세요.")
+                    }
+                }
+                extractedSizeMap[selectedExtractedLabel]?.let {
+                    shoulder = it["SHOULDER"] ?: ""
+                    chest = it["CHEST"] ?: ""
+                    sleeve = it["SLEEVE"] ?: ""
+                    length = it["LENGTH"] ?: ""
                 }
             }
-        }
-
-        extractedImageUri?.let {
-            Spacer(Modifier.height(8.dp))
-            AsyncImage(
-                model = it,
-                contentDescription = "미리보기",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(8.dp))
-            )
-        }
-
-        // 추출된 라벨 칩 선택
-        if (extractedSizeMap.isNotEmpty()) {
-            Spacer(Modifier.height(8.dp))
-            BorderColumn("추출된 사이즈 선택") {
-                SelectableChipGroup(
-                    options = extractedLabelList,
-                    selectedOption = selectedExtractedLabel,
-                    onSelect = { label ->
-                        selectedExtractedLabel = label
-                        sizeLabel = label
-                        extractedSizeMap[label]?.let {
-                            length = it["총장"] ?: it["LENGTH"] ?: ""
-                            shoulder = it["어깨너비"] ?: it["SHOULDER"] ?: ""
-                            chest = it["가슴단면"] ?: it["CHEST"] ?: ""
-                            sleeve = it["소매길이"] ?: it["SLEEVE"] ?: ""
-                        }
-                    },
-                )
-            }
-        }
+        )
 
         LabeledTextField(shoulder, { shoulder = it }, "어깨 너비 (cm)", isError = shoulderError)
         LabeledTextField(chest, { chest = it }, "가슴 단면 (cm)", isError = chestError)
@@ -343,5 +237,17 @@ fun TopSizeInputForm(
                 }
             )
         }
+    }
+}
+
+private fun normalizeTopKey(original: String): String {
+    val upper = original.uppercase()
+
+    return when {
+        "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
+        "CHEST" in upper || "BUST" in upper || "가슴" in original -> "CHEST"
+        "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
+        "LENGTH" in upper || "총장" in original -> "LENGTH"
+        else -> upper
     }
 }

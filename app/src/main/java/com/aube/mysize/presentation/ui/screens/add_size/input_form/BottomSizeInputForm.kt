@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,6 +33,7 @@ import com.aube.mysize.presentation.ui.component.BrandChipInput
 import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.viewmodel.BottomSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,6 +42,7 @@ import java.time.LocalDate
 @Composable
 fun BottomSizeInputForm(
     viewModel: BottomSizeViewModel,
+    snackbarHostState: SnackbarHostState,
     onSaved: () -> Unit
 ) {
     var type by remember { mutableStateOf("") }
@@ -52,9 +57,6 @@ fun BottomSizeInputForm(
     var length by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
-
-    val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
 
     // Float 변환
     val waistFloat = waist.toFloatOrNull()
@@ -103,6 +105,10 @@ fun BottomSizeInputForm(
     val brandBorderColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
     val brandLabelColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
 
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    val focusRequester = remember { FocusRequester() }
+
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
@@ -110,7 +116,8 @@ fun BottomSizeInputForm(
     ) {
         BorderColumn("* 하의 종류", typeBorderColor, typeLabelColor) {
             val bottomTypes = listOf(
-                "청바지", "슬랙스", "면바지", "반바지", "트레이닝팬츠", "조거팬츠", "레깅스", "미니스커트", "미디스커트", "롱스커트", "기타 하의"
+                "청바지", "슬랙스", "면바지", "반바지", "트레이닝팬츠", "조거팬츠", "레깅스",
+                "미니스커트", "미디스커트", "롱스커트", "기타 하의"
             )
             SelectableChipGroup(
                 options = bottomTypes,
@@ -132,7 +139,65 @@ fun BottomSizeInputForm(
         }
 
         LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 라벨 (예: S, M, L / 90, 95, 100)",
-            isError = sizeLabelError, keyboardType = KeyboardType.Text)
+            modifier = Modifier.focusRequester(focusRequester),
+            isError = sizeLabelError,
+            keyboardType = KeyboardType.Text
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        SizeOcrSelector(
+            keyList = listOf(
+                "허리", "밑위", "엉덩이", "허벅지", "밑단", "총장", // 한글
+                "WAIST", "RISE", "HIP", "THIGH", "HEM", "LENGTH"  // 영어
+            ),
+            keyMapping = ::normalizeBottomKey,
+            initialSizeLabel = sizeLabel.uppercase(),
+            snackbarHostState = snackbarHostState,
+            onExtracted = { extractedSizeMap  ->
+                val sizeMap = extractedSizeMap
+                val selectedSize = sizeLabel.uppercase()
+                sizeLabel = selectedSize
+
+                if (sizeMap[selectedSize] != null) {
+                    sizeMap[selectedSize]?.let { values ->
+                        waist = values["WAIST"] ?: ""
+                        rise = values["RISE"] ?: ""
+                        hip = values["HIP"] ?: ""
+                        thigh = values["THIGH"] ?: ""
+                        hem = values["HEM"] ?: ""
+                        length = values["LENGTH"] ?: ""
+                    }
+                } else {
+                    sizeLabel = ""
+                    waist = ""
+                    rise = ""
+                    hip = ""
+                    thigh = ""
+                    hem = ""
+                    length = ""
+                }
+            },
+            onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
+                if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
+                    sizeLabel = selectedExtractedLabel
+                } else {
+                    focusRequester.requestFocus()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("정확한 사이즈 라벨이 기입되었는지 확인해주세요.")
+                    }
+                }
+                extractedSizeMap[selectedExtractedLabel]?.let {
+                    waist = it["WAIST"] ?: ""
+                    rise = it["RISE"] ?: ""
+                    hip = it["HIP"] ?: ""
+                    thigh = it["THIGH"] ?: ""
+                    hem = it["HEM"] ?: ""
+                    length = it["LENGTH"] ?: ""
+                }
+            }
+        )
+
         LabeledTextField(waist, { waist = it }, "허리 단면 (cm)", isError = waistError)
         LabeledTextField(rise, { rise = it }, "밑위 (cm)", isError = riseError)
         LabeledTextField(hip, { hip = it }, "엉덩이 단면 (cm)", isError = hipError)
@@ -151,14 +216,22 @@ fun BottomSizeInputForm(
             )
         }
 
-        LabeledTextField(note, { note = it }, "참고 사항", imeAction = ImeAction.Done, keyboardType = KeyboardType.Text) {
-            coroutineScope.launch {
-                delay(100)
-                scrollState.animateScrollTo(scrollState.maxValue)
+        LabeledTextField(
+            value = note,
+            onValueChange = { note = it },
+            label = "참고 사항",
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done,
+            onDone = {
+                coroutineScope.launch {
+                    delay(100)
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
             }
-        }
+        )
 
         Spacer(Modifier.height(16.dp))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
@@ -186,5 +259,18 @@ fun BottomSizeInputForm(
                 }
             )
         }
+    }
+}
+
+private fun normalizeBottomKey(original: String): String {
+    val upper = original.uppercase()
+    return when {
+        "WAIST" in upper || "허리" in original -> "WAIST"
+        "RISE" in upper || "밑위" in original -> "RISE"
+        "HIP" in upper || "엉덩이" in original -> "HIP"
+        "THIGH" in upper || "허벅지" in original -> "THIGH"
+        "HEM" in upper || "밑단" in original -> "HEM"
+        "LENGTH" in upper || "총장" in original -> "LENGTH"
+        else -> upper
     }
 }

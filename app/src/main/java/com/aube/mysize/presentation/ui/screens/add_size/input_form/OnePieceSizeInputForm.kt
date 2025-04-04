@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,6 +33,7 @@ import com.aube.mysize.presentation.ui.component.BrandChipInput
 import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.viewmodel.OnePieceSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,6 +42,7 @@ import java.time.LocalDate
 @Composable
 fun OnePieceSizeInputForm(
     viewModel: OnePieceSizeViewModel,
+    snackbarHostState: SnackbarHostState,
     onSaved: () -> Unit
 ) {
     var type by remember { mutableStateOf("") }
@@ -55,9 +60,6 @@ fun OnePieceSizeInputForm(
     var length by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
-
-    val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
 
     val shoulderFloat = shoulder.toFloatOrNull()
     val chestFloat = chest.toFloatOrNull()
@@ -117,6 +119,10 @@ fun OnePieceSizeInputForm(
     val brandBorderColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
     val brandLabelColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
 
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    val focusRequester = remember { FocusRequester() }
+
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
@@ -139,14 +145,79 @@ fun OnePieceSizeInputForm(
                 selectedBrand = brand,
                 onSelect = { brand = it },
                 onDelete = { viewModel.deleteBrand(it) },
-                onAddBrand = { viewModel.insertBrand(it, "일체형") }
+                onAddBrand = { viewModel.insertBrand(it) }
             )
         }
 
-        LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 라벨",
+        LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 라벨 (예: S, M, L / 90, 95, 100)",
+            modifier = Modifier.focusRequester(focusRequester),
             isError = sizeLabelError,
             keyboardType = KeyboardType.Text
         )
+
+        Spacer(Modifier.height(8.dp))
+
+        SizeOcrSelector(
+            keyList = listOf(
+                "어깨", "가슴", "허리", "엉덩이", "소매길이", "밑위", "허벅지", "밑단", "총장",  // 한글
+                "SHOULDER", "CHEST", "WAIST", "HIP", "SLEEVE", "RISE", "THIGH", "HEM", "LENGTH"  // 영어
+            ),
+            keyMapping = ::normalizeOnePieceKey,
+            initialSizeLabel = sizeLabel.uppercase(),
+            snackbarHostState = snackbarHostState,
+            onExtracted = { extractedSizeMap  ->
+                val sizeMap = extractedSizeMap
+                val selectedSize = sizeLabel.uppercase()
+                sizeLabel = selectedSize
+
+                if (sizeMap[selectedSize] != null) {
+                    sizeMap[selectedSize]?.let { values ->
+                        shoulder = values["SHOULDER"] ?: ""
+                        chest = values["CHEST"] ?: ""
+                        waist = values["WAIST"] ?: ""
+                        hip = values["HIP"] ?: ""
+                        sleeve = values["SLEEVE"] ?: ""
+                        rise = values["RISE"] ?: ""
+                        thigh = values["THIGH"] ?: ""
+                        hem = values["HEM"] ?: ""
+                        length = values["LENGTH"] ?: ""
+                    }
+                } else {
+                    sizeLabel = ""
+                    shoulder = ""
+                    chest = ""
+                    waist = ""
+                    hip = ""
+                    sleeve = ""
+                    rise = ""
+                    thigh = ""
+                    hem = ""
+                    length = ""
+                }
+            },
+            onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
+                if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
+                    sizeLabel = selectedExtractedLabel
+                } else {
+                    focusRequester.requestFocus()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("정확한 사이즈 라벨이 기입되었는지 확인해주세요.")
+                    }
+                }
+                extractedSizeMap[selectedExtractedLabel]?.let {
+                    shoulder = it["SHOULDER"] ?: ""
+                    chest = it["CHEST"] ?: ""
+                    waist = it["WAIST"] ?: ""
+                    hip = it["HIP"] ?: ""
+                    sleeve = it["SLEEVE"] ?: ""
+                    rise = it["RISE"] ?: ""
+                    thigh = it["THIGH"] ?: ""
+                    hem = it["HEM"] ?: ""
+                    length = it["LENGTH"] ?: ""
+                }
+            }
+        )
+
         LabeledTextField(shoulder, { shoulder = it }, "어깨 너비 (cm)")
         LabeledTextField(chest, { chest = it }, "가슴 단면 (cm)")
         LabeledTextField(waist, { waist = it }, "허리 단면 (cm)")
@@ -158,20 +229,36 @@ fun OnePieceSizeInputForm(
         LabeledTextField(length, { length = it }, "총장 (cm)")
 
         Spacer(Modifier.height(8.dp))
+
         BorderColumn("핏") {
-            val fits = listOf("슬림핏", "레귤러핏", "오버핏")
-            SelectableChipGroup(options = fits, selectedOption = fit, onSelect = { fit = it })
+            val topFits = listOf("슬림핏", "레귤러핏", "오버핏")
+            SelectableChipGroup(
+                options = topFits,
+                selectedOption = fit,
+                onSelect = { fit = it }
+            )
         }
 
-        LabeledTextField(note, { note = it }, "참고사항", imeAction = ImeAction.Done) {
-            coroutineScope.launch {
-                delay(100)
-                scrollState.animateScrollTo(scrollState.maxValue)
+        LabeledTextField(
+            value = note,
+            onValueChange = { note = it },
+            label = "참고 사항",
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done,
+            onDone = {
+                coroutineScope.launch {
+                    delay(100)
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
             }
-        }
+        )
 
         Spacer(Modifier.height(16.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
             SaveButton(
                 enabled = isFormValid,
                 onClick = {
@@ -198,5 +285,22 @@ fun OnePieceSizeInputForm(
                 }
             )
         }
+    }
+}
+
+private fun normalizeOnePieceKey(original: String): String {
+    val upper = original.uppercase()
+
+    return when {
+        "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
+        "CHEST" in upper || "BUST" in original || "가슴" in original -> "CHEST"
+        "WAIST" in upper || "허리" in original -> "WAIST"
+        "HIP" in upper || "엉덩이" in original -> "HIP"
+        "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
+        "RISE" in upper || "밑위" in original -> "RISE"
+        "THIGH" in upper || "허벅지" in original -> "THIGH"
+        "HEM" in upper || "밑단" in original -> "HEM"
+        "LENGTH" in upper || "총장" in original -> "LENGTH"
+        else -> upper
     }
 }

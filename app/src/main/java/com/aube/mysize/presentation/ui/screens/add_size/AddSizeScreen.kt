@@ -84,13 +84,13 @@ fun AddSizeScreen(
 
         // ───── 카테고리별 입력 UI 분기 ─────
         when (selectedCategory) {
-            SizeCategory.BODY -> BodySizeInputForm(viewModel = bodyViewModel, onSaved)
+            SizeCategory.BODY -> BodySizeInputForm(viewModel = bodyViewModel, snackbarHostState, onSaved)
             SizeCategory.TOP -> TopSizeInputForm(viewModel = topViewModel, snackbarHostState, onSaved)
-            SizeCategory.BOTTOM -> BottomSizeInputForm(viewModel = bottomViewModel, onSaved)
-            SizeCategory.OUTER -> OuterSizeInputForm(viewModel = outerViewModel, onSaved)
-            SizeCategory.ONE_PIECE -> OnePieceSizeInputForm(viewModel = onePieceViewModel, onSaved)
-            SizeCategory.SHOES -> ShoeSizeInputForm(viewModel = shoeViewModel, onSaved)
-            SizeCategory.ACCESSORY -> AccessorySizeInputForm(viewModel = accessoryViewModel, onSaved)
+            SizeCategory.BOTTOM -> BottomSizeInputForm(viewModel = bottomViewModel, snackbarHostState,  onSaved)
+            SizeCategory.OUTER -> OuterSizeInputForm(viewModel = outerViewModel, snackbarHostState, onSaved)
+            SizeCategory.ONE_PIECE -> OnePieceSizeInputForm(viewModel = onePieceViewModel, snackbarHostState, onSaved)
+            SizeCategory.SHOES -> ShoeSizeInputForm(viewModel = shoeViewModel, snackbarHostState, onSaved)
+            SizeCategory.ACCESSORY -> AccessorySizeInputForm(viewModel = accessoryViewModel, snackbarHostState, onSaved)
         }
     }
 }
