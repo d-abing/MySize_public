@@ -34,7 +34,7 @@ import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
-import com.aube.mysize.presentation.viewmodel.BottomSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -148,7 +148,7 @@ fun BottomSizeInputForm(
 
         SizeOcrSelector(
             keyList = listOf(
-                "허리", "밑위", "엉덩이", "허벅지", "밑단", "총장", // 한글
+                "허리", "밑위", "엉덩이", "허벅지", "힙", "밑단", "총장", "총기장", // 한글
                 "WAIST", "RISE", "HIP", "THIGH", "HEM", "LENGTH"  // 영어
             ),
             keyMapping = ::normalizeBottomKey,
@@ -178,14 +178,20 @@ fun BottomSizeInputForm(
                     length = ""
                 }
             },
+            onFailed = {
+                sizeLabel = ""
+                waist = ""
+                rise = ""
+                hip = ""
+                thigh = ""
+                hem = ""
+                length = ""
+            },
             onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
                 if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
                     sizeLabel = selectedExtractedLabel
                 } else {
                     focusRequester.requestFocus()
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("정확한 사이즈 라벨이 기입되었는지 확인해주세요.")
-                    }
                 }
                 extractedSizeMap[selectedExtractedLabel]?.let {
                     waist = it["WAIST"] ?: ""
@@ -267,10 +273,10 @@ private fun normalizeBottomKey(original: String): String {
     return when {
         "WAIST" in upper || "허리" in original -> "WAIST"
         "RISE" in upper || "밑위" in original -> "RISE"
-        "HIP" in upper || "엉덩이" in original -> "HIP"
+        "HIP" in upper || "엉덩이" in original || "힙" in original -> "HIP"
         "THIGH" in upper || "허벅지" in original -> "THIGH"
         "HEM" in upper || "밑단" in original -> "HEM"
-        "LENGTH" in upper || "총장" in original -> "LENGTH"
+        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
         else -> upper
     }
 }

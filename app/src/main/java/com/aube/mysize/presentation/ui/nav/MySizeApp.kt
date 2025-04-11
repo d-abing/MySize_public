@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -29,17 +30,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aube.mysize.R
+import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.ui.screens.add_size.AddSizeScreen
 import com.aube.mysize.presentation.ui.screens.closet.AddCloth.AddClothScreen
 import com.aube.mysize.presentation.ui.screens.closet.ClosetScreen
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeScreen
 import com.aube.mysize.presentation.ui.screens.recommend_size.RecommendSizeScreen
 import com.aube.mysize.presentation.ui.screens.settings.SettingsScreen
+import com.aube.mysize.utils.setAppLocale
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MySizeApp() {
     val navController = rememberNavController()
+    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val items = listOf(
         Screen.Closet,
@@ -115,7 +122,18 @@ fun MySizeApp() {
             composable(Screen.Recommend.route) { RecommendSizeScreen() }
             composable(Screen.MySize.route) { MySizeScreen() }
             composable(Screen.AddSize.route) { AddSizeScreen(snackbarHostState) { navController.navigate("my_size")} }
-            composable(Screen.Settings.route) { SettingsScreen() }
+            composable(Screen.Settings.route) {
+                SettingsScreen { selectedLanguage ->
+                    setAppLocale(context, selectedLanguage)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        SettingsDataStore.saveLanguage(context, selectedLanguage)
+                    }
+/*                    val restartIntent = Intent(context, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    context.startActivity(restartIntent)*/
+                }
+            }
         }
     }
 }

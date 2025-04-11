@@ -34,7 +34,7 @@ import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
-import com.aube.mysize.presentation.viewmodel.OnePieceSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -159,7 +159,7 @@ fun OnePieceSizeInputForm(
 
         SizeOcrSelector(
             keyList = listOf(
-                "어깨", "가슴", "허리", "엉덩이", "소매길이", "밑위", "허벅지", "밑단", "총장",  // 한글
+                "어깨", "가슴", "허리", "엉덩이", "소매길이", "밑위", "허벅지", "밑단", "총장", "총기장", // 한글
                 "SHOULDER", "CHEST", "WAIST", "HIP", "SLEEVE", "RISE", "THIGH", "HEM", "LENGTH"  // 영어
             ),
             keyMapping = ::normalizeOnePieceKey,
@@ -195,14 +195,23 @@ fun OnePieceSizeInputForm(
                     length = ""
                 }
             },
+            onFailed = {
+                sizeLabel = ""
+                shoulder = ""
+                chest = ""
+                waist = ""
+                hip = ""
+                sleeve = ""
+                rise = ""
+                thigh = ""
+                hem = ""
+                length = ""
+            },
             onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
                 if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
                     sizeLabel = selectedExtractedLabel
                 } else {
                     focusRequester.requestFocus()
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("정확한 사이즈 라벨이 기입되었는지 확인해주세요.")
-                    }
                 }
                 extractedSizeMap[selectedExtractedLabel]?.let {
                     shoulder = it["SHOULDER"] ?: ""
@@ -300,7 +309,7 @@ private fun normalizeOnePieceKey(original: String): String {
         "RISE" in upper || "밑위" in original -> "RISE"
         "THIGH" in upper || "허벅지" in original -> "THIGH"
         "HEM" in upper || "밑단" in original -> "HEM"
-        "LENGTH" in upper || "총장" in original -> "LENGTH"
+        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
         else -> upper
     }
 }

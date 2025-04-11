@@ -30,12 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.toUi
 import com.aube.mysize.presentation.model.SizeCardUiModel
-import com.aube.mysize.presentation.viewmodel.AccessorySizeViewModel
-import com.aube.mysize.presentation.viewmodel.BodySizeViewModel
-import com.aube.mysize.presentation.viewmodel.BottomSizeViewModel
-import com.aube.mysize.presentation.viewmodel.OuterSizeViewModel
-import com.aube.mysize.presentation.viewmodel.ShoeSizeViewModel
-import com.aube.mysize.presentation.viewmodel.TopSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
 
 @Composable
 fun MySizeScreen(

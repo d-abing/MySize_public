@@ -34,7 +34,7 @@ import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
-import com.aube.mysize.presentation.viewmodel.ShoeSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -147,14 +147,16 @@ fun ShoeSizeInputForm(
                     footWidth = ""
                 }
             },
+            onFailed = {
+                sizeLabel = ""
+                footLength = ""
+                footWidth = ""
+            },
             onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
                 if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
                     sizeLabel = selectedExtractedLabel
                 } else {
                     focusRequester.requestFocus()
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("정확한 사이즈 라벨이 기입되었는지 확인해주세요.")
-                    }
                 }
                 extractedSizeMap[selectedExtractedLabel]?.let {
                     footLength = it["FOOT LENGTH"] ?: ""

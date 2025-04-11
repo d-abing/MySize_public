@@ -13,9 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.aube.mysize.presentation.ui.component.ocr.PreviewImage
 import com.aube.mysize.presentation.ui.component.ocr.SizeChipInput
 import com.aube.mysize.presentation.ui.component.ocr.SizeOcrButton
+import com.aube.mysize.presentation.ui.component.ocr.SizeOcrGuide
+import com.aube.mysize.presentation.ui.component.ocr.SizeOcrGuideDialog
 import com.aube.mysize.utils.SizeExtractionResult
 import com.aube.mysize.utils.SizeOcrManager
 import com.canhub.cropper.CropImageContract
@@ -31,8 +32,11 @@ fun SizeOcrSelector(
     initialSizeLabel: String,
     snackbarHostState: SnackbarHostState,
     onExtracted: (Map<String, Map<String, String>>) -> Unit,
+    onFailed: () -> Unit,
     onLabelSelected: (Map<String, Map<String, String>>, String) -> Unit
 ) {
+    var showGuideDialog by remember { mutableStateOf(false) }
+
     var extractedImageUri by remember { mutableStateOf<Uri?>(null) }
     var extractedSizeMap by remember { mutableStateOf<Map<String, Map<String, String>>>(emptyMap()) }
     var extractedLabelList by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -58,8 +62,9 @@ fun SizeOcrSelector(
                         }
                         else -> {
                             Log.e("TopSizeInputFrom", "OCR 실패: ${result::class.simpleName}")
+                            onFailed()
                             coroutineScope.launch {
-                                snackbarHostState.showSnackbar("사이즈 추출 실패. 다시 시도하거나 수동 입력해주세요.")
+                                snackbarHostState.showSnackbar("사이즈 추출 실패. 다시 시도하거나 수동으로 입력해주세요.")
                             }
                         }
                     }
@@ -84,6 +89,8 @@ fun SizeOcrSelector(
     }
 
     Column {
+        SizeOcrGuide(onClick = { showGuideDialog = true })
+
         SizeOcrButton(onClick = { galleryLauncher.launch("image/*") })
 
         PreviewImage(extractedImageUri)
@@ -93,4 +100,9 @@ fun SizeOcrSelector(
             onLabelSelected(extractedSizeMap, selectedExtractedLabel)
         }
     }
+
+    if (showGuideDialog) {
+        SizeOcrGuideDialog(onDismiss = { showGuideDialog = false })
+    }
+
 }

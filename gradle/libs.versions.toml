@@ -5,6 +5,7 @@ androidImageCropperVersion = "4.3.2"
 coil = "2.4.0"
 coilCompose = "2.4.0"
 converterGson = "2.9.0"
+datastorePreferences = "1.1.4"
 gson = "2.10.1"
 hiltAndroid = "2.49"
 hiltNavigationCompose = "1.2.0"
@@ -28,6 +29,7 @@ ucrop = "2.2.9"
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }

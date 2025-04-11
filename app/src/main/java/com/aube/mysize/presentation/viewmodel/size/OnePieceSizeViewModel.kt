@@ -1,8 +1,8 @@
-package com.aube.mysize.presentation.viewmodel
+package com.aube.mysize.presentation.viewmodel.size
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aube.mysize.domain.model.AccessorySize
+import com.aube.mysize.domain.model.OnePieceSize
 import com.aube.mysize.domain.usecase.DeleteBrandUseCase
 import com.aube.mysize.domain.usecase.DeleteSizeUseCase
 import com.aube.mysize.domain.usecase.GetBrandListByCategoryUseCase
@@ -17,17 +17,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AccessorySizeViewModel @Inject constructor(
-    private val insertSizeUseCase: InsertSizeUseCase<AccessorySize>,
-    private val getSizeListUseCase: GetSizeListUseCase<AccessorySize>,
-    private val deleteSizeUseCase: DeleteSizeUseCase<AccessorySize>,
+class OnePieceSizeViewModel @Inject constructor(
+    private val insertSizeUseCase: InsertSizeUseCase<OnePieceSize>,
+    private val getSizeListUseCase: GetSizeListUseCase<OnePieceSize>,
+    private val deleteSizeUseCase: DeleteSizeUseCase<OnePieceSize>,
     private val insertBrandUseCase: InsertBrandUseCase,
     private val getBrandListByCategoryUseCase: GetBrandListByCategoryUseCase,
     private val deleteBrandUseCase: DeleteBrandUseCase
 ) : ViewModel() {
 
-    private val _sizes = MutableStateFlow<List<AccessorySize>>(emptyList())
-    val sizes: StateFlow<List<AccessorySize>> = _sizes.asStateFlow()
+    private val _sizes = MutableStateFlow<List<OnePieceSize>>(emptyList())
+    val sizes: StateFlow<List<OnePieceSize>> = _sizes.asStateFlow()
 
     private val _brandList = MutableStateFlow<List<String>>(emptyList())
     val brandList: StateFlow<List<String>> = _brandList.asStateFlow()
@@ -37,21 +37,21 @@ class AccessorySizeViewModel @Inject constructor(
             getSizeListUseCase().collect { _sizes.value = it }
         }
         viewModelScope.launch {
-            getBrandListByCategoryUseCase("악세사리").collect { _brandList.value = it }
+            getBrandListByCategoryUseCase("일체형").collect { _brandList.value = it }
         }
     }
 
-    fun insert(item: AccessorySize) {
+    fun insert(item: OnePieceSize) {
         viewModelScope.launch { insertSizeUseCase(item) }
     }
 
-    fun delete(item: AccessorySize) {
+    fun delete(item: OnePieceSize) {
         viewModelScope.launch { deleteSizeUseCase(item) }
     }
 
     fun insertBrand(brand: String) {
         viewModelScope.launch {
-            insertBrandUseCase(brand, "악세사리")
+            insertBrandUseCase(brand, "일체형")
         }
     }
 
@@ -61,4 +61,3 @@ class AccessorySizeViewModel @Inject constructor(
         }
     }
 }
-

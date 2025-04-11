@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.viewmodel
+package com.aube.mysize.presentation.viewmodel.size
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

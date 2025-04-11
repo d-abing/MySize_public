@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +29,7 @@ import com.aube.mysize.domain.model.BodySize
 import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
-import com.aube.mysize.presentation.viewmodel.BodySizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -38,7 +37,6 @@ import java.time.LocalDate
 @Composable
 fun BodySizeInputForm(
     viewModel: BodySizeViewModel,
-    snackbarHostState: SnackbarHostState,
     onSaved: () -> Unit
 ) {
     var gender by remember { mutableStateOf("") }

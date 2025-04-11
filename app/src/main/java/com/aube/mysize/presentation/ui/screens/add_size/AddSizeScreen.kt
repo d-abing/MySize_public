@@ -29,13 +29,13 @@ import com.aube.mysize.presentation.ui.screens.add_size.input_form.OnePieceSizeI
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.OuterSizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.ShoeSizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.TopSizeInputForm
-import com.aube.mysize.presentation.viewmodel.AccessorySizeViewModel
-import com.aube.mysize.presentation.viewmodel.BodySizeViewModel
-import com.aube.mysize.presentation.viewmodel.BottomSizeViewModel
-import com.aube.mysize.presentation.viewmodel.OnePieceSizeViewModel
-import com.aube.mysize.presentation.viewmodel.OuterSizeViewModel
-import com.aube.mysize.presentation.viewmodel.ShoeSizeViewModel
-import com.aube.mysize.presentation.viewmodel.TopSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
 
 @Composable
 fun AddSizeScreen(
@@ -84,13 +84,13 @@ fun AddSizeScreen(
 
         // ───── 카테고리별 입력 UI 분기 ─────
         when (selectedCategory) {
-            SizeCategory.BODY -> BodySizeInputForm(viewModel = bodyViewModel, snackbarHostState, onSaved)
+            SizeCategory.BODY -> BodySizeInputForm(viewModel = bodyViewModel, onSaved)
             SizeCategory.TOP -> TopSizeInputForm(viewModel = topViewModel, snackbarHostState, onSaved)
             SizeCategory.BOTTOM -> BottomSizeInputForm(viewModel = bottomViewModel, snackbarHostState,  onSaved)
             SizeCategory.OUTER -> OuterSizeInputForm(viewModel = outerViewModel, snackbarHostState, onSaved)
             SizeCategory.ONE_PIECE -> OnePieceSizeInputForm(viewModel = onePieceViewModel, snackbarHostState, onSaved)
             SizeCategory.SHOES -> ShoeSizeInputForm(viewModel = shoeViewModel, snackbarHostState, onSaved)
-            SizeCategory.ACCESSORY -> AccessorySizeInputForm(viewModel = accessoryViewModel, snackbarHostState, onSaved)
+            SizeCategory.ACCESSORY -> AccessorySizeInputForm(viewModel = accessoryViewModel, onSaved)
         }
     }
 }

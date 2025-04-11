@@ -34,7 +34,7 @@ import com.aube.mysize.presentation.ui.component.LabeledTextField
 import com.aube.mysize.presentation.ui.component.SaveButton
 import com.aube.mysize.presentation.ui.component.SelectableChipGroup
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
-import com.aube.mysize.presentation.viewmodel.TopSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -136,7 +136,7 @@ fun TopSizeInputForm(
 
         SizeOcrSelector(
             keyList = listOf(
-                "어깨", "가슴", "소매길이", "총장", // 한글
+                "어깨", "가슴", "소매길이", "총장", "총기장", // 한글
                 "SHOULDER", "CHEST", "SLEEVE", "LENGTH"  // 영어
             ),
             keyMapping = ::normalizeTopKey,
@@ -162,14 +162,18 @@ fun TopSizeInputForm(
                     length = ""
                 }
             },
+            onFailed = {
+                sizeLabel = ""
+                shoulder = ""
+                chest = ""
+                sleeve = ""
+                length = ""
+            },
             onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
                 if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
                     sizeLabel = selectedExtractedLabel
                 } else {
                     focusRequester.requestFocus()
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("정확한 사이즈 라벨이 기입되었는지 확인해주세요.")
-                    }
                 }
                 extractedSizeMap[selectedExtractedLabel]?.let {
                     shoulder = it["SHOULDER"] ?: ""
@@ -247,7 +251,7 @@ private fun normalizeTopKey(original: String): String {
         "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
         "CHEST" in upper || "BUST" in upper || "가슴" in original -> "CHEST"
         "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
-        "LENGTH" in upper || "총장" in original -> "LENGTH"
+        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
         else -> upper
     }
 }

@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component.ocr
+package com.aube.mysize.presentation.ui.component
 
 import android.net.Uri
 import androidx.compose.foundation.border
