@@ -28,12 +28,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.BottomSize
-import com.aube.mysize.presentation.ui.component.BorderColumn
-import com.aube.mysize.presentation.ui.component.BrandChipInput
-import com.aube.mysize.presentation.ui.component.LabeledTextField
-import com.aube.mysize.presentation.ui.component.SaveButton
-import com.aube.mysize.presentation.ui.component.SelectableChipGroup
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
+import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
+import com.aube.mysize.presentation.ui.component.addsize.BrandChipInput
+import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
+import com.aube.mysize.presentation.ui.component.addsize.SaveButton
+import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -138,7 +138,12 @@ fun BottomSizeInputForm(
             )
         }
 
-        LabeledTextField(sizeLabel, { sizeLabel = it }, "* 사이즈 라벨 (예: S, M, L / 90, 95, 100)",
+        LabeledTextField(
+            value = sizeLabel,
+            onValueChange = {
+                sizeLabel = it
+            },
+            label = "* 사이즈 라벨 (예: S, M, L / 90, 95, 100)",
             modifier = Modifier.focusRequester(focusRequester),
             isError = sizeLabelError,
             keyboardType = KeyboardType.Text

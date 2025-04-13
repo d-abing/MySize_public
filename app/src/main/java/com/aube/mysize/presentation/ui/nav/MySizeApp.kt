@@ -114,7 +114,7 @@ fun MySizeApp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.AddSize.route,
+            startDestination = Screen.MySize.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Closet.route) { ClosetScreen() { navController.navigate("add_cloth") } }

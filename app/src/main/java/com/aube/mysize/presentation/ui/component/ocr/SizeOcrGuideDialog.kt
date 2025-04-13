@@ -31,7 +31,7 @@ fun SizeOcrGuideDialog(onDismiss: () -> Unit) {
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "사이즈표 자르기 가이드",
+                text = "사이즈 표 자르기 가이드",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
             )

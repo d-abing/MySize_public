@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component
+package com.aube.mysize.presentation.ui.component.addsize
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +30,9 @@ fun LabeledTextField(
 
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { input ->
+            onValueChange(input.uppercase())
+        },
         isError = isError,
         textStyle = MaterialTheme.typography.labelSmall,
         label = {

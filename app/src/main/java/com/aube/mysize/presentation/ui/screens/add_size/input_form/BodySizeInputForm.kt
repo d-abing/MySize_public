@@ -26,9 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.BodySize
-import com.aube.mysize.presentation.ui.component.LabeledTextField
-import com.aube.mysize.presentation.ui.component.SaveButton
-import com.aube.mysize.presentation.ui.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
+import com.aube.mysize.presentation.ui.component.addsize.SaveButton
+import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

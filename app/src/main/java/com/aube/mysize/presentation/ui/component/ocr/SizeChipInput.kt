@@ -7,8 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.aube.mysize.presentation.ui.component.BorderColumn
-import com.aube.mysize.presentation.ui.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
+import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
 
 @Composable
 fun SizeChipInput(

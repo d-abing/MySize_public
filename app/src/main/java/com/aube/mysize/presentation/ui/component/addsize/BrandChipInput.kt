@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component
+package com.aube.mysize.presentation.ui.component.addsize
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

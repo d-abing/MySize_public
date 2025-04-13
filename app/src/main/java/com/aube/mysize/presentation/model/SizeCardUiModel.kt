@@ -1,7 +1,13 @@
 package com.aube.mysize.presentation.model
 
-data class SizeCardUiModel(
-    val title: String,             // 예: "신체", "상의"
-    val imageResId: Int,           // 예: R.drawable.body_image
-    val contents: List<String> // 예: ["키: 170cm", "몸무게: 60kg", ...]
+data class BodySizeCardUiModel(
+    val title: String,
+    val imageResId: Int,
+    val description: List<String>
+)
+
+data class SizeContentUiModel(
+    val title: String,
+    val sizeLabel: String,
+    val onClick: () -> Unit
 )
