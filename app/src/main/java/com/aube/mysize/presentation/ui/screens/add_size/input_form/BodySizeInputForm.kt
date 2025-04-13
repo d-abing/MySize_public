@@ -1,43 +1,34 @@
 package com.aube.mysize.presentation.ui.screens.add_size.input_form
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.BodySize
+import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
 import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
-import com.aube.mysize.presentation.ui.component.addsize.SaveButton
 import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
 fun BodySizeInputForm(
     viewModel: BodySizeViewModel,
-    onSaved: () -> Unit
+    onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
+    onSaved: (BodySize) -> Unit
 ) {
     var gender by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
@@ -49,9 +40,6 @@ fun BodySizeInputForm(
     var shoulder by remember { mutableStateOf("") }
     var arm by remember { mutableStateOf("") }
     var leg by remember { mutableStateOf("") }
-
-    val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
 
     val heightFloat = height.toFloatOrNull()
     val weightFloat = weight.toFloatOrNull()
@@ -96,30 +84,22 @@ fun BodySizeInputForm(
     armError = !isArmValid
     legError = !isLegValid
 
-
     val isRequiredValid = isGenderValid && isHeightValid && isWeightValid
     val isFormValid = isRequiredValid && isChestValid && isWaistValid && isHipValid && isNeckValid && isShoulderValid && isArmValid && isLegValid
 
-    val genderBorderColor = if (genderError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
-    val genderLabelColor = if (genderError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+    val genderBackgroundColor = if (genderError) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f) else Color.Transparent
+    val genderBorderColor = if (genderError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
+
+    LaunchedEffect(gender, height, weight, chest, waist, hip, neck, shoulder, arm, leg) {
+        onUpdateFormState(isRequiredValid, isFormValid)
+    }
 
     Column(
         modifier = Modifier
-            .verticalScroll(scrollState)
-            .padding(WindowInsets.ime.asPaddingValues())
+            .padding(WindowInsets.ime.asPaddingValues()),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, genderBorderColor, RoundedCornerShape(8.dp))
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "* 성별",
-                style = MaterialTheme.typography.labelMedium,
-                color = genderLabelColor
-            )
-            Spacer(Modifier.height(16.dp))
+        BorderColumn("* 성별", genderBorderColor, genderBackgroundColor) {
             val options = listOf("남성", "여성")
             SelectableChipGroup(
                 options = options,
@@ -136,39 +116,22 @@ fun BodySizeInputForm(
         LabeledTextField(neck, { neck = it }, "목 둘레 (cm)", isError = neckError)
         LabeledTextField(shoulder, { shoulder = it }, "어깨 너비 (cm)", isError = shoulderError)
         LabeledTextField(arm, { arm = it }, "팔 길이 (cm)", isError = armError)
-        LabeledTextField(leg, { leg = it }, "다리 안쪽 길이 (cm)", isError = legError, imeAction = ImeAction.Done) {
-            coroutineScope.launch {
-                delay(100) // 키보드 반응 대기 (중요!)
-                scrollState.animateScrollTo(scrollState.maxValue)
-            }
-        }
+        LabeledTextField(leg, { leg = it }, "다리 안쪽 길이 (cm)", isError = legError, imeAction = ImeAction.Done) {}
 
-        Spacer(Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            SaveButton(
-                enabled = isFormValid,
-                onClick = {
-                    viewModel.insert(
-                        BodySize(
-                            gender = gender,
-                            height = heightFloat,
-                            weight = weightFloat,
-                            chest = chestFloat,
-                            waist = waistFloat,
-                            hip = hipFloat,
-                            neck = neckFloat,
-                            shoulder = shoulderFloat,
-                            arm = armFloat,
-                            leg = legFloat,
-                            date = LocalDate.now()
-                        )
-                    )
-                    onSaved()
-                },
-            )
-        }
+        val currentBodySize = BodySize(
+            gender = gender,
+            height = heightFloat,
+            weight = weightFloat,
+            chest = chestFloat,
+            waist = waistFloat,
+            hip = hipFloat,
+            neck = neckFloat,
+            shoulder = shoulderFloat,
+            arm = armFloat,
+            leg = legFloat,
+            date = LocalDate.now()
+        )
+
+        onSaved(currentBodySize)
     }
 }

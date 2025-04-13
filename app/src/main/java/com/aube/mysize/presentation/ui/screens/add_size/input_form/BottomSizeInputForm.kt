@@ -2,28 +2,25 @@ package com.aube.mysize.presentation.ui.screens.add_size.input_form
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -32,18 +29,16 @@ import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
 import com.aube.mysize.presentation.ui.component.addsize.BrandChipInput
 import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
-import com.aube.mysize.presentation.ui.component.addsize.SaveButton
 import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
 fun BottomSizeInputForm(
     viewModel: BottomSizeViewModel,
     snackbarHostState: SnackbarHostState,
-    onSaved: () -> Unit
+    onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
+    onSaved: (BottomSize) -> Unit
 ) {
     var type by remember { mutableStateOf("") }
     var brand by remember { mutableStateOf("") }
@@ -100,21 +95,23 @@ fun BottomSizeInputForm(
     val isRequiredValid = isTypeValid && isBrandValid && isSizeLabelValid
     val isFormValid = isRequiredValid && isWaistValid && isRiseValid && isHipValid && isThighValid && isHemValid && isLengthValid
 
-    val typeBorderColor = if (typeError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
-    val typeLabelColor = if (typeError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
-    val brandBorderColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
-    val brandLabelColor = if (brandError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+    val typeBorderColor = if (typeError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
+    val typeBackgroundColor = if (typeError) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f) else Color.Transparent
+    val brandBorderColor = if (brandError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
+    val brandBackgroundColor = if (brandError) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f) else Color.Transparent
 
-    val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(type, brand, sizeLabel, waist, rise, hip, thigh, hem, length) {
+        onUpdateFormState(isRequiredValid, isFormValid)
+    }
 
     Column(
         modifier = Modifier
-            .verticalScroll(scrollState)
-            .padding(WindowInsets.ime.asPaddingValues())
+            .padding(WindowInsets.ime.asPaddingValues()),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        BorderColumn("* 하의 종류", typeBorderColor, typeLabelColor) {
+        BorderColumn("* 하의 종류", typeBorderColor, typeBackgroundColor) {
             val bottomTypes = listOf(
                 "청바지", "슬랙스", "면바지", "반바지", "트레이닝팬츠", "조거팬츠", "레깅스",
                 "미니스커트", "미디스커트", "롱스커트", "기타 하의"
@@ -128,7 +125,7 @@ fun BottomSizeInputForm(
 
         Spacer(Modifier.height(8.dp))
 
-        BorderColumn("* 브랜드", brandBorderColor, brandLabelColor) {
+        BorderColumn("* 브랜드", brandBorderColor, brandBackgroundColor) {
             BrandChipInput(
                 brandList = brandList + "기타 브랜드",
                 selectedBrand = brand,
@@ -233,43 +230,26 @@ fun BottomSizeInputForm(
             label = "참고 사항",
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done,
-            onDone = {
-                coroutineScope.launch {
-                    delay(100)
-                    scrollState.animateScrollTo(scrollState.maxValue)
-                }
-            }
         )
 
         Spacer(Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            SaveButton(
-                enabled = isFormValid,
-                onClick = {
-                    viewModel.insert(
-                        BottomSize(
-                            type = type,
-                            brand = brand,
-                            sizeLabel = sizeLabel,
-                            waist = waistFloat,
-                            rise = riseFloat,
-                            hip = hipFloat,
-                            thigh = thighFloat,
-                            hem = hemFloat,
-                            length = lengthFloat,
-                            fit = fit.ifBlank { null },
-                            note = note.ifBlank { null },
-                            date = LocalDate.now()
-                        )
-                    )
-                    onSaved()
-                }
-            )
-        }
+        val currentBottomSize = BottomSize(
+            type = type,
+            brand = brand,
+            sizeLabel = sizeLabel,
+            waist = waistFloat,
+            rise = riseFloat,
+            hip = hipFloat,
+            thigh = thighFloat,
+            hem = hemFloat,
+            length = lengthFloat,
+            fit = fit,
+            note = note,
+            date = LocalDate.now()
+        )
+
+        onSaved(currentBottomSize)
     }
 }
 

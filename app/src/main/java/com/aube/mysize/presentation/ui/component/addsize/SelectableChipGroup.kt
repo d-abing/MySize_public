@@ -39,7 +39,7 @@ fun SelectableChipGroup(
                 label = {
                     Text(
                         text = option,
-                        fontSize = MaterialTheme.typography.labelMedium.fontSize
+                        fontSize = MaterialTheme.typography.labelLarge.fontSize
                     )
                 },
                 colors = FilterChipDefaults.filterChipColors(
