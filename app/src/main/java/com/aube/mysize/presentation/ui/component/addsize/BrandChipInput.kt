@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ fun BrandChipInput(
                 onValueChange = { newBrand = it },
                 label = "브랜드 추가",
                 modifier = Modifier.weight(1f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.primary,
                 keyboardType = KeyboardType.Text
             )
             Spacer(Modifier.width(8.dp))

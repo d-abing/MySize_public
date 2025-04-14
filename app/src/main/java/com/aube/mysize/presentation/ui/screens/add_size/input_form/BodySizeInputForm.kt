@@ -120,8 +120,8 @@ fun BodySizeInputForm(
 
         val currentBodySize = BodySize(
             gender = gender,
-            height = heightFloat,
-            weight = weightFloat,
+            height = heightFloat ?: 0f,
+            weight = weightFloat ?: 0f,
             chest = chestFloat,
             waist = waistFloat,
             hip = hipFloat,

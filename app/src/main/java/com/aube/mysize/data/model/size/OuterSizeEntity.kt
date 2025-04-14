@@ -8,7 +8,7 @@ import java.time.LocalDate
 @Entity(tableName = "outer_size")
 data class OuterSizeEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val type: String,            // 코트, 자켓 등
+    val type: String,
     val brand: String,
     val sizeLabel: String,
     val shoulder: Float?,

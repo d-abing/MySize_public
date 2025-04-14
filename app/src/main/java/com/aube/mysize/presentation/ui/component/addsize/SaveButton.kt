@@ -1,7 +1,11 @@
 package com.aube.mysize.presentation.ui.component.addsize
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,30 +26,43 @@ fun SaveButton(
     enabled: Boolean = true,
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
     icon: ImageVector? = null,
-    text: String = "추가",
-    onClick: () -> Unit,
+    text: String? = null,
+    isAtBottom: Boolean = false,
+    onClick: () -> Unit
 ) {
     Button(
-        enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if(enabled) Color.Black else MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = if(enabled) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
-        ),
-        elevation = elevation,
         onClick = onClick,
-        modifier = modifier.height(50.dp)
-    ) {
-        if (icon != null) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+        enabled = enabled,
+        modifier = modifier.height(50.dp),
+        elevation = elevation,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (enabled) Color.Black else MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = if (enabled) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        contentPadding = if (isAtBottom) {
+            PaddingValues(vertical = 12.dp)
+        } else{
+            ButtonDefaults.ContentPadding
         }
-        Text(
-            fontSize = MaterialTheme.typography.labelLarge.fontSize,
-            text = text
-        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            if (!text.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = text,
+                    fontSize = MaterialTheme.typography.labelLarge.fontSize
+                )
+            }
+        }
     }
 }

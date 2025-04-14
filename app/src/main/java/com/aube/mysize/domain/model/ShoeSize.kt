@@ -7,10 +7,10 @@ data class ShoeSize(
     override val id: Int = 0,
     override val type: String,
     override val brand: String,
-    override val sizeLabel: String,      // 245mm, US 9 등
-    val footLength: Float?,     // 발 길이
-    val footWidth: Float?,      // 발볼
-    val fit: String?,           // 작음/정사이즈/큼 등
+    override val sizeLabel: String,
+    val footLength: Float?,
+    val footWidth: Float?,
+    val fit: String?,
     val note: String?,
     override val date: LocalDate
 ) : Size, ClothSize

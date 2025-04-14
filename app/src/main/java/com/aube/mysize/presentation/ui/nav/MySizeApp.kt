@@ -11,12 +11,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -27,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aube.mysize.R
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
@@ -80,7 +78,10 @@ fun MySizeApp() {
                                 contentDescription = "흠 아직 미정"
                             )
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background, // 🔥 여기
+                    )
                 )
                 HorizontalDivider(
                     thickness = 1.dp,
@@ -89,32 +90,12 @@ fun MySizeApp() {
             }
         },
         bottomBar = {
-            NavigationBar(
-                modifier = Modifier
-                    .height(110.dp)
-            ) {
-                val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-                items.forEach { screen ->
-                    NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
-                        selected = currentRoute == screen.route,
-                        onClick = {
-                            if (currentRoute != screen.route) {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        }
-                    )
-                }
-            }
+            MyBottomNavigation(navController, items)
         },
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.AddSize.route,
+            startDestination = Screen.MySize.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Closet.route) { ClosetScreen() { navController.navigate("add_cloth") } }

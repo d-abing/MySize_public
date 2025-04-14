@@ -1,15 +1,17 @@
 package com.aube.mysize.presentation.ui.screens.add_size
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +67,15 @@ fun AddSizeScreen(
     var isAllFieldsValid by remember { mutableStateOf(false) }
     var saveRequest: (() -> Unit)? = null
 
+    val listState = rememberLazyListState()
+
+    val isAtBottom by remember {
+        derivedStateOf {
+            val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
+            val totalItems = listState.layoutInfo.totalItemsCount
+            lastVisibleItem != null && lastVisibleItem.index == totalItems - 1
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -71,8 +83,8 @@ fun AddSizeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            contentPadding = PaddingValues(bottom = 60.dp) // 버튼 공간 확보
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            state = listState,
         ) {
             // ───── 선택 chip ─────
             item {
@@ -98,7 +110,7 @@ fun AddSizeScreen(
                                 selectedLabelColor = Color.White,
                                 labelColor = Color.Black ,
                             ),
-                            border = null, // 🔥 border 없애기
+                            border = null,
                             modifier = Modifier
                                 .height(36.dp)
                         )
@@ -222,21 +234,33 @@ fun AddSizeScreen(
             }
         }
 
+        val buttonWidth by animateDpAsState(
+            targetValue =
+                if (isAtBottom) 56.dp
+                else if (!isMandatoryFieldsFilled) 180.dp
+                else if (!isAllFieldsValid) 160.dp
+                else 120.dp,
+            label = "ButtonWidth"
+        )
+
         SaveButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(20.dp),
+                .padding(16.dp)
+                .width(buttonWidth), // ✨ 버튼 width 애니메이션
             enabled = isAllFieldsValid,
-            elevation = ButtonDefaults.buttonElevation( // ✨ 그림자 추가
+            elevation = ButtonDefaults.buttonElevation(
                 defaultElevation = 6.dp,
                 pressedElevation = 8.dp,
                 disabledElevation = 0.dp
             ),
             icon = Icons.Filled.Add,
-            text =
-            if (!isMandatoryFieldsFilled) "필수 입력 미완료"
-            else if (!isAllFieldsValid) "입력값 확인"
-            else "추가",
+            text = if (isAtBottom) null else when {
+                !isMandatoryFieldsFilled -> "필수 입력 미완료"
+                !isAllFieldsValid -> "입력값 확인"
+                else -> "추가"
+            },
+            isAtBottom = isAtBottom,
             onClick = {
                 saveRequest?.invoke()
             }

@@ -34,12 +34,14 @@ fun SizeOcrGuideDialog(onDismiss: () -> Unit) {
                 text = "사이즈 표 자르기 가이드",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
+                    .fillMaxWidth()
             )
             Text(
                 text = "표 영역만 자르면 사이즈 추출 정확도가 올라갑니다!😎\n" +
                         "제목이나 단위, 부가설명 등은 제외해주세요. 🙅‍♂️🙅",
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
+                    .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .padding(bottom = 12.dp)
             )

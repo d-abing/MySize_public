@@ -8,9 +8,9 @@ import java.time.LocalDate
 @Entity(tableName = "top_size")
 data class TopSizeEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val type: String,             // 티셔츠, 셔츠 등
+    val type: String,
     val brand: String,
-    val sizeLabel: String,        // 예: M, L, 95
+    val sizeLabel: String,
     val shoulder: Float?,
     val chest: Float?,
     val sleeve: Float?,

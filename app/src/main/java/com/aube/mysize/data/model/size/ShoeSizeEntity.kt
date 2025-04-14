@@ -10,7 +10,7 @@ data class ShoeSizeEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val type: String,
     val brand: String,
-    val sizeLabel: String,       // 245mm, US9 등
+    val sizeLabel: String,
     val footLength: Float?,
     val footWidth: Float?,
     val fit: String?,

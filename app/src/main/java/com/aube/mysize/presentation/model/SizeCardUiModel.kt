@@ -1,9 +1,11 @@
 package com.aube.mysize.presentation.model
 
+import androidx.compose.ui.graphics.vector.ImageVector
+
 data class BodySizeCardUiModel(
     val title: String,
-    val imageResId: Int,
-    val description: List<String>
+    val imageVector: ImageVector,
+    val description: Map<String, String?>
 )
 
 data class SizeContentUiModel(

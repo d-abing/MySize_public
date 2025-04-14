@@ -27,6 +27,7 @@ fun SubListBlock(
     ) {
         Text(
             text = typeName,
+            color = MaterialTheme.colorScheme.onTertiary,
             style = MaterialTheme.typography.bodyMedium,
         )
 

@@ -8,7 +8,7 @@ import java.time.LocalDate
 @Entity(tableName = "bottom_size")
 data class BottomSizeEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val type: String,            // 청바지, 슬랙스 등
+    val type: String,
     val brand: String,
     val sizeLabel: String,
     val waist: Float?,

@@ -24,6 +24,7 @@ fun LabeledTextField(
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
+    unfocusedBorderColor: Color = MaterialTheme.colorScheme.outlineVariant,
     isError: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Number,
     imeAction: ImeAction = ImeAction.Next,
@@ -37,12 +38,12 @@ fun LabeledTextField(
             onValueChange(input.uppercase())
         },
         isError = isError,
-        textStyle = MaterialTheme.typography.labelLarge,
+        textStyle = MaterialTheme.typography.labelMedium,
         label = {
             Text(
                 text = label,
-                fontSize = MaterialTheme.typography.labelLarge.fontSize,
-                color = if (isError) Color.Black else LocalContentColor.current // ✨ isError일 때만 검정
+                fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                color = if (isError) Color.Black else LocalContentColor.current
             )
         },
         modifier = modifier.fillMaxWidth(),
@@ -67,7 +68,7 @@ fun LabeledTextField(
         shape = RoundedCornerShape(8.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = if (isError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary, // 수정
-            unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant, // 수정
+            unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.tertiary else unfocusedBorderColor, // 수정
             errorBorderColor = MaterialTheme.colorScheme.tertiary,
             cursorColor = MaterialTheme.colorScheme.primary,
             focusedLabelColor = Color.Black,

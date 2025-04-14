@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 fun BorderColumn(
     title: String,
     borderColor: Color = MaterialTheme.colorScheme.outlineVariant,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
@@ -34,7 +34,7 @@ fun BorderColumn(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelMedium,
             color = Color.Black
         )
         Spacer(Modifier.height(16.dp))

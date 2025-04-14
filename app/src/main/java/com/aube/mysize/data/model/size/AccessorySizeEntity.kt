@@ -8,11 +8,11 @@ import java.time.LocalDate
 @Entity(tableName = "accessory_size")
 data class AccessorySizeEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val type: String,            // 반지, 팔찌 등
+    val type: String,
     val brand: String,
-    val sizeLabel: String,       // 10호, M 등
-    val bodyPart: String?,        // 손가락, 손목 등
-    val fit: String?,           // 작음/정사이즈/큼 등
+    val sizeLabel: String,
+    val bodyPart: String?,
+    val fit: String?,
     val note: String?,
     val date: LocalDate
 )

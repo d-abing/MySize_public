@@ -11,8 +11,8 @@ fun StatusBar() {
 
     SideEffect {
         systemUiController.setStatusBarColor(
-            color = Color.White,     // 상태바 배경
-            darkIcons = true         // 상태바 아이콘을 어두운 색으로
+            color = Color.White,
+            darkIcons = true
         )
     }
 }

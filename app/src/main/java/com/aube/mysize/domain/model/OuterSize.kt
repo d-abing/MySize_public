@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class OuterSize(
     override val id: Int = 0,
-    override val type: String,       // 코트, 자켓 등
+    override val type: String,
     override val brand: String,
     override val sizeLabel: String,
     val shoulder: Float?,

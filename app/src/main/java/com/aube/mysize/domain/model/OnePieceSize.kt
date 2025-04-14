@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class OnePieceSize(
     override val id: Int = 0,
-    override val type: String,          // 원피스, 점프수트 등
+    override val type: String,
     override val brand: String,
     override val sizeLabel: String,
     val shoulder: Float?,
@@ -13,9 +13,9 @@ data class OnePieceSize(
     val waist: Float?,
     val hip: Float?,
     val sleeve: Float?,
-    val rise: Float?,          // 밑위
-    val thigh: Float?,         // 허벅지 단면
-    val hem: Float?,           // 밑단 단면
+    val rise: Float?,
+    val thigh: Float?,
+    val hem: Float?,
     val length: Float?,
     val fit: String?,
     val note: String?,

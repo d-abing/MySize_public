@@ -22,7 +22,7 @@ object SettingsDataStore {
     fun getLanguage(context: Context): Flow<String> {
         return context.dataStore.data
             .map { preferences ->
-                preferences[LANGUAGE_KEY] ?: "ko" // 기본값은 한국어
+                preferences[LANGUAGE_KEY] ?: "ko"
             }
     }
 }

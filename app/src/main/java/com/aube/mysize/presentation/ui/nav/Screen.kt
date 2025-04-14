@@ -16,5 +16,4 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object MySize : Screen("my_size", "마이 사이즈", Icons.AutoMirrored.Filled.Assignment)
     object AddSize : Screen("add_size", "추가", Icons.Filled.Straighten)
     object Settings : Screen("settings", "설정", Icons.Default.Settings)
-    object LanguageSelection : Screen("language_selection", "언어 선택", Icons.Default.Settings)
 }

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -106,26 +108,22 @@ fun MySizeScreen(
         state = listState
     ) {
         // 1. 바디 사이즈 카드
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                bodySizeCard?.let { card ->
-                    Text(
-                        text = "바디 사이즈",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+        bodySizeCard?.let { card ->
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, start = 16.dp, end = 6.dp, bottom = 8.dp)
+                ) {
                     BodySizeCard(
                         title = card.title,
-                        imageRes = card.imageResId,
+                        imageVector = card.imageVector,
                         description = card.description
                     )
                 }
             }
         }
+
 
         // 2. TabRow (Sticky)
         stickyHeader {
@@ -138,6 +136,10 @@ fun MySizeScreen(
                     onTabSelected = { selectedTab = it }
                 )
             }
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+            )
         }
 
         // 3. 종류별 보기 or 브랜드별 보기
@@ -156,9 +158,14 @@ fun MySizeScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Card {
+                        Card (
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary.copy(0.2f)
+                            )
+                        ) {
                             Column(
-                                modifier = Modifier.padding(16.dp),
+                                modifier = Modifier
+                                    .padding(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 subTypeMap.forEach { (typeName, contents) ->
@@ -185,7 +192,11 @@ fun MySizeScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Card {
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary.copy(0.2f)
+                            )
+                        ) {
                             Column(
                                 modifier = Modifier.padding(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -274,7 +285,6 @@ fun buildBrandGroupedSizeData(
 ): Map<String, Map<String, List<SizeContentUiModel>>> {
     val allSizes: List<ClothSize> = topSizes + bottomSizes + outerSizes + shoeSizes + accessorySizes
 
-    // 1. 브랜드별 그룹핑
     val brandGrouped = allSizes.groupBy { it.brand }
 
     return brandGrouped.mapValues { (_, sizesInBrand) ->

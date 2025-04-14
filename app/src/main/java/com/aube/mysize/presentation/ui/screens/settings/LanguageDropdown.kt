@@ -1,5 +1,6 @@
 package com.aube.mysize.presentation.ui.screens.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -7,6 +8,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,7 +25,7 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageDropdown(
-    selectedLocaleCode: String, // 추가!! (현재 저장된 언어 코드)
+    selectedLocaleCode: String,
     onLanguageSelected: (String) -> Unit
 ) {
     val languages = listOf(
@@ -47,7 +49,6 @@ fun LanguageDropdown(
 
     var expanded by remember { mutableStateOf(false) }
 
-    // 여기!! selectedLanguage를 저장된 언어코드로 초기 설정
     var selectedLanguage by remember(selectedLocaleCode) {
         mutableStateOf(
             languages.find { it.second == selectedLocaleCode } ?: languages.first()
@@ -65,12 +66,18 @@ fun LanguageDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .menuAnchor(MenuAnchorType.PrimaryNotEditable)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+            )
         )
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.secondary)
         ) {
             languages.forEach { (displayName, localeCode, flag) ->
                 DropdownMenuItem(

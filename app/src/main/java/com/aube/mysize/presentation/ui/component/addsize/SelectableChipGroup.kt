@@ -39,14 +39,14 @@ fun SelectableChipGroup(
                 label = {
                     Text(
                         text = option,
-                        fontSize = MaterialTheme.typography.labelLarge.fontSize
+                        fontSize = MaterialTheme.typography.labelMedium.fontSize
                     )
                 },
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = Color(0xFFE0E0E0),             // 선택 시 회색 배경
-                    selectedLabelColor = Color.DarkGray,               // 선택 시 텍스트
-                    containerColor = Color.White,              // 비선택 배경 (밝은 회색)
-                    labelColor = Color.DarkGray                      // 비선택 텍스트
+                    selectedContainerColor = Color(0xFFE0E0E0),
+                    selectedLabelColor = Color.DarkGray,
+                    containerColor = Color.White,
+                    labelColor = Color.DarkGray
                 ),
                 modifier = Modifier.height(28.dp),
                 trailingIcon = {
