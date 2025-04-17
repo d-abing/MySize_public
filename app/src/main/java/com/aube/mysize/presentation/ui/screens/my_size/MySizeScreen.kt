@@ -144,6 +144,7 @@ fun MySizeScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 MySizeTabRow(
+                    listOf("종류별 보기", "브랜드별 보기"),
                     selectedTabIndex = selectedTab,
                     onTabSelected = { selectedTab = it }
                 )

@@ -48,9 +48,9 @@ fun MySizeApp() {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val items = listOf(
-        Screen.Closet,
         Screen.Recommend,
         Screen.MySize,
+        Screen.Closet,
         Screen.AddSize,
         Screen.Settings
     )
@@ -96,13 +96,16 @@ fun MySizeApp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.MySize.route,
+            startDestination = Screen.Closet.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Closet.route) { ClosetScreen() { navController.navigate("add_cloth") } }
-            composable(Screen.AddCloth.route) { AddClothScreen() }
             composable(Screen.Recommend.route) { RecommendSizeScreen() }
             composable(Screen.MySize.route) { MySizeScreen{ navController.navigate("full_detail") } }
+            composable(Screen.Closet.route) { ClosetScreen(
+                onClothClick = {},
+                onNavigateToAddCloth = { navController.navigate("add_cloth") }
+            )}
+            composable(Screen.AddCloth.route) { AddClothScreen(snackbarHostState) }
             composable(Screen.FullDetail.route) { FullDetailScreen() }
             composable(Screen.AddSize.route) { AddSizeScreen(snackbarHostState) { navController.navigate("my_size")} }
             composable(Screen.Settings.route) {

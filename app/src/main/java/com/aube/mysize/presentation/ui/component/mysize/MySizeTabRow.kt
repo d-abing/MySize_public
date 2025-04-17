@@ -21,10 +21,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MySizeTabRow(
+    tabs: List<String>,
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit
 ) {
-    val tabs = listOf("종류별 보기", "브랜드별 보기")
 
     TabRow(
         selectedTabIndex = selectedTabIndex,

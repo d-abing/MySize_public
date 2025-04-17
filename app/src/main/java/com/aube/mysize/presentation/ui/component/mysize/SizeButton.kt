@@ -27,7 +27,7 @@ fun SizeButton(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
         modifier = modifier
-            .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp)),
+            .border(1.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(16.dp)),
         contentPadding = PaddingValues(4.dp)
     ) {
         Column(
