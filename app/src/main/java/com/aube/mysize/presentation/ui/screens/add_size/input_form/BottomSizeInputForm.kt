@@ -207,7 +207,7 @@ fun BottomSizeInputForm(
         )
 
         LabeledTextField(waist, { waist = it }, "허리 단면 (cm)", isError = waistError)
-        LabeledTextField(rise, { rise = it }, "밑위 (cm)", isError = riseError)
+        LabeledTextField(rise, { rise = it }, "밑위 길이 (cm)", isError = riseError)
         LabeledTextField(hip, { hip = it }, "엉덩이 단면 (cm)", isError = hipError)
         LabeledTextField(thigh, { thigh = it }, "허벅지 단면 (cm)", isError = thighError)
         LabeledTextField(hem, { hem = it }, "밑단 단면 (cm)", isError = hemError)
@@ -244,8 +244,8 @@ fun BottomSizeInputForm(
             thigh = thighFloat,
             hem = hemFloat,
             length = lengthFloat,
-            fit = fit,
-            note = note,
+            fit = fit.ifBlank { null },
+            note = note.ifBlank { null },
             date = LocalDate.now()
         )
 

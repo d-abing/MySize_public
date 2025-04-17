@@ -195,8 +195,8 @@ fun ShoeSizeInputForm(
             sizeLabel = sizeLabel,
             footLength = footLengthFloat,
             footWidth = widthFloat,
-            fit = fit,
-            note = note,
+            fit = fit.ifBlank { null },
+            note = note.ifBlank { null },
             date = LocalDate.now()
         )
 

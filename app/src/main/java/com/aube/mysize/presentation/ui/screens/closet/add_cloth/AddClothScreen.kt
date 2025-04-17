@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.closet.AddCloth
+package com.aube.mysize.presentation.ui.screens.closet.add_cloth
 
 import androidx.compose.runtime.Composable
 

@@ -3,11 +3,13 @@ package com.aube.mysize.presentation.ui.screens.add_size
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -234,20 +236,17 @@ fun AddSizeScreen(
             }
         }
 
-        val buttonWidth by animateDpAsState(
-            targetValue =
-                if (isAtBottom) 56.dp
-                else if (!isMandatoryFieldsFilled) 180.dp
-                else if (!isAllFieldsValid) 160.dp
-                else 120.dp,
-            label = "ButtonWidth"
+        val animatedPadding by animateDpAsState(
+            targetValue = if (isAtBottom) 12.dp else 20.dp,
+            label = "ButtonHorizontalPadding"
         )
 
         SaveButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
-                .width(buttonWidth), // ✨ 버튼 width 애니메이션
+                .wrapContentWidth()
+                .defaultMinSize(minWidth = 56.dp),
             enabled = isAllFieldsValid,
             elevation = ButtonDefaults.buttonElevation(
                 defaultElevation = 6.dp,
@@ -260,7 +259,7 @@ fun AddSizeScreen(
                 !isAllFieldsValid -> "입력값 확인"
                 else -> "추가"
             },
-            isAtBottom = isAtBottom,
+            contentPadding = PaddingValues(horizontal = animatedPadding, vertical = 14.dp),
             onClick = {
                 saveRequest?.invoke()
             }

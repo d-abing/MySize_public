@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -48,7 +48,8 @@ fun SelectableChipGroup(
                     containerColor = Color.White,
                     labelColor = Color.DarkGray
                 ),
-                modifier = Modifier.height(28.dp),
+                modifier = Modifier
+                    .heightIn(min = 28.dp, max = 36.dp),
                 trailingIcon = {
                     if (onDelete != null && option != "기타 브랜드") {
                         Spacer(Modifier.width(20.dp))

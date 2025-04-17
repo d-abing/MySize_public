@@ -3,9 +3,10 @@ package com.aube.mysize.presentation.ui.component.ocr
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.Button
@@ -25,7 +26,8 @@ fun SizeOcrButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp),
+            .wrapContentHeight()
+            .defaultMinSize(minHeight = 80.dp),
         shape = MaterialTheme.shapes.small,
         onClick = onClick
     ) {

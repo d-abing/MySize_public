@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MyCustomTabRow(
+fun MySizeTabRow(
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit
 ) {
@@ -51,7 +51,7 @@ fun MyCustomTabRow(
                 ) {
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
                     ) {
                         if (selected) {
                             Box(

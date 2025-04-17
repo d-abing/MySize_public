@@ -130,9 +130,9 @@ fun AccessorySizeInputForm(
             type = type,
             brand = brand,
             sizeLabel = sizeLabel,
-            bodyPart = bodyPart,
-            fit = fit,
-            note = note,
+            bodyPart = bodyPart.ifBlank { null },
+            fit = fit.ifBlank { null },
+            note = note.ifBlank { null },
             date = LocalDate.now()
         )
 

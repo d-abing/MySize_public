@@ -30,9 +30,10 @@ import androidx.navigation.compose.rememberNavController
 import com.aube.mysize.R
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.ui.screens.add_size.AddSizeScreen
-import com.aube.mysize.presentation.ui.screens.closet.AddCloth.AddClothScreen
 import com.aube.mysize.presentation.ui.screens.closet.ClosetScreen
+import com.aube.mysize.presentation.ui.screens.closet.add_cloth.AddClothScreen
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeScreen
+import com.aube.mysize.presentation.ui.screens.my_size.full_detail.FullDetailScreen
 import com.aube.mysize.presentation.ui.screens.recommend_size.RecommendSizeScreen
 import com.aube.mysize.presentation.ui.screens.settings.SettingsScreen
 import com.aube.mysize.utils.setAppLocale
@@ -80,17 +81,17 @@ fun MySizeApp() {
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background, // 🔥 여기
+                        containerColor = MaterialTheme.colorScheme.background,
                     )
                 )
                 HorizontalDivider(
                     thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant // 혹은 Color.LightGray
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
             }
         },
         bottomBar = {
-            MyBottomNavigation(navController, items)
+            MySizeBottomBar(navController, items)
         },
     ) { innerPadding ->
         NavHost(
@@ -101,7 +102,8 @@ fun MySizeApp() {
             composable(Screen.Closet.route) { ClosetScreen() { navController.navigate("add_cloth") } }
             composable(Screen.AddCloth.route) { AddClothScreen() }
             composable(Screen.Recommend.route) { RecommendSizeScreen() }
-            composable(Screen.MySize.route) { MySizeScreen() }
+            composable(Screen.MySize.route) { MySizeScreen{ navController.navigate("full_detail") } }
+            composable(Screen.FullDetail.route) { FullDetailScreen() }
             composable(Screen.AddSize.route) { AddSizeScreen(snackbarHostState) { navController.navigate("my_size")} }
             composable(Screen.Settings.route) {
                 SettingsScreen { selectedLanguage ->

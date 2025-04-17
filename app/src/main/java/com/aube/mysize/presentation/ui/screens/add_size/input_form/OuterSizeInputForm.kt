@@ -219,8 +219,8 @@ fun OuterSizeInputForm(
             chest = chestFloat,
             sleeve = sleeveFloat,
             length = lengthFloat,
-            fit = fit,
-            note = note,
+            fit = fit.ifBlank { null },
+            note = note.ifBlank { null },
             date = LocalDate.now()
         )
 

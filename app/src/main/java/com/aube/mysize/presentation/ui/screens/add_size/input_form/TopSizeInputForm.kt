@@ -218,8 +218,8 @@ fun TopSizeInputForm(
             chest = chestFloat,
             sleeve = sleeveFloat,
             length = lengthFloat,
-            fit = fit,
-            note = note,
+            fit = fit.ifBlank { null },
+            note = note.ifEmpty { null },
             date = LocalDate.now()
         )
 

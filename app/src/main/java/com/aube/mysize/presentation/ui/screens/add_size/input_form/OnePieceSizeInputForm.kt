@@ -273,8 +273,8 @@ fun OnePieceSizeInputForm(
             thigh = thighFloat,
             hem = hemFloat,
             length = lengthFloat,
-            fit = fit,
-            note = note,
+            fit = fit.ifBlank { null },
+            note = note.ifBlank { null },
             date = LocalDate.now()
         )
 

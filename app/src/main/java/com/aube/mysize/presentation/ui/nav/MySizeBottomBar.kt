@@ -24,7 +24,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun MyBottomNavigation(
+fun MySizeBottomBar(
     navController: NavHostController,
     items: List<Screen>,
 ) {

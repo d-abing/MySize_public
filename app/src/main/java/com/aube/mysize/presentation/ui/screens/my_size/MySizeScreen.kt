@@ -28,19 +28,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.AccessorySize
 import com.aube.mysize.domain.model.BottomSize
 import com.aube.mysize.domain.model.ClothSize
+import com.aube.mysize.domain.model.OnePieceSize
 import com.aube.mysize.domain.model.OuterSize
 import com.aube.mysize.domain.model.ShoeSize
-import com.aube.mysize.domain.model.Size
 import com.aube.mysize.domain.model.TopSize
 import com.aube.mysize.domain.model.toUi
 import com.aube.mysize.presentation.model.BodySizeCardUiModel
 import com.aube.mysize.presentation.model.SizeContentUiModel
 import com.aube.mysize.presentation.ui.component.mysize.BodySizeCard
-import com.aube.mysize.presentation.ui.component.mysize.MyCustomTabRow
+import com.aube.mysize.presentation.ui.component.mysize.MySizeTabRow
 import com.aube.mysize.presentation.ui.component.mysize.SubListBlock
+import com.aube.mysize.presentation.ui.component.mysize.bottomsheet.SizePreviewBottomSheet
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
+import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
@@ -51,13 +53,16 @@ fun MySizeScreen(
     topViewModel: TopSizeViewModel = hiltViewModel(),
     bottomViewModel: BottomSizeViewModel = hiltViewModel(),
     outerViewModel: OuterSizeViewModel = hiltViewModel(),
+    onePieceViewModel: OnePieceSizeViewModel = hiltViewModel(),
     shoeViewModel: ShoeSizeViewModel = hiltViewModel(),
     accessoryViewModel: AccessorySizeViewModel = hiltViewModel(),
+    onNavigateToFullDetail: () -> Unit
 ) {
     val bodySizes by bodyViewModel.sizes.collectAsState()
     val topSizes by topViewModel.sizes.collectAsState()
     val bottomSizes by bottomViewModel.sizes.collectAsState()
     val outerSizes by outerViewModel.sizes.collectAsState()
+    val onePieceSizes by onePieceViewModel.sizes.collectAsState()
     val shoeSizes by shoeViewModel.sizes.collectAsState()
     val accessorySizes by accessoryViewModel.sizes.collectAsState()
 
@@ -68,11 +73,10 @@ fun MySizeScreen(
         topSizes = topSizes,
         bottomSizes = bottomSizes,
         outerSizes = outerSizes,
+        onePieceSizes = onePieceSizes,
         shoeSizes = shoeSizes,
         accessorySizes = accessorySizes,
-        onSizeClick = { size ->
-//            onNavigateToSizeDetail(size) // 상세 화면 이동 처리
-        }
+        onNavigateToFullDetail =  onNavigateToFullDetail
     )
 }
 
@@ -83,23 +87,31 @@ fun MySizeScreen(
     topSizes: List<TopSize>,
     bottomSizes: List<BottomSize>,
     outerSizes: List<OuterSize>,
+    onePieceSizes: List<OnePieceSize>,
     shoeSizes: List<ShoeSize>,
     accessorySizes: List<AccessorySize>,
-    onSizeClick: (Size) -> Unit
+    onNavigateToFullDetail: () -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(0) }
 
     val listState = rememberLazyListState()
 
-    val typeGroupedData = remember(topSizes, bottomSizes, outerSizes, shoeSizes, accessorySizes) {
+    var selectedSize by remember { mutableStateOf<ClothSize?>(null) }
+
+    val typeGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
         buildTypeGroupedSizeData(
-            topSizes, bottomSizes, outerSizes, shoeSizes, accessorySizes, onSizeClick
-        )
+            topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) { selectedSize = it }
     }
 
-    val brandGroupedData = remember(topSizes, bottomSizes, outerSizes, shoeSizes, accessorySizes) {
+    val brandGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
         buildBrandGroupedSizeData(
-            topSizes, bottomSizes, outerSizes, shoeSizes, accessorySizes, onSizeClick
+            topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) { selectedSize = it }
+    }
+
+    if (selectedSize != null) {
+        SizePreviewBottomSheet(
+            size = selectedSize!!,
+            onDismiss = { selectedSize = null },
         )
     }
 
@@ -113,7 +125,7 @@ fun MySizeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 6.dp, bottom = 8.dp)
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 4.dp)
                 ) {
                     BodySizeCard(
                         title = card.title,
@@ -131,15 +143,12 @@ fun MySizeScreen(
                 tonalElevation = 1.dp,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                MyCustomTabRow(
+                MySizeTabRow(
                     selectedTabIndex = selectedTab,
                     onTabSelected = { selectedTab = it }
                 )
             }
-            HorizontalDivider(
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-            )
+            HorizontalDivider(thickness = 0.5.dp)
         }
 
         // 3. 종류별 보기 or 브랜드별 보기
@@ -218,9 +227,10 @@ fun buildTypeGroupedSizeData(
     topSizes: List<TopSize>,
     bottomSizes: List<BottomSize>,
     outerSizes: List<OuterSize>,
+    onePieceSizes: List<OnePieceSize>,
     shoeSizes: List<ShoeSize>,
     accessorySizes: List<AccessorySize>,
-    onSizeClick: (Size) -> Unit
+    onSizeClick: (ClothSize) -> Unit
 ): Map<String, Map<String, List<SizeContentUiModel>>> {
     val groupedData = mutableMapOf<String, Map<String, List<SizeContentUiModel>>>()
 
@@ -233,7 +243,7 @@ fun buildTypeGroupedSizeData(
         val typeGrouped = sizes
             .groupBy { it.type }
             .mapValues { (_, groupedByType) ->
-                groupedByType
+                val brandGrouped = groupedByType
                     .groupBy { it.brand }
                     .map { (_, brandSizes) ->
                         val sizeLabelCountMap = brandSizes
@@ -256,6 +266,14 @@ fun buildTypeGroupedSizeData(
                             onClick = { onSizeClick(selectedSize) }
                         )
                     }
+                    .sortedWith(
+                        compareBy(
+                            { it.title.contains("기타") },
+                            { it.title }
+                        )
+                    )
+
+                brandGrouped
             }
 
         val (normal, etc) = typeGrouped.entries.partition { !it.key.contains("기타") }
@@ -268,6 +286,7 @@ fun buildTypeGroupedSizeData(
     processSizes(topSizes, "상의")
     processSizes(bottomSizes, "하의")
     processSizes(outerSizes, "아우터")
+    processSizes(onePieceSizes, "일체형")
     processSizes(shoeSizes, "신발")
     processSizes(accessorySizes, "악세서리")
 
@@ -279,41 +298,54 @@ fun buildBrandGroupedSizeData(
     topSizes: List<TopSize>,
     bottomSizes: List<BottomSize>,
     outerSizes: List<OuterSize>,
+    onePieceSizes: List<OnePieceSize>,
     shoeSizes: List<ShoeSize>,
     accessorySizes: List<AccessorySize>,
-    onSizeClick: (Size) -> Unit
+    onSizeClick: (ClothSize) -> Unit
 ): Map<String, Map<String, List<SizeContentUiModel>>> {
-    val allSizes: List<ClothSize> = topSizes + bottomSizes + outerSizes + shoeSizes + accessorySizes
+    val allSizes: List<ClothSize> = topSizes + bottomSizes + outerSizes + onePieceSizes + shoeSizes + accessorySizes
 
     val brandGrouped = allSizes.groupBy { it.brand }
 
-    return brandGrouped.mapValues { (_, sizesInBrand) ->
-        sizesInBrand
+    val sortedBrandGrouped = brandGrouped
+        .entries
+        .sortedWith(compareBy({ it.key.contains("기타") }, { it.key }))
+
+    return sortedBrandGrouped.associate { (brand, sizesInBrand) ->
+        val categoryGrouped = sizesInBrand
             .groupBy { size ->
                 when (size) {
                     is TopSize -> "상의"
                     is BottomSize -> "하의"
                     is OuterSize -> "아우터"
+                    is OnePieceSize -> "일체형"
                     is ShoeSize -> "신발"
                     is AccessorySize -> "악세서리"
                     else -> "기타"
                 }
             }
             .mapValues { (_, groupedByCategory) ->
-                groupedByCategory.map { size ->
-                    SizeContentUiModel(
-                        title = when (size) {
-                            is TopSize -> size.type
-                            is BottomSize -> size.type
-                            is OuterSize -> size.type
-                            is ShoeSize -> size.type
-                            is AccessorySize -> size.type
-                            else -> ""
-                        },
-                        sizeLabel = size.sizeLabel,
-                        onClick = { onSizeClick(size) }
-                    )
-                }
+                val typeGrouped = groupedByCategory
+                    .groupBy { it.type }
+                    .entries
+                    .sortedWith(compareBy({ it.key.contains("기타") }, { it.key }))
+                    .map { (_, typeGroup) ->
+                        val sizeLabelCountMap = typeGroup.groupingBy { it.sizeLabel }.eachCount()
+                        val maxCount = sizeLabelCountMap.maxByOrNull { it.value }?.value ?: 0
+                        val candidates = sizeLabelCountMap.filter { it.value == maxCount }.keys
+                        val selected = typeGroup.filter { it.sizeLabel in candidates }
+                            .maxByOrNull { it.date }!!
+
+                        SizeContentUiModel(
+                            title = selected.type,
+                            sizeLabel = selected.sizeLabel,
+                            onClick = { onSizeClick(selected) }
+                        )
+                    }
+
+                typeGrouped
             }
+
+        brand to categoryGrouped
     }
 }
