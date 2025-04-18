@@ -7,7 +7,7 @@ interface Size {
     val date: LocalDate
 }
 
-interface ClothSize : Size {
+interface ClothesSize : Size {
     val type: String
     val brand: String
     val sizeLabel: String

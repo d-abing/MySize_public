@@ -13,7 +13,7 @@ data class ShoeSize(
     val fit: String?,
     val note: String?,
     override val date: LocalDate
-) : Size, ClothSize
+) : Size, ClothesSize
 
 fun ShoeSize.toEntity(): ShoeSizeEntity {
     return ShoeSizeEntity(

@@ -20,7 +20,7 @@ data class OnePieceSize(
     val fit: String?,
     val note: String?,
     override val date: LocalDate
-): Size, ClothSize
+): Size, ClothesSize
 
 fun OnePieceSize.toEntity(): OnePieceSizeEntity {
     return OnePieceSizeEntity(

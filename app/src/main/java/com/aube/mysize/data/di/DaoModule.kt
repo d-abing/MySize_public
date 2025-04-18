@@ -5,7 +5,7 @@ import com.aube.mysize.data.database.dao.AccessorySizeDao
 import com.aube.mysize.data.database.dao.BodySizeDao
 import com.aube.mysize.data.database.dao.BottomSizeDao
 import com.aube.mysize.data.database.dao.BrandDao
-import com.aube.mysize.data.database.dao.ClothDao
+import com.aube.mysize.data.database.dao.ClothesDao
 import com.aube.mysize.data.database.dao.OnePieceSizeDao
 import com.aube.mysize.data.database.dao.OuterSizeDao
 import com.aube.mysize.data.database.dao.ShoeSizeDao
@@ -27,5 +27,5 @@ object DaoModule {
     @Provides fun provideShoeSizeDao(db: MySizeDatabase): ShoeSizeDao = db.shoeSizeDao()
     @Provides fun provideAccessorySizeDao(db: MySizeDatabase): AccessorySizeDao = db.accessorySizeDao()
     @Provides fun provideBrandDao(db: MySizeDatabase): BrandDao = db.brandDao()
-    @Provides fun provideClothDao(db: MySizeDatabase): ClothDao = db.clothDao()
+    @Provides fun provideClothesDao(db: MySizeDatabase): ClothesDao = db.clothesDao()
 }

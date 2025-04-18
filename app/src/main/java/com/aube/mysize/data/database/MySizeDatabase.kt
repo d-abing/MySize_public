@@ -7,7 +7,7 @@ import com.aube.mysize.data.database.dao.AccessorySizeDao
 import com.aube.mysize.data.database.dao.BodySizeDao
 import com.aube.mysize.data.database.dao.BottomSizeDao
 import com.aube.mysize.data.database.dao.BrandDao
-import com.aube.mysize.data.database.dao.ClothDao
+import com.aube.mysize.data.database.dao.ClothesDao
 import com.aube.mysize.data.database.dao.OnePieceSizeDao
 import com.aube.mysize.data.database.dao.OuterSizeDao
 import com.aube.mysize.data.database.dao.ShoeSizeDao
@@ -16,13 +16,13 @@ import com.aube.mysize.data.model.size.AccessorySizeEntity
 import com.aube.mysize.data.model.size.BodySizeEntity
 import com.aube.mysize.data.model.size.BottomSizeEntity
 import com.aube.mysize.data.model.size.BrandEntity
-import com.aube.mysize.data.model.size.ClothEntity
+import com.aube.mysize.data.model.size.ClothesEntity
 import com.aube.mysize.data.model.size.OnePieceSizeEntity
 import com.aube.mysize.data.model.size.OuterSizeEntity
 import com.aube.mysize.data.model.size.ShoeSizeEntity
 import com.aube.mysize.data.model.size.TopSizeEntity
 
-const val DATABASE_VERSION = 13
+const val DATABASE_VERSION = 14
 
 @Database(
     entities = [
@@ -34,7 +34,7 @@ const val DATABASE_VERSION = 13
         ShoeSizeEntity::class,
         AccessorySizeEntity::class,
         BrandEntity::class,
-        ClothEntity::class
+        ClothesEntity::class
     ],
     version = DATABASE_VERSION
 )
@@ -49,5 +49,5 @@ abstract class MySizeDatabase : RoomDatabase() {
     abstract fun shoeSizeDao(): ShoeSizeDao
     abstract fun accessorySizeDao(): AccessorySizeDao
     abstract fun brandDao(): BrandDao
-    abstract fun clothDao(): ClothDao
+    abstract fun clothesDao(): ClothesDao
 }

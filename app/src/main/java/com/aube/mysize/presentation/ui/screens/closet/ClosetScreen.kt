@@ -1,13 +1,10 @@
 package com.aube.mysize.presentation.ui.screens.closet
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -17,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,21 +22,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.aube.mysize.domain.model.Cloth
-import com.aube.mysize.presentation.ui.component.closet.ClothCard
+import com.aube.mysize.domain.model.Clothes
+import com.aube.mysize.presentation.ui.component.closet.ClosetViewModeTabs
+import com.aube.mysize.presentation.ui.component.closet.ColorGrid
+import com.aube.mysize.presentation.ui.component.closet.PictureGrid
 import com.aube.mysize.presentation.ui.component.mysize.MySizeTabRow
-import com.aube.mysize.presentation.viewmodel.cloth.ClothViewModel
+import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ClosetScreen(
-    viewModel: ClothViewModel = hiltViewModel(),
-    onClothClick: (Cloth) -> Unit,
-    onNavigateToAddCloth: () -> Unit
+    viewModel: ClothesViewModel = hiltViewModel(),
+    onClothesClick: (Clothes) -> Unit,
+    onNavigateToAddClothes: () -> Unit
 ) {
-    val cloths by viewModel.clothList.collectAsState()
+    val clothes by viewModel.clothesList.collectAsState()
+    val clothesList = clothes.sortedByDescending { it.id }
+    val colors = clothes.map { it.dominantColor }.sortedBy { it }
 
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableIntStateOf(0) }
+    var selectedViewMode by remember { mutableIntStateOf(0) }
+
+    var selectedColor by remember { mutableStateOf<Int?>(null) }
+    var isLongClicking by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -54,22 +59,22 @@ fun ClosetScreen(
             )
             HorizontalDivider(thickness = 0.5.dp)
 
-            // 3. 종류별 보기 or 브랜드별 보기
             if (selectedTab == 0) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
-                ) {}
+                ClosetViewModeTabs(selectedViewMode, onTabSelected = { selectedViewMode = it })
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
-                ) {
-                    items(cloths) { cloth ->
-                        ClothCard(cloth = cloth, onClick = { onClothClick(cloth) })
-                    }
+                if (selectedViewMode == 0) {
+                    PictureGrid(clothesList = clothesList, onClick = onClothesClick)
+                } else if (selectedViewMode == 1) {
+//                    SizeGrid()
+                } else if (selectedViewMode == 2) {
+                    ColorGrid(
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
+                        colorList = colors,
+                        onColorSelected = {
+                            selectedColor = it
+                            isLongClicking = true
+                        },
+                    )
                 }
             } else {
                 Column(
@@ -82,7 +87,7 @@ fun ClosetScreen(
 
 
         FloatingActionButton(
-            onClick = onNavigateToAddCloth,
+            onClick = onNavigateToAddClothes,
             containerColor = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .padding(20.dp)

@@ -1,9 +1,9 @@
 package com.aube.mysize.domain.model
 
-import com.aube.mysize.data.model.size.ClothEntity
+import com.aube.mysize.data.model.size.ClothesEntity
 import java.time.LocalDate
 
-data class Cloth(
+data class Clothes(
     val id: Int = 0,
     val imageBytes: ByteArray,
     val hash: String,
@@ -15,8 +15,8 @@ data class Cloth(
     val isPublic: Boolean = false
 )
 
-fun Cloth.toEntity(): ClothEntity {
-    return ClothEntity(
+fun Clothes.toEntity(): ClothesEntity {
+    return ClothesEntity(
         id = id,
         imageBytes = imageBytes,
         hash = hash,

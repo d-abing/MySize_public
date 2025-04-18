@@ -31,7 +31,7 @@ import com.aube.mysize.R
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.ui.screens.add_size.AddSizeScreen
 import com.aube.mysize.presentation.ui.screens.closet.ClosetScreen
-import com.aube.mysize.presentation.ui.screens.closet.add_cloth.AddClothScreen
+import com.aube.mysize.presentation.ui.screens.closet.add_clothes.AddClothesScreen
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeScreen
 import com.aube.mysize.presentation.ui.screens.my_size.full_detail.FullDetailScreen
 import com.aube.mysize.presentation.ui.screens.recommend_size.RecommendSizeScreen
@@ -100,14 +100,25 @@ fun MySizeApp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Recommend.route) { RecommendSizeScreen() }
-            composable(Screen.MySize.route) { MySizeScreen{ navController.navigate("full_detail") } }
-            composable(Screen.Closet.route) { ClosetScreen(
-                onClothClick = {},
-                onNavigateToAddCloth = { navController.navigate("add_cloth") }
-            )}
-            composable(Screen.AddCloth.route) { AddClothScreen(snackbarHostState) }
+            composable(Screen.MySize.route) {
+                MySizeScreen{ navController.navigate("full_detail") }
+            }
+            composable(Screen.Closet.route) {
+                ClosetScreen(
+                    onClothesClick = {},
+                    onNavigateToAddClothes = { navController.navigate("add_clothes") }
+                )
+            }
+            composable(Screen.AddClothes.route) { AddClothesScreen(snackbarHostState) }
             composable(Screen.FullDetail.route) { FullDetailScreen() }
-            composable(Screen.AddSize.route) { AddSizeScreen(snackbarHostState) { navController.navigate("my_size")} }
+            composable(Screen.AddSize.route) {
+                AddSizeScreen(snackbarHostState) {
+                    navController.navigate("my_size") {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            }
             composable(Screen.Settings.route) {
                 SettingsScreen { selectedLanguage ->
                     setAppLocale(context, selectedLanguage)

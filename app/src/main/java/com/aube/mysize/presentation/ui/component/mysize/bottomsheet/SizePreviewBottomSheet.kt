@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.AccessorySize
 import com.aube.mysize.domain.model.BottomSize
-import com.aube.mysize.domain.model.ClothSize
+import com.aube.mysize.domain.model.ClothesSize
 import com.aube.mysize.domain.model.OnePieceSize
 import com.aube.mysize.domain.model.OuterSize
 import com.aube.mysize.domain.model.ShoeSize
@@ -25,7 +25,7 @@ import com.aube.mysize.domain.model.TopSize
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SizePreviewBottomSheet(
-    size: ClothSize,
+    size: ClothesSize,
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -33,7 +33,8 @@ fun SizePreviewBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = null
+        dragHandle = null,
+        containerColor = MaterialTheme.colorScheme.background,
     ) {
         Column(
             modifier = Modifier

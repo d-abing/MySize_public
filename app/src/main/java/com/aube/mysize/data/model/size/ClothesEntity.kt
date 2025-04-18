@@ -2,11 +2,11 @@ package com.aube.mysize.data.model.size
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.aube.mysize.domain.model.Cloth
+import com.aube.mysize.domain.model.Clothes
 import java.time.LocalDate
 
-@Entity(tableName = "cloth")
-data class ClothEntity(
+@Entity(tableName = "clothes")
+data class ClothesEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val imageBytes: ByteArray,
     val hash: String,
@@ -18,8 +18,8 @@ data class ClothEntity(
     val isPublic: Boolean = false
 )
 
-fun ClothEntity.toDomain(): Cloth {
-    return Cloth(
+fun ClothesEntity.toDomain(): Clothes {
+    return Clothes(
         id = id,
         imageBytes = imageBytes,
         hash = hash,

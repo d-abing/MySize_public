@@ -15,7 +15,7 @@ data class TopSize(
     val fit: String?,
     val note: String?,
     override val date: LocalDate
-) : Size, ClothSize
+) : Size, ClothesSize
 
 fun TopSize.toEntity(): TopSizeEntity {
     return TopSizeEntity(

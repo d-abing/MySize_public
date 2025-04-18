@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.AccessorySize
 import com.aube.mysize.domain.model.BottomSize
-import com.aube.mysize.domain.model.ClothSize
+import com.aube.mysize.domain.model.ClothesSize
 import com.aube.mysize.domain.model.OnePieceSize
 import com.aube.mysize.domain.model.OuterSize
 import com.aube.mysize.domain.model.ShoeSize
@@ -121,7 +121,7 @@ fun MySizeScreen(
 
     val listState = rememberLazyListState()
 
-    var selectedSize by remember { mutableStateOf<ClothSize?>(null) }
+    var selectedSize by remember { mutableStateOf<ClothesSize?>(null) }
 
 
     val typeGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
@@ -144,7 +144,9 @@ fun MySizeScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+        ,
         state = listState
     ) {
         // 1. 바디 사이즈 카드
@@ -229,7 +231,7 @@ fun MySizeScreen(
 
                     HorizontalDivider(
                         modifier = Modifier
-                            .padding(start = 16.dp),
+                            .padding(horizontal = 16.dp),
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                     )
                 }
@@ -251,7 +253,7 @@ fun MySizeScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 16.dp)
+                            .padding(vertical = 4.dp, horizontal = 16.dp)
                     ) {
                         HighlightedTitle(
                             text = categoryLabel,
@@ -263,7 +265,7 @@ fun MySizeScreen(
 
                         Card (
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary.copy(0.2f)
+                                containerColor = MaterialTheme.colorScheme.tertiary.copy(0.1f)
                             )
                         ) {
                             Column(
@@ -304,7 +306,7 @@ fun MySizeScreen(
 
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary.copy(0.2f)
+                                containerColor = MaterialTheme.colorScheme.tertiary.copy(0.1f)
                             )
                         ) {
                             Column(
@@ -333,11 +335,11 @@ fun buildTypeGroupedSizeData(
     onePieceSizes: List<OnePieceSize>,
     shoeSizes: List<ShoeSize>,
     accessorySizes: List<AccessorySize>,
-    onSizeClick: (ClothSize) -> Unit
+    onSizeClick: (ClothesSize) -> Unit
 ): Map<String, Map<String, List<SizeContentUiModel>>> {
     val groupedData = mutableMapOf<String, Map<String, List<SizeContentUiModel>>>()
 
-    fun <T : ClothSize> processSizes(
+    fun <T : ClothesSize> processSizes(
         sizes: List<T>,
         category: String
     ) {
@@ -404,9 +406,9 @@ fun buildBrandGroupedSizeData(
     onePieceSizes: List<OnePieceSize>,
     shoeSizes: List<ShoeSize>,
     accessorySizes: List<AccessorySize>,
-    onSizeClick: (ClothSize) -> Unit
+    onSizeClick: (ClothesSize) -> Unit
 ): Map<String, Map<String, List<SizeContentUiModel>>> {
-    val allSizes: List<ClothSize> = topSizes + bottomSizes + outerSizes + onePieceSizes + shoeSizes + accessorySizes
+    val allSizes: List<ClothesSize> = topSizes + bottomSizes + outerSizes + onePieceSizes + shoeSizes + accessorySizes
 
     val brandGrouped = allSizes.groupBy { it.brand }
 

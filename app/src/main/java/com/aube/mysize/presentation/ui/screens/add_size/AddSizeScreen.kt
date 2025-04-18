@@ -53,7 +53,7 @@ fun AddSizeScreen(
     onePieceViewModel: OnePieceSizeViewModel = hiltViewModel(),
     shoeViewModel: ShoeSizeViewModel = hiltViewModel(),
     accessoryViewModel: AccessorySizeViewModel = hiltViewModel(),
-    onSaved: () -> Unit
+    onNavigateToMySizeScreen: () -> Unit
 ) {
     var selectedCategory by remember { mutableStateOf(SizeCategory.BODY) }
 
@@ -77,7 +77,7 @@ fun AddSizeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 12.dp),
+                .padding(top = 8.dp),
             state = listState,
         ) {
             // ───── 선택 chip ─────
@@ -90,7 +90,7 @@ fun AddSizeScreen(
             }
 
             item {
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             item {
@@ -104,7 +104,6 @@ fun AddSizeScreen(
                         onSaved = { bodySize ->
                             saveRequest = {
                                 bodyViewModel.insert(bodySize)
-                                onSaved()
                             }
                         }
                     )
@@ -118,7 +117,6 @@ fun AddSizeScreen(
                         onSaved = { topSize ->
                             saveRequest = {
                                 topViewModel.insert(topSize)
-                                onSaved()
                             }
                         }
                     )
@@ -133,7 +131,6 @@ fun AddSizeScreen(
                         onSaved = { bottomSize ->
                             saveRequest = {
                                 bottomViewModel.insert(bottomSize)
-                                onSaved()
                             }
                         }
                     )
@@ -148,7 +145,6 @@ fun AddSizeScreen(
                         onSaved = { outerSize ->
                             saveRequest = {
                                 outerViewModel.insert(outerSize)
-                                onSaved()
                             }
                         }
                     )
@@ -163,7 +159,6 @@ fun AddSizeScreen(
                         onSaved = { onePieceSize ->
                             saveRequest = {
                                 onePieceViewModel.insert(onePieceSize)
-                                onSaved()
                             }
                         }
                     )
@@ -178,7 +173,6 @@ fun AddSizeScreen(
                         onSaved = { shoeSize ->
                             saveRequest = {
                                 shoeViewModel.insert(shoeSize)
-                                onSaved()
                             }
                         }
                     )
@@ -192,7 +186,6 @@ fun AddSizeScreen(
                         onSaved = { accessorySize ->
                             saveRequest = {
                                 accessoryViewModel.insert(accessorySize)
-                                onSaved()
                             }
                         }
                     )
@@ -230,6 +223,7 @@ fun AddSizeScreen(
             contentPadding = PaddingValues(horizontal = animatedPadding, vertical = 14.dp),
             onClick = {
                 saveRequest?.invoke()
+                onNavigateToMySizeScreen()
             }
         )
     }

@@ -12,7 +12,7 @@ data class AccessorySize(
     val fit: String?,
     val note: String?,
     override val date: LocalDate
-): Size, ClothSize
+): Size, ClothesSize
 
 fun AccessorySize.toEntity(): AccessorySizeEntity {
     return AccessorySizeEntity(

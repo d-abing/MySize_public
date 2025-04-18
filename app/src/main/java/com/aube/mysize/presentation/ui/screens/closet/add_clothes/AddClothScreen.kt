@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.closet.add_cloth
+package com.aube.mysize.presentation.ui.screens.closet.add_clothes
 
 import android.content.ContentValues
 import android.content.Context
@@ -41,10 +41,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.aube.mysize.domain.model.Cloth
+import com.aube.mysize.domain.model.Clothes
 import com.aube.mysize.presentation.ui.component.MSIconButton
 import com.aube.mysize.presentation.ui.component.closet.ImageBox
-import com.aube.mysize.presentation.viewmodel.cloth.ClothViewModel
+import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.utils.generateMD5Hash
 import com.aube.mysize.utils.getBitmapFromUri
 import com.aube.mysize.utils.toBytes
@@ -55,9 +55,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
-fun AddClothScreen(
+fun AddClothesScreen(
     snackbarHostState: SnackbarHostState,
-    clothViewModel: ClothViewModel = hiltViewModel(),
+    clothesViewModel: ClothesViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -161,8 +161,8 @@ fun AddClothScreen(
                     if (selectedImage != null && selectedColor != null) {
                         coroutineScope.launch {
                             val imageBytes = (context.getBitmapFromUri(selectedImage!!)).toBytes()
-                            clothViewModel.insert(
-                                Cloth(
+                            clothesViewModel.insert(
+                                Clothes(
                                     imageBytes = imageBytes,
                                     dominantColor = selectedColor!!.toArgb(),
                                     hash = generateMD5Hash(imageBytes),
