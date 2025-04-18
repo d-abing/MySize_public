@@ -96,6 +96,7 @@ fun OuterSizeInputForm(
 
     Column(
         modifier = Modifier
+            .padding(horizontal = 16.dp)
             .padding(WindowInsets.ime.asPaddingValues()),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {

@@ -1,6 +1,7 @@
 package com.aube.mysize.presentation.ui.screens.my_size
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,19 +11,30 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.AccessorySize
@@ -35,10 +47,13 @@ import com.aube.mysize.domain.model.TopSize
 import com.aube.mysize.domain.model.toUi
 import com.aube.mysize.presentation.model.BodySizeCardUiModel
 import com.aube.mysize.presentation.model.SizeContentUiModel
-import com.aube.mysize.presentation.ui.component.mysize.BodySizeCard
+import com.aube.mysize.presentation.ui.component.CategoryChip
+import com.aube.mysize.presentation.ui.component.HighlightedTitle
 import com.aube.mysize.presentation.ui.component.mysize.MySizeTabRow
+import com.aube.mysize.presentation.ui.component.mysize.SensitiveBodySizeCard
 import com.aube.mysize.presentation.ui.component.mysize.SubListBlock
 import com.aube.mysize.presentation.ui.component.mysize.bottomsheet.SizePreviewBottomSheet
+import com.aube.mysize.presentation.ui.nav.SizeCategory
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
@@ -46,6 +61,7 @@ import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MySizeScreen(
@@ -94,9 +110,19 @@ fun MySizeScreen(
 ) {
     var selectedTab by remember { mutableStateOf(0) }
 
+    var selectedCategory by remember { mutableStateOf<SizeCategory?>(null) }
+    val allCategories = SizeCategory.entries.filter { it != SizeCategory.BODY }
+    val categorySectionIndices = remember { mutableStateMapOf<SizeCategory, Int>() }
+    val highlightedCategory = remember { mutableStateOf<SizeCategory?>(null) }
+
+    var searchQuery by remember { mutableStateOf("") }
+    val brandSectionIndices = remember { mutableStateMapOf<String, Int>() }
+    val highlightedBrand = remember { mutableStateOf<String?>(null) }
+
     val listState = rememberLazyListState()
 
     var selectedSize by remember { mutableStateOf<ClothSize?>(null) }
+
 
     val typeGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
         buildTypeGroupedSizeData(
@@ -115,6 +141,8 @@ fun MySizeScreen(
         )
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = listState
@@ -122,48 +150,113 @@ fun MySizeScreen(
         // 1. 바디 사이즈 카드
         bodySizeCard?.let { card ->
             item {
-                Column(
+                SensitiveBodySizeCard(
+                    bodySizeCard = card,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 4.dp)
-                ) {
-                    BodySizeCard(
-                        title = card.title,
-                        imageVector = card.imageVector,
-                        description = card.description
-                    )
-                }
+                        .padding(vertical = 4.dp, horizontal = 16.dp)
+                )
             }
         }
 
 
         // 2. TabRow (Sticky)
         stickyHeader {
-            Surface(
-                tonalElevation = 1.dp,
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 MySizeTabRow(
                     listOf("종류별 보기", "브랜드별 보기"),
                     selectedTabIndex = selectedTab,
                     onTabSelected = { selectedTab = it }
                 )
+
+                HorizontalDivider(thickness = 0.5.dp)
+
+                if (selectedTab == 0) {
+                    CategoryChip(
+                        categories = categorySectionIndices.keys.toList(),
+                        selectedCategory = selectedCategory,
+                        onClick = { category ->
+                            selectedCategory = category
+                            highlightedCategory.value = category
+
+                            categorySectionIndices[category]?.let { index ->
+                                coroutineScope.launch {
+                                    listState.animateScrollToItem(index)
+                                }
+                            }
+                        }
+                    )
+                } else {
+                    val keyboardController = LocalSoftwareKeyboardController.current
+
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("브랜드명 검색", style = MaterialTheme.typography.labelLarge) },
+                        textStyle = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        singleLine = true,
+                        trailingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                val matchedBrand = brandSectionIndices.keys.firstOrNull {
+                                    it.contains(searchQuery, ignoreCase = true)
+                                }
+                                matchedBrand?.let {
+                                    highlightedBrand.value = it
+                                    coroutineScope.launch {
+                                        listState.animateScrollToItem(brandSectionIndices[it] ?: 0)
+                                    }
+                                }
+                                keyboardController?.hide()
+                            }
+                        ),
+                        colors = TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
+                        )
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(start = 16.dp),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    )
+                }
             }
-            HorizontalDivider(thickness = 0.5.dp)
         }
 
         // 3. 종류별 보기 or 브랜드별 보기
         if (selectedTab == 0) {
-            typeGroupedData.forEach { (category, subTypeMap) ->
+            var currentIndex = 1
+
+            typeGroupedData.forEach { (categoryLabel, subTypeMap) ->
+
+                val category = allCategories.firstOrNull { it.label == categoryLabel }
+                category?.let {
+                    categorySectionIndices[category] = currentIndex
+                }
+
                 item {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
+                            .padding(vertical = 8.dp, horizontal = 16.dp)
                     ) {
-                        Text(
-                            text = category,
-                            style = MaterialTheme.typography.titleMedium
+                        HighlightedTitle(
+                            text = categoryLabel,
+                            isHighlighted = highlightedCategory.value == category,
+                            onAnimationEnd = { highlightedCategory.value = null }
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -186,18 +279,25 @@ fun MySizeScreen(
                         }
                     }
                 }
+
+                currentIndex++
             }
         } else {
+            var currentIndex = 0
+
             brandGroupedData.forEach { (brand, categoryMap) ->
+                brandSectionIndices[brand] = currentIndex
+
                 item {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
+                            .padding(vertical = 8.dp, horizontal = 16.dp)
                     ) {
-                        Text(
+                        HighlightedTitle (
                             text = brand,
-                            style = MaterialTheme.typography.titleMedium
+                            isHighlighted = highlightedBrand.value == brand,
+                            onAnimationEnd = { highlightedBrand.value = null }
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -218,6 +318,8 @@ fun MySizeScreen(
                         }
                     }
                 }
+
+                currentIndex++
             }
         }
     }

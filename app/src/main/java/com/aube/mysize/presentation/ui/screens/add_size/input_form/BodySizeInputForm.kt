@@ -21,12 +21,10 @@ import com.aube.mysize.domain.model.BodySize
 import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
 import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
 import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
-import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import java.time.LocalDate
 
 @Composable
 fun BodySizeInputForm(
-    viewModel: BodySizeViewModel,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
     onSaved: (BodySize) -> Unit
 ) {
@@ -96,6 +94,7 @@ fun BodySizeInputForm(
 
     Column(
         modifier = Modifier
+            .padding(horizontal = 16.dp)
             .padding(WindowInsets.ime.asPaddingValues()),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
