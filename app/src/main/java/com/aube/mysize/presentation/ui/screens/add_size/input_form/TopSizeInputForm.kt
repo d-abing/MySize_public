@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.aube.mysize.domain.model.TopSize
+import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
 import com.aube.mysize.presentation.ui.component.addsize.BrandChipInput

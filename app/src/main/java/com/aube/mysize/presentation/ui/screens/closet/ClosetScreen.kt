@@ -22,10 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.aube.mysize.domain.model.Clothes
+import com.aube.mysize.domain.model.clothes.Clothes
 import com.aube.mysize.presentation.ui.component.closet.ClosetViewModeTabs
 import com.aube.mysize.presentation.ui.component.closet.ColorGrid
 import com.aube.mysize.presentation.ui.component.closet.PictureGrid
+import com.aube.mysize.presentation.ui.component.closet.TagGrid
 import com.aube.mysize.presentation.ui.component.mysize.MySizeTabRow
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 
@@ -36,7 +37,6 @@ fun ClosetScreen(
     onNavigateToAddClothes: () -> Unit
 ) {
     val clothes by viewModel.clothesList.collectAsState()
-    val clothesList = clothes.sortedByDescending { it.id }
     val colors = clothes.map { it.dominantColor }.sortedBy { it }
 
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -63,7 +63,7 @@ fun ClosetScreen(
                 ClosetViewModeTabs(selectedViewMode, onTabSelected = { selectedViewMode = it })
 
                 if (selectedViewMode == 0) {
-                    PictureGrid(clothesList = clothesList, onClick = onClothesClick)
+                    PictureGrid(clothesList = clothes, onClick = onClothesClick)
                 } else if (selectedViewMode == 1) {
 //                    SizeGrid()
                 } else if (selectedViewMode == 2) {
@@ -74,6 +74,11 @@ fun ClosetScreen(
                             selectedColor = it
                             isLongClicking = true
                         },
+                    )
+                } else if (selectedViewMode == 3) {
+                    TagGrid(
+                        tagList = clothes.flatMap { it.tags }.distinct().sorted(),
+                        onTagSelected = { /* 태그 선택 로직 */ }
                     )
                 }
             } else {

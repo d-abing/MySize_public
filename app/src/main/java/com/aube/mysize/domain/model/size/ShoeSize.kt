@@ -1,4 +1,4 @@
-package com.aube.mysize.domain.model
+package com.aube.mysize.domain.model.size
 
 import com.aube.mysize.data.model.size.ShoeSizeEntity
 import java.time.LocalDate

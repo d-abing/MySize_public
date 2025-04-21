@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.aube.mysize.domain.model.AccessorySize
+import com.aube.mysize.domain.model.size.AccessorySize
 import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
 import com.aube.mysize.presentation.ui.component.addsize.BrandChipInput
 import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField

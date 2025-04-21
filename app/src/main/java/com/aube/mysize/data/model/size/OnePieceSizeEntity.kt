@@ -2,7 +2,7 @@ package com.aube.mysize.data.model.size
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.aube.mysize.domain.model.OnePieceSize
+import com.aube.mysize.domain.model.size.OnePieceSize
 import java.time.LocalDate
 
 @Entity(tableName = "one_piece_size")

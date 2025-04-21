@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import com.aube.mysize.domain.model.Clothes
+import com.aube.mysize.domain.model.clothes.Clothes
 
 @Composable
 fun PictureGrid(

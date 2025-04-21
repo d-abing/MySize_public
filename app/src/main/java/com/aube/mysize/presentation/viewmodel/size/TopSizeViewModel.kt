@@ -2,13 +2,13 @@ package com.aube.mysize.presentation.viewmodel.size
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aube.mysize.domain.model.TopSize
-import com.aube.mysize.domain.usecase.DeleteBrandUseCase
-import com.aube.mysize.domain.usecase.DeleteSizeUseCase
-import com.aube.mysize.domain.usecase.GetBrandListByCategoryUseCase
-import com.aube.mysize.domain.usecase.GetSizeListUseCase
-import com.aube.mysize.domain.usecase.InsertBrandUseCase
-import com.aube.mysize.domain.usecase.InsertSizeUseCase
+import com.aube.mysize.domain.model.size.TopSize
+import com.aube.mysize.domain.usecase.brand.DeleteBrandUseCase
+import com.aube.mysize.domain.usecase.brand.GetBrandListByCategoryUseCase
+import com.aube.mysize.domain.usecase.brand.InsertBrandUseCase
+import com.aube.mysize.domain.usecase.size.DeleteSizeUseCase
+import com.aube.mysize.domain.usecase.size.GetSizeListUseCase
+import com.aube.mysize.domain.usecase.size.InsertSizeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,8 +40,11 @@ class TopSizeViewModel @Inject constructor(
         }
     }
 
-    fun insert(item: TopSize) {
-        viewModelScope.launch { insertSizeUseCase(item) }
+    fun insert(item: TopSize, onInserted: (Int) -> Unit) {
+        viewModelScope.launch {
+            val id = insertSizeUseCase(item).toInt()
+            onInserted(id)
+        }
     }
 
     fun delete(item: TopSize) {

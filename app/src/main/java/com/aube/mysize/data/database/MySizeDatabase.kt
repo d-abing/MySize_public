@@ -12,17 +12,17 @@ import com.aube.mysize.data.database.dao.OnePieceSizeDao
 import com.aube.mysize.data.database.dao.OuterSizeDao
 import com.aube.mysize.data.database.dao.ShoeSizeDao
 import com.aube.mysize.data.database.dao.TopSizeDao
+import com.aube.mysize.data.model.brand.BrandEntity
+import com.aube.mysize.data.model.clothes.ClothesEntity
 import com.aube.mysize.data.model.size.AccessorySizeEntity
 import com.aube.mysize.data.model.size.BodySizeEntity
 import com.aube.mysize.data.model.size.BottomSizeEntity
-import com.aube.mysize.data.model.size.BrandEntity
-import com.aube.mysize.data.model.size.ClothesEntity
 import com.aube.mysize.data.model.size.OnePieceSizeEntity
 import com.aube.mysize.data.model.size.OuterSizeEntity
 import com.aube.mysize.data.model.size.ShoeSizeEntity
 import com.aube.mysize.data.model.size.TopSizeEntity
 
-const val DATABASE_VERSION = 14
+const val DATABASE_VERSION = 18
 
 @Database(
     entities = [
@@ -39,7 +39,7 @@ const val DATABASE_VERSION = 14
     version = DATABASE_VERSION
 )
 
-@TypeConverters(LocalDateConverter::class)
+@TypeConverters(TypeConverter::class)
 abstract class MySizeDatabase : RoomDatabase() {
     abstract fun bodySizeDao(): BodySizeDao
     abstract fun topSizeDao(): TopSizeDao

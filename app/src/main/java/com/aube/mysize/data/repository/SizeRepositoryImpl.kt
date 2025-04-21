@@ -11,8 +11,8 @@ abstract class SizeRepositoryImpl<T : Any, E : Any>(
     private val toDomain: (E) -> T
 ) : SizeRepository<T> {
 
-    override suspend fun insert(item: T) {
-        dao.insert(toEntity(item))
+    override suspend fun insert(item: T): Long {
+        return dao.insert(toEntity(item))
     }
 
     override fun getAll(): Flow<List<T>> {

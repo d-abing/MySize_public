@@ -1,4 +1,4 @@
-package com.aube.mysize.domain.model
+package com.aube.mysize.domain.model.size
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Accessibility

@@ -1,4 +1,4 @@
-package com.aube.mysize.domain.usecase
+package com.aube.mysize.domain.usecase.size
 
 import com.aube.mysize.domain.repository.SizeRepository
 import kotlinx.coroutines.flow.Flow

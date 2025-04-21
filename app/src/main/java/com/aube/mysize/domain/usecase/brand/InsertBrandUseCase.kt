@@ -1,4 +1,4 @@
-package com.aube.mysize.domain.usecase
+package com.aube.mysize.domain.usecase.brand
 
 import com.aube.mysize.domain.repository.BrandRepository
 

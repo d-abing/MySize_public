@@ -2,7 +2,7 @@ package com.aube.mysize.data.model.size
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.aube.mysize.domain.model.BottomSize
+import com.aube.mysize.domain.model.size.BottomSize
 import java.time.LocalDate
 
 @Entity(tableName = "bottom_size")

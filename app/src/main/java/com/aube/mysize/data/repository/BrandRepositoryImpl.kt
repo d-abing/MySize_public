@@ -1,7 +1,7 @@
 package com.aube.mysize.data.repository
 
 import com.aube.mysize.data.database.dao.BrandDao
-import com.aube.mysize.data.model.size.BrandEntity
+import com.aube.mysize.data.model.brand.BrandEntity
 import com.aube.mysize.domain.repository.BrandRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

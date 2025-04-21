@@ -81,8 +81,10 @@ fun SizeOcrSelector(
         uri?.let {
             cropLauncher.launch(
                 CropImageContractOptions(
-                    it,
-                    CropImageOptions().apply { fixAspectRatio = false }
+                    uri = it,
+                    cropImageOptions = CropImageOptions().apply {
+                        fixAspectRatio = false
+                    }
                 )
             )
         }

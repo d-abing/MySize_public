@@ -14,13 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.aube.mysize.domain.model.AccessorySize
-import com.aube.mysize.domain.model.BottomSize
-import com.aube.mysize.domain.model.ClothesSize
-import com.aube.mysize.domain.model.OnePieceSize
-import com.aube.mysize.domain.model.OuterSize
-import com.aube.mysize.domain.model.ShoeSize
-import com.aube.mysize.domain.model.TopSize
+import com.aube.mysize.domain.model.size.AccessorySize
+import com.aube.mysize.domain.model.size.BottomSize
+import com.aube.mysize.domain.model.size.ClothesSize
+import com.aube.mysize.domain.model.size.OnePieceSize
+import com.aube.mysize.domain.model.size.OuterSize
+import com.aube.mysize.domain.model.size.ShoeSize
+import com.aube.mysize.domain.model.size.TopSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface BaseDao<T> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(item: T)
+    suspend fun insert(item: T): Long
 
     fun getAll(): Flow<List<T>>
 

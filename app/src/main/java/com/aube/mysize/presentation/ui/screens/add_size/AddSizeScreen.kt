@@ -1,5 +1,6 @@
 package com.aube.mysize.presentation.ui.screens.add_size
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import com.aube.mysize.presentation.ui.component.CategoryChip
 import com.aube.mysize.presentation.ui.component.addsize.SaveButton
 import com.aube.mysize.presentation.ui.nav.SizeCategory
@@ -45,6 +48,8 @@ import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
 
 @Composable
 fun AddSizeScreen(
+    navController: NavController,
+    backStackEntry: NavBackStackEntry,
     snackbarHostState: SnackbarHostState,
     bodyViewModel: BodySizeViewModel = hiltViewModel(),
     topViewModel: TopSizeViewModel = hiltViewModel(),
@@ -55,13 +60,23 @@ fun AddSizeScreen(
     accessoryViewModel: AccessorySizeViewModel = hiltViewModel(),
     onNavigateToMySizeScreen: () -> Unit
 ) {
-    var selectedCategory by remember { mutableStateOf(SizeCategory.BODY) }
 
     var isMandatoryFieldsFilled by remember { mutableStateOf(false) }
     var isAllFieldsValid by remember { mutableStateOf(false) }
     var saveRequest: (() -> Unit)? = null
 
     val listState = rememberLazyListState()
+
+    BackHandler {
+        navController.previousBackStackEntry
+            ?.savedStateHandle
+            ?.set("new_size_id", -1)
+        navController.popBackStack()
+    }
+
+    val category = backStackEntry.arguments?.getString("category") ?: "BODY"
+    val selectedCategoryEnum = SizeCategory.valueOf(category)
+    var selectedCategory by remember { mutableStateOf(selectedCategoryEnum) }
 
     val isAtBottom by remember {
         derivedStateOf {
@@ -104,6 +119,7 @@ fun AddSizeScreen(
                         onSaved = { bodySize ->
                             saveRequest = {
                                 bodyViewModel.insert(bodySize)
+                                onNavigateToMySizeScreen()
                             }
                         }
                     )
@@ -116,7 +132,16 @@ fun AddSizeScreen(
                         },
                         onSaved = { topSize ->
                             saveRequest = {
-                                topViewModel.insert(topSize)
+                                topViewModel.insert(topSize) { newId ->
+                                    if (category != "BODY") {
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_id", newId)
+                                        navController.popBackStack()
+                                    } else {
+                                        onNavigateToMySizeScreen()
+                                    }
+                                }
                             }
                         }
                     )
@@ -130,7 +155,16 @@ fun AddSizeScreen(
                         },
                         onSaved = { bottomSize ->
                             saveRequest = {
-                                bottomViewModel.insert(bottomSize)
+                                bottomViewModel.insert(bottomSize) { newId ->
+                                    if (category != "BODY") {
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_id", newId)
+                                        navController.popBackStack()
+                                    } else {
+                                        onNavigateToMySizeScreen()
+                                    }
+                                }
                             }
                         }
                     )
@@ -144,7 +178,16 @@ fun AddSizeScreen(
                         },
                         onSaved = { outerSize ->
                             saveRequest = {
-                                outerViewModel.insert(outerSize)
+                                outerViewModel.insert(outerSize) { newId ->
+                                    if (category != "BODY") {
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_id", newId)
+                                        navController.popBackStack()
+                                    } else {
+                                        onNavigateToMySizeScreen()
+                                    }
+                                }
                             }
                         }
                     )
@@ -158,7 +201,16 @@ fun AddSizeScreen(
                         },
                         onSaved = { onePieceSize ->
                             saveRequest = {
-                                onePieceViewModel.insert(onePieceSize)
+                                onePieceViewModel.insert(onePieceSize) { newId ->
+                                    if (category != "BODY") {
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_id", newId)
+                                        navController.popBackStack()
+                                    } else {
+                                        onNavigateToMySizeScreen()
+                                    }
+                                }
                             }
                         }
                     )
@@ -172,7 +224,16 @@ fun AddSizeScreen(
                         },
                         onSaved = { shoeSize ->
                             saveRequest = {
-                                shoeViewModel.insert(shoeSize)
+                                shoeViewModel.insert(shoeSize) { newId ->
+                                    if (category != "BODY") {
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_id", newId)
+                                        navController.popBackStack()
+                                    } else {
+                                        onNavigateToMySizeScreen()
+                                    }
+                                }
                             }
                         }
                     )
@@ -185,7 +246,16 @@ fun AddSizeScreen(
                         },
                         onSaved = { accessorySize ->
                             saveRequest = {
-                                accessoryViewModel.insert(accessorySize)
+                                accessoryViewModel.insert(accessorySize) { newId ->
+                                    if (category != "BODY") {
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_id", newId)
+                                        navController.popBackStack()
+                                    } else {
+                                        onNavigateToMySizeScreen()
+                                    }
+                                }
                             }
                         }
                     )
@@ -223,7 +293,6 @@ fun AddSizeScreen(
             contentPadding = PaddingValues(horizontal = animatedPadding, vertical = 14.dp),
             onClick = {
                 saveRequest?.invoke()
-                onNavigateToMySizeScreen()
             }
         )
     }

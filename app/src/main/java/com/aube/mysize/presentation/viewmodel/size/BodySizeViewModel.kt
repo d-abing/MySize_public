@@ -2,10 +2,10 @@ package com.aube.mysize.presentation.viewmodel.size
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aube.mysize.domain.model.BodySize
-import com.aube.mysize.domain.usecase.DeleteSizeUseCase
-import com.aube.mysize.domain.usecase.GetSizeListUseCase
-import com.aube.mysize.domain.usecase.InsertSizeUseCase
+import com.aube.mysize.domain.model.size.BodySize
+import com.aube.mysize.domain.usecase.size.DeleteSizeUseCase
+import com.aube.mysize.domain.usecase.size.GetSizeListUseCase
+import com.aube.mysize.domain.usecase.size.InsertSizeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

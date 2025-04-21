@@ -1,9 +1,9 @@
 package com.aube.mysize.data.repository
 
 import com.aube.mysize.data.database.dao.ClothesDao
-import com.aube.mysize.data.model.size.toDomain
-import com.aube.mysize.domain.model.Clothes
-import com.aube.mysize.domain.model.toEntity
+import com.aube.mysize.data.model.clothes.toDomain
+import com.aube.mysize.domain.model.clothes.Clothes
+import com.aube.mysize.domain.model.clothes.toEntity
 import com.aube.mysize.domain.repository.ClothesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

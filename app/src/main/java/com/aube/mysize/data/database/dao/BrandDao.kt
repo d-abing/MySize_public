@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.aube.mysize.data.model.size.BrandEntity
+import com.aube.mysize.data.model.brand.BrandEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

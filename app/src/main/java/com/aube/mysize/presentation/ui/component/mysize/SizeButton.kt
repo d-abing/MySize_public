@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -36,6 +37,7 @@ fun SizeButton(
         ) {
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center,
                 text = title,
                 style = MaterialTheme.typography.labelSmall,
                 maxLines = 1,
@@ -44,6 +46,7 @@ fun SizeButton(
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center,
                 text = sizeLabel,
                 style = MaterialTheme.typography.titleSmall
             )

@@ -29,6 +29,7 @@ import com.aube.mysize.utils.getOriginalBitmapFromUri
 fun ImageBox(
     selectedImage: Uri?,
     context: Context,
+    selectedStep: Int,
     onColorPicked: (Color) -> Unit,
 ) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) } // 터치 좌표
@@ -44,15 +45,16 @@ fun ImageBox(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(16.dp))
-                .pointerInput(Unit) {
-                    detectTapGestures { offset ->
-                        tapOffset = offset
-                        // 이미지 영역에서의 위치를 비트맵 좌표로 변환
-                        val bitmapColor = getBitmapColorFromTap(bitmap, tapOffset, size)
-                        bitmapColor?.let { onColorPicked(it) }
-                    }
-                }
-
+                .then( if (selectedStep == 1)
+                    Modifier.pointerInput(Unit) {
+                        detectTapGestures { offset ->
+                            tapOffset = offset
+                            // 이미지 영역에서의 위치를 비트맵 좌표로 변환
+                            val bitmapColor = getBitmapColorFromTap(bitmap, tapOffset, size)
+                            bitmapColor?.let { onColorPicked(it) }
+                        }
+                    } else Modifier
+                )
         )
     } else {
         Box(

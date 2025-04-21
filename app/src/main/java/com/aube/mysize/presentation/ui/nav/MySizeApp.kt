@@ -1,5 +1,6 @@
 package com.aube.mysize.presentation.ui.nav
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -24,9 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.aube.mysize.MainActivity
 import com.aube.mysize.R
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.ui.screens.add_size.AddSizeScreen
@@ -109,15 +113,29 @@ fun MySizeApp() {
                     onNavigateToAddClothes = { navController.navigate("add_clothes") }
                 )
             }
-            composable(Screen.AddClothes.route) { AddClothesScreen(snackbarHostState) }
-            composable(Screen.FullDetail.route) { FullDetailScreen() }
-            composable(Screen.AddSize.route) {
-                AddSizeScreen(snackbarHostState) {
-                    navController.navigate("my_size") {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
+            composable(Screen.AddClothes.route) {
+                AddClothesScreen(navController, snackbarHostState){ selectedCategory ->
+                    navController.navigate("add_size?category=${selectedCategory}")
                 }
+            }
+            composable(Screen.FullDetail.route) { FullDetailScreen() }
+            composable(
+                route = Screen.AddSize.route,
+                arguments = listOf(
+                    navArgument("category") {
+                        type = NavType.StringType
+                        defaultValue = "BODY"
+                    }
+                )
+            ) { backStackEntry ->
+                AddSizeScreen(navController, backStackEntry, snackbarHostState,
+                    onNavigateToMySizeScreen = {
+                        navController.navigate("my_size") {
+                            popUpTo(0) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
             composable(Screen.Settings.route) {
                 SettingsScreen { selectedLanguage ->
@@ -125,10 +143,10 @@ fun MySizeApp() {
                     CoroutineScope(Dispatchers.IO).launch {
                         SettingsDataStore.saveLanguage(context, selectedLanguage)
                     }
-/*                    val restartIntent = Intent(context, MainActivity::class.java).apply {
+                    val restartIntent = Intent(context, MainActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     }
-                    context.startActivity(restartIntent)*/
+                    context.startActivity(restartIntent)
                 }
             }
         }

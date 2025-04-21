@@ -1,6 +1,6 @@
 package com.aube.mysize.domain.repository
 
-import com.aube.mysize.domain.model.Clothes
+import com.aube.mysize.domain.model.clothes.Clothes
 import kotlinx.coroutines.flow.Flow
 
 interface ClothesRepository {

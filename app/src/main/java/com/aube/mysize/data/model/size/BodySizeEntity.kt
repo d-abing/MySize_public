@@ -2,12 +2,12 @@ package com.aube.mysize.data.model.size
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.aube.mysize.domain.model.BodySize
+import com.aube.mysize.domain.model.size.BodySize
 import java.time.LocalDate
 
 @Entity(tableName = "body_size")
 data class BodySizeEntity(
-    @PrimaryKey val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val gender: String,
     val height: Float,
     val weight: Float,

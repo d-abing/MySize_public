@@ -1,12 +1,11 @@
-package com.aube.mysize.domain.usecase
+package com.aube.mysize.domain.usecase.size
 
-import com.aube.mysize.domain.model.Size
 import com.aube.mysize.domain.repository.SizeRepository
 
-class InsertSizeUseCase<T : Size>(
+class DeleteSizeUseCase<T>(
     private val repository: SizeRepository<T>
 ) {
     suspend operator fun invoke(item: T) {
-        repository.insert(item)
+        repository.delete(item)
     }
 }

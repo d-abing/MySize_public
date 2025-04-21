@@ -1,21 +1,25 @@
 package com.aube.mysize.data.di
 
-import com.aube.mysize.domain.model.AccessorySize
-import com.aube.mysize.domain.model.BodySize
-import com.aube.mysize.domain.model.BottomSize
-import com.aube.mysize.domain.model.OnePieceSize
-import com.aube.mysize.domain.model.OuterSize
-import com.aube.mysize.domain.model.ShoeSize
-import com.aube.mysize.domain.model.TopSize
+import com.aube.mysize.domain.model.size.AccessorySize
+import com.aube.mysize.domain.model.size.BodySize
+import com.aube.mysize.domain.model.size.BottomSize
+import com.aube.mysize.domain.model.size.OnePieceSize
+import com.aube.mysize.domain.model.size.OuterSize
+import com.aube.mysize.domain.model.size.ShoeSize
+import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.domain.repository.BrandRepository
+import com.aube.mysize.domain.repository.ClothesRepository
 import com.aube.mysize.domain.repository.SizeRepository
-import com.aube.mysize.domain.usecase.DeleteBrandUseCase
-import com.aube.mysize.domain.usecase.DeleteSizeUseCase
-import com.aube.mysize.domain.usecase.GetBrandListByCategoryUseCase
-import com.aube.mysize.domain.usecase.GetBrandListUseCase
-import com.aube.mysize.domain.usecase.GetSizeListUseCase
-import com.aube.mysize.domain.usecase.InsertBrandUseCase
-import com.aube.mysize.domain.usecase.InsertSizeUseCase
+import com.aube.mysize.domain.usecase.brand.DeleteBrandUseCase
+import com.aube.mysize.domain.usecase.brand.GetBrandListByCategoryUseCase
+import com.aube.mysize.domain.usecase.brand.InsertBrandUseCase
+import com.aube.mysize.domain.usecase.clothes.DeleteClothesUseCase
+import com.aube.mysize.domain.usecase.clothes.GetClothesByIdUseCase
+import com.aube.mysize.domain.usecase.clothes.GetClothesListUseCase
+import com.aube.mysize.domain.usecase.clothes.InsertClothesUseCase
+import com.aube.mysize.domain.usecase.size.DeleteSizeUseCase
+import com.aube.mysize.domain.usecase.size.GetSizeListUseCase
+import com.aube.mysize.domain.usecase.size.InsertSizeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -143,10 +147,6 @@ object UseCaseModule {
         repository: BrandRepository
     ): InsertBrandUseCase = InsertBrandUseCase(repository)
     @Provides
-    fun provideGetBrandListUseCase(
-        repository: BrandRepository
-    ): GetBrandListUseCase = GetBrandListUseCase(repository)
-    @Provides
     fun provideGetBrandByCategoryUseCase(
         repository: BrandRepository
     ): GetBrandListByCategoryUseCase = GetBrandListByCategoryUseCase(repository)
@@ -154,4 +154,22 @@ object UseCaseModule {
     fun provideDeleteBrandUseCase(
         repository: BrandRepository
     ): DeleteBrandUseCase = DeleteBrandUseCase(repository)
+
+    // ───── 옷 ─────
+    @Provides
+    fun provideInsertClothesUseCase(
+        repository: ClothesRepository
+    ): InsertClothesUseCase = InsertClothesUseCase(repository)
+    @Provides
+    fun provideGetAllClothesUseCase(
+        repository: ClothesRepository
+    ): GetClothesListUseCase = GetClothesListUseCase(repository)
+    @Provides
+    fun provideGetClothesByIdUseCase(
+        repository: ClothesRepository
+    ): GetClothesByIdUseCase = GetClothesByIdUseCase(repository)
+    @Provides
+    fun provideDeleteClothesUseCase(
+        repository: ClothesRepository
+    ): DeleteClothesUseCase = DeleteClothesUseCase(repository)
 }

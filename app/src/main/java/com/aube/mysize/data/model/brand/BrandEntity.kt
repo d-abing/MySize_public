@@ -1,4 +1,4 @@
-package com.aube.mysize.data.model.size
+package com.aube.mysize.data.model.brand
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

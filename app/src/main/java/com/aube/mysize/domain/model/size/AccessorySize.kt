@@ -1,4 +1,4 @@
-package com.aube.mysize.domain.model
+package com.aube.mysize.domain.model.size
 
 import com.aube.mysize.data.model.size.AccessorySizeEntity
 import java.time.LocalDate

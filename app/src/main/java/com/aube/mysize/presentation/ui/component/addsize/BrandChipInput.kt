@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
@@ -50,7 +51,16 @@ fun BrandChipInput(
                 label = "브랜드 추가",
                 modifier = Modifier.weight(1f),
                 unfocusedBorderColor = MaterialTheme.colorScheme.primary,
-                keyboardType = KeyboardType.Text
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done,
+                onDone = {
+                    val trimmed = newBrand.trim()
+                    if (trimmed.isNotEmpty() && trimmed !in brandList) {
+                        onAddBrand(trimmed)
+                        onSelect(trimmed)
+                        newBrand = ""
+                    }
+                }
             )
             Spacer(Modifier.width(8.dp))
 
