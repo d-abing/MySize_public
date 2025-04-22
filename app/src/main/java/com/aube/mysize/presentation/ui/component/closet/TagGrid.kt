@@ -86,7 +86,7 @@ fun TagGrid(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 16.dp),
-                    text = "#$tag",
+                    text = "# $tag",
                     style = MaterialTheme.typography.titleMedium,
                 )
             }

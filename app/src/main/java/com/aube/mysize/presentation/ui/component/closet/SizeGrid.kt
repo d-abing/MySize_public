@@ -61,8 +61,6 @@ fun SizeGrid(
 ) {
     var isReady by remember { mutableStateOf(false) }
 
-
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
@@ -74,22 +72,25 @@ fun SizeGrid(
                 isReady = true
             }
 
-            Box(
-                modifier = Modifier
-                    .aspectRatio(1f)
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(clothes.imageBytes)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    alpha = 0.4f,
-                    modifier = Modifier.fillMaxSize()
-                )
+            if (isReady) {
 
-                if (isReady) {
+                Box(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                ) {
+
+
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(clothes.imageBytes)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        alpha = 0.4f,
+                        modifier = Modifier.fillMaxSize()
+                    )
+
                     val summaries = listOfNotNull(
                         clothes.linkedSizeIds["TOP"]?.let {
                             topSizeViewModel.getSizeById(it)?.let(::formatTopSize)

@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,10 +74,14 @@ fun AddSizeScreen(
             ?.set("new_size_id", -1)
         navController.popBackStack()
     }
-    var selectedCategory by remember { mutableStateOf(SizeCategory.BODY)}
+
     val category = backStackEntry.arguments?.getString("category") ?: "BODY"
-    if (category != "ADDBODY") {
-        selectedCategory = SizeCategory.valueOf(category)
+    var selectedCategory by remember { mutableStateOf(SizeCategory.BODY) }
+
+    LaunchedEffect(Unit) {
+        if (category != "ADDBODY") {
+            selectedCategory = SizeCategory.valueOf(category)
+        }
     }
 
     val isAtBottom by remember {
