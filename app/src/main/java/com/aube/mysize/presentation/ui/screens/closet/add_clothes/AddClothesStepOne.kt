@@ -69,8 +69,8 @@ fun ColumnScope.AddClothesStepOne(
             singleLine = false,
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.White.copy(alpha = 0.4f),
-                focusedContainerColor = Color.White.copy(alpha = 0.4f),
+                unfocusedContainerColor = Color.White.copy(alpha = 0.7f),
+                focusedContainerColor = Color.White.copy(alpha = 0.7f),
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary
             )

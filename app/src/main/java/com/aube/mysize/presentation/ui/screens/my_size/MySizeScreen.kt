@@ -46,6 +46,7 @@ import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.BodySizeCardUiModel
+import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeContentUiModel
 import com.aube.mysize.presentation.ui.component.CategoryChip
 import com.aube.mysize.presentation.ui.component.HighlightedTitle
@@ -53,7 +54,6 @@ import com.aube.mysize.presentation.ui.component.mysize.MySizeTabRow
 import com.aube.mysize.presentation.ui.component.mysize.SensitiveBodySizeCard
 import com.aube.mysize.presentation.ui.component.mysize.SubListBlock
 import com.aube.mysize.presentation.ui.component.mysize.bottomsheet.SizePreviewBottomSheet
-import com.aube.mysize.presentation.ui.nav.SizeCategory
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel

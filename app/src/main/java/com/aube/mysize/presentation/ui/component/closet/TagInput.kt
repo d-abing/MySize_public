@@ -47,7 +47,7 @@ fun TagInput(
                     Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
                 else Modifier
             )
-            .background(Color.White.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+            .background(Color.White.copy(alpha = 0.7f), RoundedCornerShape(16.dp))
     ) {
         OutlinedTextField(
             value = input,

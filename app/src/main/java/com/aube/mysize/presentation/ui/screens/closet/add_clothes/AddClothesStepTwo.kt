@@ -47,8 +47,8 @@ import com.aube.mysize.domain.model.size.OnePieceSize
 import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
-import com.aube.mysize.presentation.ui.component.mysize.BigSizeButton
-import com.aube.mysize.presentation.ui.nav.SizeCategory
+import com.aube.mysize.presentation.model.SizeCategory
+import com.aube.mysize.presentation.ui.component.closet.BigSizeButton
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -126,7 +126,7 @@ fun ColumnScope.AddClothesStepTwo(
                 size.id to (title to sizeLabel)
             }
 
-            SizeCategory.SHOES -> shoeSizes.map { size ->
+            SizeCategory.SHOE -> shoeSizes.map { size ->
                 val title = "${size.type} ${size.sizeLabel} - ${size.brand}"
 
                 val sizeLabel = listOfNotNull(
@@ -163,7 +163,7 @@ fun ColumnScope.AddClothesStepTwo(
         Column (
             modifier = Modifier
                 .weight(1f)
-                .background(Color.White.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+                .background(Color.White.copy(alpha = 0.7f), RoundedCornerShape(16.dp))
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             Row(
@@ -183,7 +183,6 @@ fun ColumnScope.AddClothesStepTwo(
                 )
             }
 
-            // 카테고리 칩
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -203,7 +202,6 @@ fun ColumnScope.AddClothesStepTwo(
             }
 
             Column(modifier = Modifier.weight(1f)) {
-                // 선택 가능한 사이즈 리스트
                 if (isOpenInFullMode) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -244,7 +242,6 @@ fun ColumnScope.AddClothesStepTwo(
                                         )
                                 }
 
-                                // 만약 아이템이 1개면 오른쪽 자리를 빈 공간으로
                                 if (rowItems.size < 2) {
                                     Spacer(modifier = Modifier.weight(1f))
                                 }

@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -45,8 +46,9 @@ import com.aube.mysize.domain.model.size.OnePieceSize
 import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
+import com.aube.mysize.presentation.model.SizeCategory
+import com.aube.mysize.presentation.model.Visibility
 import com.aube.mysize.presentation.ui.component.closet.ImageBox
-import com.aube.mysize.presentation.ui.nav.SizeCategory
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
@@ -57,6 +59,7 @@ import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
 import com.aube.mysize.utils.generateMD5Hash
 import com.aube.mysize.utils.getBitmapFromUri
+import com.aube.mysize.utils.isColorBright
 import com.aube.mysize.utils.toBytes
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
@@ -75,6 +78,7 @@ fun AddClothesScreen(
     onePieceViewModel: OnePieceSizeViewModel = hiltViewModel(),
     shoeViewModel: ShoeSizeViewModel = hiltViewModel(),
     accessoryViewModel: AccessorySizeViewModel = hiltViewModel(),
+    onAddNewBodySize: () -> Unit,
     onAddNewSize: (SizeCategory) -> Unit
 ) {
     val bodySizes by bodyViewModel.sizes.collectAsState()
@@ -95,6 +99,7 @@ fun AddClothesScreen(
         onePieceSizes = onePieceSizes,
         shoeSizes = shoeSizes,
         accessorySizes = accessorySizes,
+        onAddNewBodySize = onAddNewBodySize,
         onAddNewSize = onAddNewSize,
         onClothesSaved = { clothes -> clothesViewModel.insert(clothes) }
     )
@@ -111,28 +116,34 @@ fun AddClothesScreen(
     onePieceSizes: List<OnePieceSize>,
     shoeSizes: List<ShoeSize>,
     accessorySizes: List<AccessorySize>,
+    onAddNewBodySize: () -> Unit = {},
     onAddNewSize: (SizeCategory) -> Unit = {},
     onClothesSaved: (Clothes) -> Unit = {}
 ) {
     val context = LocalContext.current
 
     var selectedStep by rememberSaveable { mutableIntStateOf(1) }
-
     var isOpenInFullMode by rememberSaveable { mutableStateOf(false) }
 
-    var selectedColorInt by rememberSaveable { mutableIntStateOf(Color.White.toArgb()) }
-    val selectedColor = Color(selectedColorInt)
-
+    var selectedColorInt by rememberSaveable { mutableStateOf<Int?>(null) }
+    val selectedColor = selectedColorInt?.let { Color(it) }
+    var isColorBright by rememberSaveable { mutableStateOf(true) }
     var selectedImageString by rememberSaveable { mutableStateOf<String?>(null) }
     val selectedImage: Uri? = selectedImageString?.let { Uri.parse(it) }
 
-    var memo by remember { mutableStateOf("") }
-    var tags by remember { mutableStateOf(setOf<String>()) }
-
-    val selectedSizeIds = remember { mutableStateMapOf<String, Int>() }
+    var memo by rememberSaveable { mutableStateOf("") }
+    var tags by rememberSaveable(stateSaver = setSaver) {
+        mutableStateOf(setOf())
+    }
+    val selectedSizeIds = rememberSaveable(
+        saver = mapSaver()
+    ) {
+        mutableStateMapOf()
+    }
     var selectedCategory by rememberSaveable { mutableStateOf(SizeCategory.TOP) }
 
     var sharedBodyFields by remember { mutableStateOf(setOf<String>()) }
+    var selectedVisibility by rememberSaveable { mutableStateOf(Visibility.PRIVATE) }
 
     val cropLauncher = rememberLauncherForActivityResult(
         CropImageContract()
@@ -171,7 +182,7 @@ fun AddClothesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(selectedColor)
+            .background(selectedColor ?: Color.White)
             .padding(16.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -192,6 +203,9 @@ fun AddClothesScreen(
                     onColorPicked = { color ->
                         if (selectedImage != null && color.alpha != 0.0f) {
                             selectedColorInt = color.toArgb()
+                            selectedColorInt?.let {
+                                isColorBright = isColorBright(it)
+                            }
                         }
                     },
                 )
@@ -246,35 +260,57 @@ fun AddClothesScreen(
                         onAddNewSize(category)
                     },
                     onPrevious = { selectedStep = 1 },
-                    onNext = { selectedStep = 3 }
+                    onNext = {
+                        selectedStep = 3
+                        isOpenInFullMode = true
+                    }
                 )
-            3 -> AddClothesStepThree(
-                bodySize = bodySize,
-                selectedKeys = sharedBodyFields,
-                onSelectionChanged = { sharedBodyFields = it.toSet() },
-                onPrevious = { selectedStep = 2 },
-                onComplete = {
-                    val imageBytes = (context.getBitmapFromUri(selectedImage!!)).toBytes()
+            3 ->
+                AddClothesStepThree(
+                    bodySize = bodySize,
+                    selectedKeys = sharedBodyFields,
+                    onSelectionChanged = { sharedBodyFields = it.toSet() },
+                    onAddNewBodySize = { onAddNewBodySize() },
+                    selectedVisibility = selectedVisibility,
+                    onVisibilityChanged = { selectedVisibility = it },
+                    onPrevious = {
+                        selectedStep = 2
+                        isOpenInFullMode = false
+                    },
+                    onComplete = {
+                        val imageBytes = (context.getBitmapFromUri(selectedImage!!)).toBytes()
 
-                    onClothesSaved(
-                        Clothes(
-                            imageBytes = imageBytes,
-                            hash = generateMD5Hash(imageBytes),
-                            dominantColor = selectedColor.toArgb(),
-                            linkedSizeIds = selectedSizeIds,
-                            tags = tags,
-                            memo = memo,
-                            sharedBodyFields = sharedBodyFields,
-                            createdAt = LocalDateTime.now(),
-                            updatedAt = null,
-                            createUserId = 1,
-                            createUserProfileFilePath = ""
+                        onClothesSaved(
+                            Clothes(
+                                imageBytes = imageBytes,
+                                hash = generateMD5Hash(imageBytes),
+                                dominantColor = selectedColor!!.toArgb(),
+                                linkedSizeIds = selectedSizeIds,
+                                tags = tags,
+                                memo = memo,
+                                sharedBodyFields = sharedBodyFields,
+                                createdAt = LocalDateTime.now(),
+                                updatedAt = null,
+                                createUserId = 1,
+                                createUserProfileFilePath = "",
+                                visibility = selectedVisibility
+                            )
                         )
-                    )
-                    navController.popBackStack()
-                }
+                        navController.popBackStack()
+                    }
             )
         }
 
     }
 }
+
+
+fun mapSaver() = Saver<MutableMap<String, Int>, Map<String, Int>>(
+    save = { it.toMap() },
+    restore = { it.toMutableMap() }
+)
+
+val setSaver = Saver<Set<String>, List<String>>(
+    save = { it.toList() },
+    restore = { it.toSet() }
+)

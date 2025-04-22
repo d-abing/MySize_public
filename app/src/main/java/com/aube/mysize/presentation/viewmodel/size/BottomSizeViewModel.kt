@@ -41,6 +41,8 @@ class BottomSizeViewModel @Inject constructor(
         }
     }
 
+    fun getSizeById(id: Int): BottomSize? = sizes.value.find { it.id == id }
+
     fun insert(item: BottomSize, onInserted: (Int) -> Unit) {
         viewModelScope.launch {
             val id = insertSizeUseCase(item).toInt()

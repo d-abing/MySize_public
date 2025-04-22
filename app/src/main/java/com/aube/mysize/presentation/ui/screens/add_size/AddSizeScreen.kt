@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.ui.component.CategoryChip
 import com.aube.mysize.presentation.ui.component.addsize.SaveButton
-import com.aube.mysize.presentation.ui.nav.SizeCategory
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.AccessorySizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.BodySizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.BottomSizeInputForm
@@ -73,10 +73,11 @@ fun AddSizeScreen(
             ?.set("new_size_id", -1)
         navController.popBackStack()
     }
-
+    var selectedCategory by remember { mutableStateOf(SizeCategory.BODY)}
     val category = backStackEntry.arguments?.getString("category") ?: "BODY"
-    val selectedCategoryEnum = SizeCategory.valueOf(category)
-    var selectedCategory by remember { mutableStateOf(selectedCategoryEnum) }
+    if (category != "ADDBODY") {
+        selectedCategory = SizeCategory.valueOf(category)
+    }
 
     val isAtBottom by remember {
         derivedStateOf {
@@ -119,7 +120,9 @@ fun AddSizeScreen(
                         onSaved = { bodySize ->
                             saveRequest = {
                                 bodyViewModel.insert(bodySize)
-                                onNavigateToMySizeScreen()
+
+                                if (category != "BODY") navController.popBackStack()
+                                else onNavigateToMySizeScreen()
                             }
                         }
                     )
@@ -215,7 +218,7 @@ fun AddSizeScreen(
                         }
                     )
 
-                    SizeCategory.SHOES -> ShoeSizeInputForm(
+                    SizeCategory.SHOE -> ShoeSizeInputForm(
                         viewModel = shoeViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->

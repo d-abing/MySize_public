@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.nav
+package com.aube.mysize.presentation.model
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
@@ -13,6 +13,7 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object Recommend : Screen("recommend", "추천", Icons.Filled.ThumbUp)
     object MySize : Screen("my_size", "사이즈", Icons.AutoMirrored.Filled.Assignment)
     object Closet : Screen("closet", "옷장", Icons.Filled.Checkroom)
+    object ClothesDetail : Screen("clothes_detail/{id}", "옷 보기", Icons.Filled.Checkroom)
     object AddClothes : Screen("add_clothes", "옷 추가", Icons.Filled.AddCircle)
     object FullDetail : Screen("full_detail", "전체 사이즈 상세", Icons.AutoMirrored.Filled.Assignment)
     object AddSize : Screen("add_size?category={category}", "추가", Icons.Filled.Straighten)

@@ -41,6 +41,8 @@ class AccessorySizeViewModel @Inject constructor(
         }
     }
 
+    fun getSizeById(id: Int): AccessorySize? = sizes.value.find { it.id == id }
+
     fun insert(item: AccessorySize, onInserted: (Int) -> Unit) {
         viewModelScope.launch {
             val id = insertSizeUseCase(item).toInt()

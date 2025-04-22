@@ -41,6 +41,8 @@ class OuterSizeViewModel @Inject constructor(
         }
     }
 
+    fun getSizeById(id: Int): OuterSize? = sizes.value.find { it.id == id }
+
     fun insert(item: OuterSize, onInserted: (Int) -> Unit) {
         viewModelScope.launch {
             val id = insertSizeUseCase(item).toInt()

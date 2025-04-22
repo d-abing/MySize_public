@@ -1,6 +1,6 @@
-package com.aube.mysize.presentation.ui.component.mysize
+package com.aube.mysize.presentation.ui.component.closet
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,9 +28,9 @@ fun BigSizeButton(
     OutlinedButton(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        modifier = modifier
-            .border(1.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(16.dp)),
-        contentPadding = PaddingValues(4.dp)
+        modifier = modifier,
+        contentPadding = PaddingValues(4.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(0.4f))
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -40,6 +40,8 @@ class TopSizeViewModel @Inject constructor(
         }
     }
 
+    fun getSizeById(id: Int): TopSize? = sizes.value.find { it.id == id }
+
     fun insert(item: TopSize, onInserted: (Int) -> Unit) {
         viewModelScope.launch {
             val id = insertSizeUseCase(item).toInt()

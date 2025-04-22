@@ -32,10 +32,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.aube.mysize.MainActivity
 import com.aube.mysize.R
+import com.aube.mysize.presentation.model.Screen
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.ui.screens.add_size.AddSizeScreen
 import com.aube.mysize.presentation.ui.screens.closet.ClosetScreen
 import com.aube.mysize.presentation.ui.screens.closet.add_clothes.AddClothesScreen
+import com.aube.mysize.presentation.ui.screens.closet.clothes_detail.ClothesDetailScreen
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeScreen
 import com.aube.mysize.presentation.ui.screens.my_size.full_detail.FullDetailScreen
 import com.aube.mysize.presentation.ui.screens.recommend_size.RecommendSizeScreen
@@ -109,14 +111,24 @@ fun MySizeApp() {
             }
             composable(Screen.Closet.route) {
                 ClosetScreen(
-                    onClothesClick = {},
+                    onClothesClick = { clothes -> navController.navigate("clothes_detail/${clothes.id}") },
                     onNavigateToAddClothes = { navController.navigate("add_clothes") }
                 )
             }
+            composable(
+                route = Screen.ClothesDetail.route,
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("id") ?: return@composable
+                ClothesDetailScreen(clothesId = id)
+            }
             composable(Screen.AddClothes.route) {
-                AddClothesScreen(navController, snackbarHostState){ selectedCategory ->
-                    navController.navigate("add_size?category=${selectedCategory}")
-                }
+                AddClothesScreen(
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") },
+                    onAddNewSize = { selectedCategory -> navController.navigate("add_size?category=${selectedCategory}") }
+                )
             }
             composable(Screen.FullDetail.route) { FullDetailScreen() }
             composable(

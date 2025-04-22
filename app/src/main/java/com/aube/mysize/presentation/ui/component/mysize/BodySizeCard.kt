@@ -1,7 +1,7 @@
 package com.aube.mysize.presentation.ui.component.mysize
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -21,19 +20,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun BodySizeCard(
     title: String,
     imageVector: ImageVector,
-    description: Map<String, String?>
+    description: Map<String, String?>,
+    selectableKeys: Set<String>? = null,
+    selectedKeys: Set<String>? = null,
+    onSelectionChanged: ((Set<String>) -> Unit)? = null
 ) {
+    val isSelectable = selectableKeys != null && selectedKeys != null && onSelectionChanged != null
+
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .border(2.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(12.dp)),
+            .padding(vertical = 8.dp)
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background
@@ -46,8 +52,7 @@ fun BodySizeCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -67,7 +72,6 @@ fun BodySizeCard(
             val group1Keys = listOf("키", "몸무게", "성별")
             val group2Keys = listOf("가슴둘레", "허리둘레", "엉덩이둘레")
             val group3Keys = listOf("목둘레", "어깨너비", "팔 길이", "다리 안쪽 길이")
-
             val groups = listOf(group1Keys, group2Keys, group3Keys)
 
             val validGroups = groups.filter { groupKeys ->
@@ -78,29 +82,45 @@ fun BodySizeCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                validGroups.forEach { groupKeys ->
+                validGroups.forEachIndexed { index, groupKeys ->
                     val groupItems = groupKeys.mapNotNull { key ->
-                        description[key]?.let { value -> "$key: $value" }
+                        description[key]?.let { value -> key to value }
                     }
 
                     if (groupItems.isNotEmpty()) {
                         Column(
-                            modifier = Modifier
-                                .weight(1f),
+                            modifier = Modifier.weight(if (index == 0) 0.8f else 1f),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            groupItems.forEach { text ->
-                                Text(
-                                    text = text,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    modifier = Modifier.padding(vertical = 2.dp)
-                                )
+                            groupItems.forEach { (key, value) ->
+                                val isSelected = selectedKeys?.contains(key) ?: true
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 2.dp)
+                                        .then(
+                                            if (isSelectable) Modifier.clickable {
+                                                val updated = if (isSelected) selectedKeys!! - key else selectedKeys!! + key
+                                                onSelectionChanged?.invoke(updated)
+                                            } else Modifier
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "$key: $value",
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            textDecoration = if (!isSelected) TextDecoration.LineThrough else null,
+                                            color = if (!isSelected) Color.Gray else MaterialTheme.colorScheme.onSurface
+                                        ),
+                                        modifier = Modifier.weight(0.8f)
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-
         }
     }
 }

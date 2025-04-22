@@ -26,6 +26,7 @@ import com.aube.mysize.domain.model.clothes.Clothes
 import com.aube.mysize.presentation.ui.component.closet.ClosetViewModeTabs
 import com.aube.mysize.presentation.ui.component.closet.ColorGrid
 import com.aube.mysize.presentation.ui.component.closet.PictureGrid
+import com.aube.mysize.presentation.ui.component.closet.SizeGrid
 import com.aube.mysize.presentation.ui.component.closet.TagGrid
 import com.aube.mysize.presentation.ui.component.mysize.MySizeTabRow
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
@@ -43,7 +44,6 @@ fun ClosetScreen(
     var selectedViewMode by remember { mutableIntStateOf(0) }
 
     var selectedColor by remember { mutableStateOf<Int?>(null) }
-    var isLongClicking by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -65,21 +65,15 @@ fun ClosetScreen(
                 if (selectedViewMode == 0) {
                     PictureGrid(clothesList = clothes, onClick = onClothesClick)
                 } else if (selectedViewMode == 1) {
-//                    SizeGrid()
+                    SizeGrid(clothesList = clothes)
                 } else if (selectedViewMode == 2) {
                     ColorGrid(
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
                         colorList = colors,
-                        onColorSelected = {
-                            selectedColor = it
-                            isLongClicking = true
-                        },
+                        onColorSelected = { selectedColor = it },
                     )
                 } else if (selectedViewMode == 3) {
-                    TagGrid(
-                        tagList = clothes.flatMap { it.tags }.distinct().sorted(),
-                        onTagSelected = { /* 태그 선택 로직 */ }
-                    )
+                    TagGrid(clothesList = clothes, onClick = onClothesClick)
                 }
             } else {
                 Column(

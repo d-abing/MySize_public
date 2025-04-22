@@ -1,6 +1,7 @@
 package com.aube.mysize.data.database
 
 import androidx.room.TypeConverter
+import com.aube.mysize.presentation.model.Visibility
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -45,4 +46,10 @@ object TypeConverter {
     fun toTimestamp(date: LocalDate?): String? {
         return date?.toString()
     }
+
+    @TypeConverter
+    fun fromVisibility(visibility: Visibility): String = visibility.name
+
+    @TypeConverter
+    fun toVisibility(name: String): Visibility = Visibility.valueOf(name)
 }
