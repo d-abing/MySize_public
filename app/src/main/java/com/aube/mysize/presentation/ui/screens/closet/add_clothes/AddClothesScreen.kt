@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -178,7 +180,6 @@ fun AddClothesScreen(
         }
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -212,7 +213,7 @@ fun AddClothesScreen(
 
                 if (selectedImage == null) {
                     Icon(
-                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                         imageVector = Icons.Default.PhotoLibrary,
                         contentDescription = "갤러리",
                         modifier = Modifier
@@ -220,6 +221,21 @@ fun AddClothesScreen(
                             .clip(RoundedCornerShape(16.dp))
                             .clickable { cropLauncher.launch(cropRequest) }
                             .padding(150.dp)
+                    )
+                } else {
+                    Icon(
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "삭제",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .align(Alignment.TopStart)
+                            .clip(RoundedCornerShape(16.dp))
+                            .clickable {
+                                selectedColorInt = null
+                                selectedImageString = null
+                            }
+                            .padding(8.dp)
                     )
                 }
             }
@@ -229,6 +245,7 @@ fun AddClothesScreen(
             1 ->
                 AddClothesStepOne(
                     selectedColor = selectedColor,
+                    isColorBright = isColorBright,
                     selectedImage = selectedImage,
                     memo = memo,
                     onMemoChange = { memo = it },
@@ -237,7 +254,10 @@ fun AddClothesScreen(
                     onTagRemove = { removeTag ->
                         tags = tags - removeTag
                     },
-                    onNext = { selectedStep = 2}
+                    onNext = {
+                        selectedStep = 2
+                        isOpenInFullMode = true
+                    }
                 )
             2 ->
                 AddClothesStepTwo(
@@ -259,7 +279,10 @@ fun AddClothesScreen(
                         selectedCategory = category
                         onAddNewSize(category)
                     },
-                    onPrevious = { selectedStep = 1 },
+                    onPrevious = {
+                        selectedStep = 1
+                        isOpenInFullMode = false
+                    },
                     onNext = {
                         selectedStep = 3
                         isOpenInFullMode = true
@@ -275,7 +298,7 @@ fun AddClothesScreen(
                     onVisibilityChanged = { selectedVisibility = it },
                     onPrevious = {
                         selectedStep = 2
-                        isOpenInFullMode = false
+                        isOpenInFullMode = true
                     },
                     onComplete = {
                         val imageBytes = (context.getBitmapFromUri(selectedImage!!)).toBytes()

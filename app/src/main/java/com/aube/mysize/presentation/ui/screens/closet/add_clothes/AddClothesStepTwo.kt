@@ -272,6 +272,7 @@ fun ColumnScope.AddClothesStepTwo(
                                     ,
                                     title = pair.first,
                                     sizeLabel = pair.second,
+                                    contentMaxLines = 1,
                                     onClick = {
                                         val categoryKey = selectedCategory.name
 
@@ -320,6 +321,7 @@ fun ColumnScope.AddClothesStepTwo(
             ) {
                 Text("이전")
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = onNext,
                 modifier = Modifier

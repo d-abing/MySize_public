@@ -59,7 +59,28 @@ fun ColumnScope.AddClothesStepThree(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Text(text = "공개할 신체 정보", style = MaterialTheme.typography.bodyLarge)
+            Column(modifier = Modifier.padding(bottom = 24.dp)) {
+                Text("공개 대상", style = MaterialTheme.typography.bodyLarge)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Visibility.entries.forEach { option ->
+                        SelectOptionCard(
+                            text = option.displayName,
+                            icon = option.icon,
+                            selected = selectedVisibility == option,
+                            onClick = { onVisibilityChanged(option) }
+                        )
+                    }
+                }
+            }
+
+
+            Text(text = "전체 공개 변경 시 공개할 신체 정보", style = MaterialTheme.typography.bodyLarge)
 
             bodySizeCard?.let {
                 BodySizeCard(
@@ -84,25 +105,7 @@ fun ColumnScope.AddClothesStepThree(
                     "새로운 사이즈 등록하기")
             }
 
-            Column(modifier = Modifier.padding(top = 24.dp)) {
-                Text("공개 대상", style = MaterialTheme.typography.bodyLarge)
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Visibility.entries.forEach { option ->
-                        SelectOptionCard(
-                            text = option.displayName,
-                            icon = option.icon,
-                            selected = selectedVisibility == option,
-                            onClick = { onVisibilityChanged(option) }
-                        )
-                    }
-                }
-            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -120,6 +123,7 @@ fun ColumnScope.AddClothesStepThree(
             ) {
                 Text("이전")
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = onComplete,
                 modifier = Modifier

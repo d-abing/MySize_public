@@ -60,7 +60,7 @@ fun ImageBox(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Gray, RoundedCornerShape(16.dp))
+                .background(Color.LightGray, RoundedCornerShape(16.dp))
         )
     }
 }

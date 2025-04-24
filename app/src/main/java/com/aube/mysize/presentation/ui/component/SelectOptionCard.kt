@@ -38,7 +38,7 @@ fun SelectOptionCard(
     Surface(
         modifier = Modifier
             .padding(end = 8.dp)
-            .clip(RoundedCornerShape(50))
+            .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() },
         color = backgroundColor,
         tonalElevation = if (selected) 2.dp else 0.dp
