@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TagInput(
-    isColorBright: Boolean,
     tags: Set<String>,
     onFocusChanged: (Boolean) -> Unit,
     onTagAdd: (String) -> Unit,
@@ -39,7 +38,7 @@ fun TagInput(
 
     Column(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(vertical = 8.dp)
     ) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -50,8 +49,7 @@ fun TagInput(
             tags.forEach { tag ->
                 AssistChip(
                     onClick = { onTagRemove(tag) },
-                    label = { Text("#$tag", style = MaterialTheme.typography.labelMedium
-                        .copy(if (isColorBright) Color.Black else Color.White),) },
+                    label = { Text("#$tag", style = MaterialTheme.typography.labelMedium) },
                     modifier = Modifier.height(32.dp)
                 )
             }
@@ -63,9 +61,8 @@ fun TagInput(
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        color = if (isColorBright) Color.Black else Color.White,
                         text = "#",
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.bodyMedium
                     )
 
                     BasicTextField(
@@ -75,7 +72,7 @@ fun TagInput(
                             onFocusChanged(focusState.isFocused)
                         },
                         singleLine = true,
-                        textStyle = MaterialTheme.typography.labelLarge.copy(if (isColorBright) Color.Black else Color.White),
+                        textStyle = MaterialTheme.typography.bodyMedium,
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
                             if (input.isNotBlank()) {
@@ -86,9 +83,8 @@ fun TagInput(
                         decorationBox = { innerTextField ->
                             if (input.isEmpty()) {
                                 Text(
-                                    color = if (isColorBright) Color.DarkGray else Color.LightGray,
                                     text = "태그입력",
-                                    style = MaterialTheme.typography.labelLarge.copy(color = Color.Gray)
+                                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
                                 )
                             }
                             innerTextField()

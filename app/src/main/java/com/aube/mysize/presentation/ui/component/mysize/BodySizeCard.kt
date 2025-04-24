@@ -27,9 +27,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BodySizeCard(
-    title: String,
-    imageVector: ImageVector,
-    description: Map<String, String?>,
+    containerColor: Color = MaterialTheme.colorScheme.background,
+    title: String? = null,
+    imageVector: ImageVector? = null,
+    description: Map<String, String?>? = null,
     selectableKeys: Set<String>? = null,
     selectedKeys: Set<String>? = null,
     onSelectionChanged: ((Set<String>) -> Unit)? = null
@@ -42,7 +43,7 @@ fun BodySizeCard(
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = containerColor
         )
     ) {
         Column(
@@ -55,18 +56,22 @@ fun BodySizeCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    imageVector = imageVector,
-                    contentDescription = "Body Size Icon",
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(20.dp)
-                )
+                if (imageVector != null) {
+                    Image(
+                        imageVector = imageVector,
+                        contentDescription = "Body Size Icon",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(20.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                )
+                if (title != null) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
             }
 
             val group1Keys = listOf("키", "몸무게", "성별")
@@ -74,25 +79,66 @@ fun BodySizeCard(
             val group3Keys = listOf("목둘레", "어깨너비", "팔 길이", "다리 안쪽 길이")
             val groups = listOf(group1Keys, group2Keys, group3Keys)
 
-            val validGroups = groups.filter { groupKeys ->
-                groupKeys.any { key -> description[key] != null }
-            }
+            if (description != null) {
+                val validGroups = groups.filter { groupKeys ->
+                    groupKeys.any { key -> description[key] != null }
+                }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                validGroups.forEachIndexed { index, groupKeys ->
-                    val groupItems = groupKeys.mapNotNull { key ->
-                        description[key]?.let { value -> key to value }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    validGroups.forEachIndexed { index, groupKeys ->
+                        val groupItems = groupKeys.mapNotNull { key ->
+                            description[key]?.let { value -> key to value }
+                        }
+
+                        if (groupItems.isNotEmpty()) {
+                            Column(
+                                modifier = Modifier.weight(if (index == 0) 0.8f else 1f),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                groupItems.forEach { (key, value) ->
+                                    val isSelected = selectedKeys?.contains(key) ?: true
+
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 2.dp)
+                                            .then(
+                                                if (isSelectable) Modifier.clickable {
+                                                    val updated =
+                                                        if (isSelected) selectedKeys!! - key else selectedKeys!! + key
+                                                    onSelectionChanged?.invoke(updated)
+                                                } else Modifier
+                                            ),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "$key: $value",
+                                            style = MaterialTheme.typography.labelSmall.copy(
+                                                textDecoration = if (!isSelected) TextDecoration.LineThrough else null,
+                                                color = if (!isSelected) Color.Gray else MaterialTheme.colorScheme.onSurface
+                                            ),
+                                            modifier = Modifier.weight(0.8f)
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
-
-                    if (groupItems.isNotEmpty()) {
+                }
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    groups.forEachIndexed { index, groupKeys ->
                         Column(
                             modifier = Modifier.weight(if (index == 0) 0.8f else 1f),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            groupItems.forEach { (key, value) ->
+                            groupKeys.forEach { key ->
                                 val isSelected = selectedKeys?.contains(key) ?: true
 
                                 Row(
@@ -101,15 +147,16 @@ fun BodySizeCard(
                                         .padding(vertical = 2.dp)
                                         .then(
                                             if (isSelectable) Modifier.clickable {
-                                                val updated = if (isSelected) selectedKeys!! - key else selectedKeys!! + key
+                                                val updated =
+                                                    if (isSelected) selectedKeys!! - key else selectedKeys!! + key
                                                 onSelectionChanged?.invoke(updated)
                                             } else Modifier
                                         ),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "$key: $value",
-                                        style = MaterialTheme.typography.labelSmall.copy(
+                                        text = key,
+                                        style = MaterialTheme.typography.labelLarge.copy(
                                             textDecoration = if (!isSelected) TextDecoration.LineThrough else null,
                                             color = if (!isSelected) Color.Gray else MaterialTheme.colorScheme.onSurface
                                         ),

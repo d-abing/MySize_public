@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 fun BigSizeButton(
     modifier: Modifier,
     title: String,
-    sizeLabel: String,
+    sizeLabel: String? = null,
     titleMaxLines: Int = 2,
     contentMaxLines: Int? = null,
     onClick: () -> Unit
@@ -30,7 +30,7 @@ fun BigSizeButton(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
         modifier = modifier,
-        contentPadding = PaddingValues(4.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(0.4f))
     ) {
         Column(
@@ -41,18 +41,20 @@ fun BigSizeButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 textAlign = TextAlign.Center,
                 text = title,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.bodySmall,
                 maxLines = titleMaxLines,
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center,
-                text = sizeLabel,
-                maxLines = contentMaxLines ?: Int.MAX_VALUE,
-                style = MaterialTheme.typography.labelSmall
-            )
+            if (sizeLabel != null) {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = sizeLabel,
+                    maxLines = contentMaxLines ?: Int.MAX_VALUE,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         }
     }
 }

@@ -2,7 +2,9 @@ package com.aube.mysize.presentation.ui.screens.closet.add_clothes
 
 import android.net.Uri
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,9 +31,8 @@ import androidx.compose.ui.unit.dp
 import com.aube.mysize.presentation.ui.component.closet.TagInput
 
 @Composable
-fun ColumnScope.AddClothesStepOne(
+fun AddClothesStepOne(
     selectedColor: Color?,
-    isColorBright: Boolean,
     selectedImage: Uri?,
     memo: String,
     onMemoChange: (String) -> Unit,
@@ -48,6 +49,16 @@ fun ColumnScope.AddClothesStepOne(
         isFocused = false
     }
 
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp)
+        .border(1.dp, MaterialTheme.colorScheme.outline.copy(0.2f), RoundedCornerShape(16.dp))
+        .background(
+            color = selectedColor ?: Color.White,
+            shape = RoundedCornerShape(16.dp)
+        )
+    )
+
     OutlinedTextField(
         value = memo,
         onValueChange = onMemoChange,
@@ -58,23 +69,23 @@ fun ColumnScope.AddClothesStepOne(
                 isFocused = focusState.isFocused
             }
             .wrapContentHeight()
-            .padding(bottom = 4.dp)
+            .padding(top = 8.dp)
+            .border(1.dp, MaterialTheme.colorScheme.outline.copy(0.2f), RoundedCornerShape(16.dp))
         ,
         textStyle = MaterialTheme.typography.bodyMedium,
-        minLines = 2,
+        minLines = 1,
         maxLines = 10,
         singleLine = false,
         shape = RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.White.copy(alpha = 0.7f),
-            focusedContainerColor = Color.White.copy(alpha = 0.7f),
+            unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = MaterialTheme.colorScheme.primary
+            focusedIndicatorColor = Color.Transparent
         )
     )
 
     TagInput(
-        isColorBright = isColorBright,
         tags = tags,
         onFocusChanged = { isFocused = it },
         onTagAdd = onTagAdd,

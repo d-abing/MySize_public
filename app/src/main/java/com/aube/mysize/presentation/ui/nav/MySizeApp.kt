@@ -150,16 +150,23 @@ fun MySizeApp() {
                 )
             }
             composable(Screen.Settings.route) {
-                SettingsScreen { selectedLanguage ->
-                    setAppLocale(context, selectedLanguage)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        SettingsDataStore.saveLanguage(context, selectedLanguage)
+                SettingsScreen (
+                    onLanguageSelected = { selectedLanguage ->
+                        setAppLocale(context, selectedLanguage)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            SettingsDataStore.saveLanguage(context, selectedLanguage)
+                        }
+                        val restartIntent = Intent(context, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        context.startActivity(restartIntent)
+                    },
+                    onBodySizeSelected = { selectedKeys ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            SettingsDataStore.saveBodyFields(context, selectedKeys)
+                        }
                     }
-                    val restartIntent = Intent(context, MainActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-                    context.startActivity(restartIntent)
-                }
+                )
             }
         }
     }

@@ -25,4 +25,19 @@ object SettingsDataStore {
                 preferences[LANGUAGE_KEY] ?: "ko"
             }
     }
+
+    private val BODY_FIELDS_KEY = stringPreferencesKey("body_fields")
+
+    suspend fun saveBodyFields(context: Context, bodyFields: Set<String>) {
+        context.dataStore.edit { settings ->
+            settings[BODY_FIELDS_KEY] = bodyFields.joinToString(",")
+        }
+    }
+
+    fun getBodyFields(context: Context): Flow<Set<String>> {
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[BODY_FIELDS_KEY]?.split(",")?.toSet() ?: emptySet()
+            }
+    }
 }

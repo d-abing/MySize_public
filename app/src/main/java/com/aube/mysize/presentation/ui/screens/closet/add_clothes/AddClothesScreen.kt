@@ -2,7 +2,6 @@ package com.aube.mysize.presentation.ui.screens.closet.add_clothes
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,6 +50,7 @@ import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.Visibility
 import com.aube.mysize.presentation.ui.component.closet.ImageBox
+import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
@@ -61,11 +61,12 @@ import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
 import com.aube.mysize.utils.generateMD5Hash
 import com.aube.mysize.utils.getBitmapFromUri
-import com.aube.mysize.utils.isColorBright
 import com.aube.mysize.utils.toBytes
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 
 @Composable
@@ -129,7 +130,6 @@ fun AddClothesScreen(
 
     var selectedColorInt by rememberSaveable { mutableStateOf<Int?>(null) }
     val selectedColor = selectedColorInt?.let { Color(it) }
-    var isColorBright by rememberSaveable { mutableStateOf(true) }
     var selectedImageString by rememberSaveable { mutableStateOf<String?>(null) }
     val selectedImage: Uri? = selectedImageString?.let { Uri.parse(it) }
 
@@ -144,7 +144,10 @@ fun AddClothesScreen(
     }
     var selectedCategory by rememberSaveable { mutableStateOf(SizeCategory.TOP) }
 
-    var sharedBodyFields by remember { mutableStateOf(setOf<String>()) }
+    val bodyFields = runBlocking {
+        SettingsDataStore.getBodyFields(context).first()
+    }
+    var sharedBodyFields by remember { mutableStateOf(bodyFields) }
     var selectedVisibility by rememberSaveable { mutableStateOf(Visibility.PRIVATE) }
 
     val cropLauncher = rememberLauncherForActivityResult(
@@ -183,7 +186,6 @@ fun AddClothesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(selectedColor ?: Color.White)
             .padding(16.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -204,9 +206,6 @@ fun AddClothesScreen(
                     onColorPicked = { color ->
                         if (selectedImage != null && color.alpha != 0.0f) {
                             selectedColorInt = color.toArgb()
-                            selectedColorInt?.let {
-                                isColorBright = isColorBright(it)
-                            }
                         }
                     },
                 )
@@ -245,7 +244,6 @@ fun AddClothesScreen(
             1 ->
                 AddClothesStepOne(
                     selectedColor = selectedColor,
-                    isColorBright = isColorBright,
                     selectedImage = selectedImage,
                     memo = memo,
                     onMemoChange = { memo = it },
@@ -269,9 +267,12 @@ fun AddClothesScreen(
                     accessorySizes = accessorySizes,
                     selectedCategory = selectedCategory,
                     selectedIds = selectedSizeIds,
-                    onSelectionChanged = {
+                    onSelectedIdsChanged = {
                         selectedSizeIds.clear()
                         selectedSizeIds.putAll(it)
+                    },
+                    onSelectedCategoryChanged = {
+                        selectedCategory = it
                     },
                     isOpenInFullMode = isOpenInFullMode,
                     onOpenInFullClick = { isOpenInFullMode = !isOpenInFullMode },

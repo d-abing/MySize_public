@@ -25,16 +25,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
 import com.aube.mysize.R
+import com.aube.mysize.presentation.ui.component.mysize.BodySizeCard
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 
 @Composable
 fun SettingsScreen(
     onLanguageSelected: (String) -> Unit,
+    onBodySizeSelected: (Set<String>) -> Unit
 ) {
     val context = LocalContext.current
     val selectedLanguageCode by produceState(initialValue = "en") {
         SettingsDataStore.getLanguage(context).collect { lang ->
             value = lang
+        }
+    }
+    val selectedKeys by produceState(initialValue = setOf<String>()) {
+        SettingsDataStore.getBodyFields(context).collect { keys ->
+            value = keys
         }
     }
 
@@ -56,6 +63,35 @@ fun SettingsScreen(
                 )
             },
         )
+
+        HorizontalDivider()
+
+
+        SettingItem(
+            title = "기본 공개 신체 정보 설정",
+            description = "옷장에서 전체 공개 시 공개할 신체 정보를 선택합니다",
+            content = {
+                BodySizeCard(
+                    containerColor = MaterialTheme.colorScheme.tertiary.copy(0.2f),
+                    selectableKeys = setOf(
+                        "키",
+                        "몸무게",
+                        "가슴 둘레",
+                        "허리 둘레",
+                        "엉덩이 둘레",
+                        "목 둘레",
+                        "어깨 너비",
+                        "팔 길이",
+                        "다리 안쪽 길이"
+                    ),
+                    selectedKeys = selectedKeys,
+                    onSelectionChanged = {
+                        onBodySizeSelected(it)
+                    }
+                )
+            },
+        )
+
 
         HorizontalDivider()
 

@@ -80,12 +80,10 @@ fun ColumnScope.AddClothesStepThree(
             }
 
 
-            Text(text = "전체 공개 변경 시 공개할 신체 정보", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "전체 공개 시 공개할 신체 정보", style = MaterialTheme.typography.bodyLarge)
 
             bodySizeCard?.let {
                 BodySizeCard(
-                    title = "신체",
-                    imageVector = it.imageVector,
                     description = it.description,
                     selectableKeys = it.description.keys,
                     selectedKeys = selectedKeys,
