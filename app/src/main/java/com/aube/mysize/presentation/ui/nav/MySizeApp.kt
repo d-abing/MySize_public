@@ -107,7 +107,14 @@ fun MySizeApp() {
         ) {
             composable(Screen.Recommend.route) { RecommendSizeScreen() }
             composable(Screen.MySize.route) {
-                MySizeScreen{ navController.navigate("full_detail") }
+                MySizeScreen(
+                    onNavigateToFullDetailByCategory = { sizeCategory ->
+                    navController.navigate("full_detail?category=${sizeCategory}&brand=")
+                    },
+                    onNavigateToFullDetailByBrand = { brand ->
+                        navController.navigate("full_detail?category=&brand=${brand}")
+                    }
+                )
             }
             composable(Screen.Closet.route) {
                 ClosetScreen(
@@ -126,6 +133,14 @@ fun MySizeApp() {
                     onModify = {}
                 )
             }
+            composable(Screen.ClothesModify.route) {
+                AddClothesScreen(
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") },
+                    onAddNewSize = { selectedCategory -> navController.navigate("add_size?category=${selectedCategory}") }
+                )
+            }
             composable(Screen.AddClothes.route) {
                 AddClothesScreen(
                     navController = navController,
@@ -134,7 +149,16 @@ fun MySizeApp() {
                     onAddNewSize = { selectedCategory -> navController.navigate("add_size?category=${selectedCategory}") }
                 )
             }
-            composable(Screen.FullDetail.route) { FullDetailScreen() }
+            composable(
+                route = Screen.FullDetail.route,
+                arguments = listOf(
+                    navArgument("category") {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+                FullDetailScreen(backStackEntry)
+            }
             composable(
                 route = Screen.AddSize.route,
                 arguments = listOf(

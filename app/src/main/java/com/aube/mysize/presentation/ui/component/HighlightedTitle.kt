@@ -4,7 +4,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,7 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun HighlightedTitle(
+fun RowScope.HighlightedTitle(
     text: String,
     isHighlighted: Boolean,
     onAnimationEnd: () -> Unit
@@ -61,8 +61,7 @@ fun HighlightedTitle(
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .weight(1f)
     ) {
         val color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f)
 

@@ -1,6 +1,7 @@
 package com.aube.mysize.presentation.ui.datastore
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -38,6 +39,51 @@ object SettingsDataStore {
         return context.dataStore.data
             .map { preferences ->
                 preferences[BODY_FIELDS_KEY]?.split(",")?.toSet() ?: emptySet()
+            }
+    }
+
+    private val IS_BODY_SIZE_CARD_STICKY_KEY = booleanPreferencesKey("is_body_size_card_sticky")
+
+    suspend fun saveIsBodySizeCardSticky(context: Context, value: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[IS_BODY_SIZE_CARD_STICKY_KEY] = value
+        }
+    }
+
+    fun getIsBodySizeCardSticky(context: Context): Flow<Boolean> {
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[IS_BODY_SIZE_CARD_STICKY_KEY] ?: false
+            }
+    }
+
+    private val IS_BODY_SIZE_CARD_EXPANDED_KEY = booleanPreferencesKey("is_body_size_card_expanded")
+
+    suspend fun saveIsBodySizeCardExpanded(context: Context, value: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[IS_BODY_SIZE_CARD_EXPANDED_KEY] = value
+        }
+    }
+
+    fun getIsBodySizeCardExpanded(context: Context): Flow<Boolean> {
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[IS_BODY_SIZE_CARD_EXPANDED_KEY] ?: true
+            }
+    }
+
+    private val IS_BODY_SIZE_REVEALED_KEY = booleanPreferencesKey("is_body_size_revealed")
+
+    suspend fun saveIsBodySizeRevealed(context: Context, value: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[IS_BODY_SIZE_REVEALED_KEY] = value
+        }
+    }
+
+    fun getIsBodySizeRevealed(context: Context): Flow<Boolean> {
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[IS_BODY_SIZE_REVEALED_KEY] ?: false
             }
     }
 }

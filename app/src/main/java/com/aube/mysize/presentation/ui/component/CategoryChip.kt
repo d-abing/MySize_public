@@ -20,13 +20,13 @@ import com.aube.mysize.presentation.model.SizeCategory
 fun CategoryChip(
     categories: List<SizeCategory>,
     selectedCategory: SizeCategory?,
+    enableColorHighlight: Boolean = true,
     onClick: (SizeCategory) -> Unit
 ) {
     LazyRow(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        val isBodyIncluded = categories.contains(SizeCategory.BODY)
         val allCategories = SizeCategory.entries.filter {
             categories.contains(SizeCategory.BODY) || it != SizeCategory.BODY
         }
@@ -45,7 +45,7 @@ fun CategoryChip(
                 },
                 shape = RoundedCornerShape(50),
                 colors =
-                    if (isBodyIncluded) {
+                    if (enableColorHighlight) {
                         FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Color.Black,
                             containerColor = MaterialTheme.colorScheme.secondary,

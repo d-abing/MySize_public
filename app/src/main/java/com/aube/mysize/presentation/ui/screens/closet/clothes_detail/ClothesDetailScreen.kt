@@ -1,7 +1,6 @@
 package com.aube.mysize.presentation.ui.screens.closet.clothes_detail
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,10 +22,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.clothes.Clothes
 import com.aube.mysize.presentation.model.Visibility
+import com.aube.mysize.presentation.ui.component.BodySizeCard
 import com.aube.mysize.presentation.ui.component.closet.formatAccessorySize
 import com.aube.mysize.presentation.ui.component.closet.formatBottomSize
 import com.aube.mysize.presentation.ui.component.closet.formatOnePieceSize
@@ -134,23 +139,74 @@ fun ClothesDetailScreen(
                         )
                     }
                 } else {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "삭제",
-                        modifier = Modifier.clickable {
-                            clothesViewModel.delete(currentClothes)
-                            onDelete()
-                        }
-                    )
-                }
-            }
+                    var expanded by remember { mutableStateOf(false) }
 
-            if(currentClothes.visibility == Visibility.PUBLIC && currentClothes.createUserId != 1L) { /* TODO */
-                if (currentClothes.sharedBodyFields.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("공개된 신체 정보:", style = MaterialTheme.typography.labelSmall)
-                    currentClothes.sharedBodyFields.forEach { field ->
-                        Text("- $field", style = MaterialTheme.typography.labelMedium)
+                    Box {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "더보기",
+                            modifier = Modifier.clickable {
+                                expanded = true
+                            }
+                        )
+
+                        DropdownMenu(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .width(85.dp),
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.size(16.dp).padding(end = 4.dp),
+                                            tint = Color.DarkGray,
+                                            imageVector = Icons.Default.ModeEdit,
+                                            contentDescription = "수정"
+                                        )
+                                        Text(
+                                            text = "수정",
+                                            style = MaterialTheme.typography.labelMedium
+                                                .copy(Color.DarkGray),
+                                        )
+                                    }
+                               },
+                                onClick = {
+                                    expanded = false
+                                    onModify()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.size(16.dp).padding(end = 4.dp),
+                                            tint = Color.DarkGray,
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "삭제"
+                                        )
+                                        Text(
+                                            text = "삭제",
+                                            style = MaterialTheme.typography.labelMedium
+                                                .copy(Color.DarkGray),
+                                        )
+                                    }
+                               },
+                                onClick = {
+                                    expanded = false
+                                    clothesViewModel.delete(currentClothes)
+                                    onDelete()
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -188,8 +244,30 @@ fun ClothesDetailScreen(
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
+            if(currentClothes.visibility == Visibility.PUBLIC && currentClothes.createUserId != 1L) { /* TODO */
+                if (currentClothes.sharedBodyFields.isNotEmpty()) {
+                    BodySizeCard(
+                        title = "공개된 신체 정보",
+                        imageVector = Icons.Default.Person,
+                        selectableKeys = setOf(
+                            "키",
+                            "몸무게",
+                            "가슴 둘레",
+                            "허리 둘레",
+                            "엉덩이 둘레",
+                            "목 둘레",
+                            "어깨 너비",
+                            "팔 길이",
+                            "다리 안쪽 길이"
+                        ),
+                        selectedKeys = currentClothes.sharedBodyFields,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
             summaries.forEach { summary ->
-                Log.e("ClothesDetailScreen", "summary: $summary")
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
