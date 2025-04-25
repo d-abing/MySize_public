@@ -168,7 +168,7 @@ fun formatTopSize(size: TopSize): String = buildString {
     size.sleeve?.let { appendLine("소매길이: ${it}cm") }
     size.length?.let { appendLine("총장: ${it}cm") }
     size.fit?.let { appendLine("핏: $it") }
-    size.note?.let { appendLine("메모: $it") }
+    size.note?.let { append("메모: $it") }
 }
 
 fun formatBottomSize(size: BottomSize): String = buildString {
@@ -181,7 +181,7 @@ fun formatBottomSize(size: BottomSize): String = buildString {
     size.hem?.let { appendLine("밑단단면: ${it}cm") }
     size.length?.let { appendLine("총장: ${it}cm") }
     size.fit?.let { appendLine("핏: $it") }
-    size.note?.let { appendLine("메모: $it") }
+    size.note?.let { append("메모: $it") }
 }
 
 fun formatOuterSize(size: OuterSize): String = buildString {
@@ -192,7 +192,7 @@ fun formatOuterSize(size: OuterSize): String = buildString {
     size.sleeve?.let { appendLine("소매길이: ${it}cm") }
     size.length?.let { appendLine("총장: ${it}cm") }
     size.fit?.let { appendLine("핏: $it") }
-    size.note?.let { appendLine("메모: $it") }
+    size.note?.let { append("메모: $it") }
 }
 
 fun formatOnePieceSize(size: OnePieceSize): String = buildString {
@@ -208,7 +208,7 @@ fun formatOnePieceSize(size: OnePieceSize): String = buildString {
     size.hem?.let { appendLine("밑단단면: ${it}cm") }
     size.length?.let { appendLine("총장: ${it}cm") }
     size.fit?.let { appendLine("핏: ${it}") }
-    size.note?.let { appendLine("메모: ${it}") }
+    size.note?.let { append("메모: ${it}") }
 }
 
 fun formatShoeSize(size: ShoeSize): String = buildString {
@@ -217,7 +217,7 @@ fun formatShoeSize(size: ShoeSize): String = buildString {
     size.footLength?.let { appendLine("발길이: ${it}cm") }
     size.footWidth?.let { appendLine("발볼너비: ${it}cm") }
     size.fit?.let { appendLine("핏: ${it}") }
-    size.note?.let { appendLine("메모: ${it}") }
+    size.note?.let { append("메모: ${it}") }
 }
 
 fun formatAccessorySize(size: AccessorySize): String = buildString {
@@ -225,7 +225,7 @@ fun formatAccessorySize(size: AccessorySize): String = buildString {
     appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
     size.bodyPart?.let { appendLine("착용 부위: ${it}") }
     size.fit?.let { appendLine("핏: ${it}") }
-    size.note?.let { appendLine("메모: ${it}") }
+    size.note?.let { append("메모: ${it}") }
 }
 
 @Composable

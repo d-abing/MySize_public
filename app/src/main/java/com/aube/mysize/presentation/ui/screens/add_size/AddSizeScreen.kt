@@ -68,15 +68,16 @@ fun AddSizeScreen(
 
     val listState = rememberLazyListState()
 
+    val category = backStackEntry.arguments?.getString("category") ?: "BODY"
+    var selectedCategory by remember { mutableStateOf(SizeCategory.BODY) }
+
+
     BackHandler {
         navController.previousBackStackEntry
             ?.savedStateHandle
             ?.set("new_size_id", -1)
         navController.popBackStack()
     }
-
-    val category = backStackEntry.arguments?.getString("category") ?: "BODY"
-    var selectedCategory by remember { mutableStateOf(SizeCategory.BODY) }
 
     LaunchedEffect(Unit) {
         if (category != "ADDBODY") {
@@ -145,6 +146,9 @@ fun AddSizeScreen(
                                         navController.previousBackStackEntry
                                             ?.savedStateHandle
                                             ?.set("new_size_id", newId)
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_category", selectedCategory)
                                         navController.popBackStack()
                                     } else {
                                         onNavigateToMySizeScreen()
@@ -168,6 +172,9 @@ fun AddSizeScreen(
                                         navController.previousBackStackEntry
                                             ?.savedStateHandle
                                             ?.set("new_size_id", newId)
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_category", selectedCategory)
                                         navController.popBackStack()
                                     } else {
                                         onNavigateToMySizeScreen()
@@ -191,6 +198,9 @@ fun AddSizeScreen(
                                         navController.previousBackStackEntry
                                             ?.savedStateHandle
                                             ?.set("new_size_id", newId)
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_category", selectedCategory)
                                         navController.popBackStack()
                                     } else {
                                         onNavigateToMySizeScreen()
@@ -214,6 +224,9 @@ fun AddSizeScreen(
                                         navController.previousBackStackEntry
                                             ?.savedStateHandle
                                             ?.set("new_size_id", newId)
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_category", selectedCategory)
                                         navController.popBackStack()
                                     } else {
                                         onNavigateToMySizeScreen()
@@ -237,6 +250,9 @@ fun AddSizeScreen(
                                         navController.previousBackStackEntry
                                             ?.savedStateHandle
                                             ?.set("new_size_id", newId)
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_category", selectedCategory)
                                         navController.popBackStack()
                                     } else {
                                         onNavigateToMySizeScreen()
@@ -259,6 +275,9 @@ fun AddSizeScreen(
                                         navController.previousBackStackEntry
                                             ?.savedStateHandle
                                             ?.set("new_size_id", newId)
+                                        navController.previousBackStackEntry
+                                            ?.savedStateHandle
+                                            ?.set("new_size_category", selectedCategory)
                                         navController.popBackStack()
                                     } else {
                                         onNavigateToMySizeScreen()

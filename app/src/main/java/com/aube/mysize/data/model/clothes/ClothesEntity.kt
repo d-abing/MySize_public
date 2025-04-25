@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 @Entity(tableName = "clothes")
 data class ClothesEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     val imageBytes: ByteArray,
     val hash: String,
     val dominantColor: Int,

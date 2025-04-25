@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.Visibility
+import com.aube.mysize.presentation.ui.component.BodySizeCard
 import com.aube.mysize.presentation.ui.component.SelectOptionCard
-import com.aube.mysize.presentation.ui.component.mysize.BodySizeCard
 
 @Composable
 fun ColumnScope.AddClothesStepThree(

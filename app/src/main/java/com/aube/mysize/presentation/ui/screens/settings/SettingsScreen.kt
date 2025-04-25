@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
 import com.aube.mysize.R
-import com.aube.mysize.presentation.ui.component.mysize.BodySizeCard
+import com.aube.mysize.presentation.ui.component.BodySizeCard
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 
 @Composable

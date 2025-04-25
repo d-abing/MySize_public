@@ -120,7 +120,11 @@ fun MySizeApp() {
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: return@composable
-                ClothesDetailScreen(clothesId = id)
+                ClothesDetailScreen(
+                    clothesId = id,
+                    onDelete = { navController.popBackStack() },
+                    onModify = {}
+                )
             }
             composable(Screen.AddClothes.route) {
                 AddClothesScreen(

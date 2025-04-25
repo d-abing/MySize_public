@@ -5,7 +5,7 @@ import com.aube.mysize.presentation.model.Visibility
 import java.time.LocalDateTime
 
 data class Clothes(
-    val id: Int = 0,
+    val id: Long = 0L,
     val imageBytes: ByteArray,
     val hash: String,
     val dominantColor: Int,

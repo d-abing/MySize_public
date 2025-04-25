@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.presentation.model.BodySizeCardUiModel
+import com.aube.mysize.presentation.ui.component.BodySizeCard
 
 @Composable
 fun SensitiveBodySizeCard(

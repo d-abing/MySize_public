@@ -66,83 +66,96 @@ fun ColumnScope.AddClothesStepTwo(
     onPrevious: () -> Unit,
     onNext: () -> Unit
 ) {
+    val formatter = DateTimeFormatter.ofPattern("yy.MM.dd")
+
     val sizeItems = remember(
         topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes, selectedCategory
     ) {
         when (selectedCategory) {
+
             SizeCategory.TOP -> topSizes.map { size ->
                 val title = "${size.type} ${size.sizeLabel} - ${size.brand}"
-
                 val sizeLabel = listOfNotNull(
-                    size.date.format(DateTimeFormatter.ofPattern("yy.MM.dd")),
+                    size.date.format(formatter),
                     size.shoulder?.let { "어깨 너비: ${it}cm" },
                     size.chest?.let { "가슴 단면: ${it}cm" },
+                    size.sleeve?.let { "소매 길이: ${it}cm" },
                     size.length?.let { "총장: ${it}cm" },
-                ).take(3).joinToString("\n")
-
+                    size.fit?.let { "핏: $it" },
+                    size.note?.let { "메모: $it" },
+                ).take(5).joinToString("\n")
                 size.id to (title to sizeLabel)
             }
 
             SizeCategory.BOTTOM -> bottomSizes.map { size ->
                 val title = "${size.type} ${size.sizeLabel} - ${size.brand}"
-
                 val sizeLabel = listOfNotNull(
-                    size.date.format(DateTimeFormatter.ofPattern("yy.MM.dd")),
+                    size.date.format(formatter),
                     size.waist?.let { "허리 단면: ${it}cm" },
+                    size.rise?.let { "밑위: ${it}cm" },
                     size.hip?.let { "엉덩이 단면: ${it}cm" },
+                    size.thigh?.let { "허벅지 단면: ${it}cm" },
+                    size.hem?.let { "밑단 단면: ${it}cm" },
                     size.length?.let { "총장: ${it}cm" },
-                ).take(3).joinToString("\n")
-
+                    size.fit?.let { "핏: $it" },
+                    size.note?.let { "메모: $it" },
+                ).take(5).joinToString("\n")
                 size.id to (title to sizeLabel)
             }
 
             SizeCategory.OUTER -> outerSizes.map { size ->
                 val title = "${size.type} ${size.sizeLabel} - ${size.brand}"
-
                 val sizeLabel = listOfNotNull(
-                    size.date.format(DateTimeFormatter.ofPattern("yy.MM.dd")),
+                    size.date.format(formatter),
                     size.shoulder?.let { "어깨 너비: ${it}cm" },
                     size.chest?.let { "가슴 단면: ${it}cm" },
+                    size.sleeve?.let { "소매 길이: ${it}cm" },
                     size.length?.let { "총장: ${it}cm" },
-                ).take(3).joinToString("\n")
-
+                    size.fit?.let { "핏: $it" },
+                    size.note?.let { "메모: $it" },
+                ).take(5).joinToString("\n")
                 size.id to (title to sizeLabel)
             }
 
             SizeCategory.ONE_PIECE -> onePieceSizes.map { size ->
                 val title = "${size.type} ${size.sizeLabel} - ${size.brand}"
-
                 val sizeLabel = listOfNotNull(
-                    size.date.format(DateTimeFormatter.ofPattern("yy.MM.dd")),
+                    size.date.format(formatter),
                     size.shoulder?.let { "어깨 너비: ${it}cm" },
                     size.chest?.let { "가슴 단면: ${it}cm" },
+                    size.waist?.let { "허리 단면: ${it}cm" },
+                    size.hip?.let { "엉덩이 단면: ${it}cm" },
+                    size.sleeve?.let { "소매 길이: ${it}cm" },
+                    size.rise?.let { "밑위: ${it}cm" },
+                    size.thigh?.let { "허벅지 단면: ${it}cm" },
+                    size.hem?.let { "밑단 단면: ${it}cm" },
                     size.length?.let { "총장: ${it}cm" },
-                ).take(3).joinToString("\n")
-
+                    size.fit?.let { "핏: ${it}" },
+                    size.note?.let { "메모: ${it}" }
+                ).take(5).joinToString("\n")
                 size.id to (title to sizeLabel)
             }
 
             SizeCategory.SHOE -> shoeSizes.map { size ->
                 val title = "${size.type} ${size.sizeLabel} - ${size.brand}"
-
                 val sizeLabel = listOfNotNull(
-                    size.date.format(DateTimeFormatter.ofPattern("yy.MM.dd")),
+                    size.date.format(formatter),
                     size.footLength?.let { "발 길이: ${it}cm" },
-                    size.footWidth?.let { "발볼 너비: ${it}cm" }
-                ).take(3).joinToString("\n")
-
+                    size.footWidth?.let { "발볼 너비: ${it}cm" },
+                    size.fit?.let { "핏: ${it}" },
+                    size.note?.let { "메모: ${it}" }
+                ).take(5).joinToString("\n")
                 size.id to (title to sizeLabel)
             }
 
             SizeCategory.ACCESSORY -> accessorySizes.map { size ->
                 val title = "${size.type} ${size.sizeLabel} - ${size.brand}"
-
                 val sizeLabel = listOfNotNull(
-                    size.date.format(DateTimeFormatter.ofPattern("yy.MM.dd")),
-                    size.bodyPart?.let { "부위: $it" },
-                    size.note?.let { "참고: $it" }
-                ).take(3).joinToString("\n")
-
+                    size.date.format(formatter),
+                    size.bodyPart?.let { "착용 부위: $it" },
+                    size.fit?.let { "핏: ${it}" },
+                    size.note?.let { "메모: ${it}" }
+                ).take(5).joinToString("\n")
                 size.id to (title to sizeLabel)
             }
 
@@ -218,15 +231,13 @@ fun ColumnScope.AddClothesStepTwo(
                                     val categoryKey = selectedCategory.name
 
                                     onSelectedIdsChanged(
-                                        if (isSelected) {
-                                            selectedIds - categoryKey
-                                        } else {
-                                            selectedIds + (categoryKey to id)
+                                        selectedIds.toMutableMap().apply {
+                                            if (isSelected) remove(categoryKey)
+                                            else put(categoryKey, id)
                                         }
                                     )
-                                },
-
-                                )
+                                }
+                            )
                         }
 
                         if (rowItems.size < 2) {

@@ -137,11 +137,11 @@ fun AddClothesScreen(
     var tags by rememberSaveable(stateSaver = setSaver) {
         mutableStateOf(setOf())
     }
-    val selectedSizeIds = rememberSaveable(
-        saver = mapSaver()
-    ) {
+    val selectedSizeIds = remember { mutableStateMapOf<String, Int>() }
+    val savedSelectedSizeIds = rememberSaveable(saver = mapSaver()) {
         mutableStateMapOf()
     }
+
     var selectedCategory by rememberSaveable { mutableStateOf(SizeCategory.TOP) }
 
     val bodyFields = runBlocking {
@@ -172,13 +172,22 @@ fun AddClothesScreen(
     )
 
     LaunchedEffect(Unit) {
+        if (savedSelectedSizeIds.isNotEmpty()) {
+            selectedSizeIds.clear()
+            selectedSizeIds.putAll(savedSelectedSizeIds)
+        }
+
         navController.currentBackStackEntryFlow.collect { backStackEntry ->
             val newId = backStackEntry.savedStateHandle.get<Int>("new_size_id")
+            val newCategory = backStackEntry.savedStateHandle.get<SizeCategory>("new_size_category")
+
             if (newId != null) {
-                if (newId != -1) {
-                    selectedSizeIds[selectedCategory.name] = newId
+                if (newId != -1 && newCategory != null) {
+                    selectedCategory = newCategory
+                    selectedSizeIds[newCategory.name] = newId
                 }
                 backStackEntry.savedStateHandle.remove<Int>("new_size_id")
+                backStackEntry.savedStateHandle.remove<SizeCategory>("new_size_category")
             }
         }
     }
@@ -278,6 +287,7 @@ fun AddClothesScreen(
                     onOpenInFullClick = { isOpenInFullMode = !isOpenInFullMode },
                     onAddNewSize = { category ->
                         selectedCategory = category
+                        savedSelectedSizeIds += selectedSizeIds
                         onAddNewSize(category)
                     },
                     onPrevious = {
@@ -303,6 +313,7 @@ fun AddClothesScreen(
                     },
                     onComplete = {
                         val imageBytes = (context.getBitmapFromUri(selectedImage!!)).toBytes()
+                        val randomUserId = listOf(1L, 2L).random()
 
                         onClothesSaved(
                             Clothes(
@@ -315,7 +326,7 @@ fun AddClothesScreen(
                                 sharedBodyFields = sharedBodyFields,
                                 createdAt = LocalDateTime.now(),
                                 updatedAt = null,
-                                createUserId = 1,
+                                createUserId = randomUserId,
                                 createUserProfileFilePath = "",
                                 visibility = selectedVisibility
                             )

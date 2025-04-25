@@ -41,9 +41,7 @@ class ClothesViewModel @Inject constructor(
         }
     }
 
-    fun getById(id: Int, onResult: (Clothes?) -> Unit) {
-        viewModelScope.launch {
-            onResult(getClothesByIdUseCase(id))
-        }
+    suspend fun getById(id: Int): Clothes? {
+        return getClothesByIdUseCase(id)
     }
 }

@@ -23,7 +23,6 @@ fun BigSizeButton(
     title: String,
     sizeLabel: String? = null,
     titleMaxLines: Int = 2,
-    contentMaxLines: Int? = null,
     onClick: () -> Unit
 ) {
     OutlinedButton(
@@ -51,7 +50,6 @@ fun BigSizeButton(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
                     text = sizeLabel,
-                    maxLines = contentMaxLines ?: Int.MAX_VALUE,
                     style = MaterialTheme.typography.labelSmall
                 )
             }
