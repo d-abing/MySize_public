@@ -41,6 +41,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -87,6 +88,8 @@ fun MySizeContent(
     val allCategories = SizeCategory.entries.filter { it != SizeCategory.BODY }
     val categorySectionIndices = remember { mutableStateMapOf<SizeCategory, Int>() }
     val highlightedCategory = remember { mutableStateOf<SizeCategory?>(null) }
+    val bodySizeCardHeightPx = remember { mutableStateOf(0) }
+    val stickyHeaderHeightPx = remember { mutableStateOf(0) }
 
     LazyColumn(
         modifier = Modifier
@@ -101,7 +104,10 @@ fun MySizeContent(
                         bodySizeCard = card,
                         isBodySizeCardSticky = isBodySizeCardSticky,
                         modifier = Modifier
-                            .padding(vertical = 4.dp, horizontal = 16.dp),
+                            .padding(vertical = 4.dp, horizontal = 16.dp)
+                            .onGloballyPositioned { coordinates ->
+                                bodySizeCardHeightPx.value = coordinates.size.height
+                            },
                         onBodySizeCardStickyChanged = {
                             if (onBodySizeCardStickyChanged != null) {
                                 onBodySizeCardStickyChanged()
@@ -118,6 +124,9 @@ fun MySizeContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
+                    .onGloballyPositioned { layoutCoordinates ->
+                        stickyHeaderHeightPx.value = layoutCoordinates.size.height
+                    }
             ) {
                 if (isBodySizeCardSticky != null && isBodySizeCardSticky) {
                     bodySizeCard?.let { card ->
@@ -147,7 +156,7 @@ fun MySizeContent(
                     CategoryChip(
                         categories = categorySectionIndices.keys.toList(),
                         selectedCategory = selectedCategory,
-                        enableColorHighlight = if(isFullDetailMode) true else false,
+                        enableColorHighlight = isFullDetailMode,
                         onClick = { category ->
                             selectedCategory = category
 
@@ -156,7 +165,12 @@ fun MySizeContent(
 
                                 categorySectionIndices[category]?.let { index ->
                                     coroutineScope.launch {
-                                        listState.animateScrollToItem(index)
+                                        val offset = if (isBodySizeCardSticky == false) {
+                                            -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
+                                        } else {
+                                            -stickyHeaderHeightPx.value
+                                        }
+                                        listState.animateScrollToItem(index, offset)
                                     }
                                 }
                             }
@@ -179,9 +193,31 @@ fun MySizeContent(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                         singleLine = true,
-                        trailingIcon = { Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = null)
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                                modifier = Modifier.clickable {
+                                    val matchedBrand = brandSectionIndices.keys.firstOrNull {
+                                        it.contains(searchQuery, ignoreCase = true)
+                                    }
+                                    matchedBrand?.let {
+                                        highlightedBrand.value = it
+                                        coroutineScope.launch {
+                                            val offset = if (isBodySizeCardSticky == false) {
+                                                -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
+                                            } else {
+                                                -stickyHeaderHeightPx.value
+                                            }
+                                            listState.animateScrollToItem(
+                                                brandSectionIndices[it] ?: 0,
+                                                offset
+                                            )
+                                        }
+                                    }
+                                    keyboardController?.hide()
+                                }
+                            )
                         },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(
@@ -192,7 +228,10 @@ fun MySizeContent(
                                 matchedBrand?.let {
                                     highlightedBrand.value = it
                                     coroutineScope.launch {
-                                        listState.animateScrollToItem(brandSectionIndices[it] ?: 0)
+                                        listState.animateScrollToItem(
+                                            brandSectionIndices[it] ?: 0,
+                                            -stickyHeaderHeightPx.value
+                                        )
                                     }
                                 }
                                 keyboardController?.hide()
@@ -213,13 +252,15 @@ fun MySizeContent(
                             .padding(horizontal = 16.dp),
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                     )
+
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
         }
 
         // 3. 종류별 보기 or 브랜드별 보기
         if (selectedTab == 0) {
-            var currentIndex = 1
+            var currentIndex = if (isBodySizeCardSticky != null && !isBodySizeCardSticky) 2 else 1
 
             categoryGroupedData.forEach { (categoryLabel, subTypeMap) ->
 
@@ -227,6 +268,8 @@ fun MySizeContent(
                 category?.let {
                     categorySectionIndices[category] = currentIndex
                 }
+
+                if (isFullDetailMode && category != selectedCategory) return@forEach
 
                 item {
                     Column(
@@ -297,17 +340,19 @@ fun MySizeContent(
                 currentIndex++
             }
         } else {
-            var currentIndex = 0
+            var currentIndex = if (isBodySizeCardSticky != null && !isBodySizeCardSticky) 2 else 1
 
             brandGroupedData.forEach { (brand, categoryMap) ->
                 brandSectionIndices[brand] = currentIndex
+
+                if (isFullDetailMode && !brand.contains(searchQuery, ignoreCase = true)) return@forEach
 
                 item {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
 
-                            .padding(vertical = 8.dp, horizontal = 16.dp)
+                            .padding(vertical = 4.dp, horizontal = 16.dp)
                     ) {
                         Row(
                             modifier = Modifier

@@ -92,12 +92,18 @@ fun ClothesDetailScreen(
         }
 
         val summaries = listOfNotNull(
-            currentClothes.linkedSizeIds["TOP"]?.let { topSizeViewModel.getSizeById(it)?.let(::formatTopSize) },
-            currentClothes.linkedSizeIds["BOTTOM"]?.let { bottomSizeViewModel.getSizeById(it)?.let(::formatBottomSize) },
-            currentClothes.linkedSizeIds["OUTER"]?.let { outerSizeViewModel.getSizeById(it)?.let(::formatOuterSize) },
-            currentClothes.linkedSizeIds["ONE_PIECE"]?.let { onePieceSizeViewModel.getSizeById(it)?.let(::formatOnePieceSize) },
-            currentClothes.linkedSizeIds["SHOE"]?.let { shoeSizeViewModel.getSizeById(it)?.let(::formatShoeSize) },
-            currentClothes.linkedSizeIds["ACCESSORY"]?.let { accessorySizeViewModel.getSizeById(it)?.let(::formatAccessorySize) }
+            currentClothes.linkedSizeIds["TOP"]?.let { topSizeViewModel.getSizeById(it)?.let { size ->
+                formatTopSize(size, currentClothes.memoVisibility)} },
+            currentClothes.linkedSizeIds["BOTTOM"]?.let { bottomSizeViewModel.getSizeById(it)?.let { size ->
+                formatBottomSize(size, currentClothes.memoVisibility)} },
+            currentClothes.linkedSizeIds["OUTER"]?.let { outerSizeViewModel.getSizeById(it)?.let { size ->
+                formatOuterSize(size, currentClothes.memoVisibility)} },
+            currentClothes.linkedSizeIds["ONE_PIECE"]?.let { onePieceSizeViewModel.getSizeById(it)?.let { size ->
+                formatOnePieceSize(size, currentClothes.memoVisibility)} },
+            currentClothes.linkedSizeIds["SHOE"]?.let { shoeSizeViewModel.getSizeById(it)?.let { size ->
+                formatShoeSize(size, currentClothes.memoVisibility)} },
+            currentClothes.linkedSizeIds["ACCESSORY"]?.let { accessorySizeViewModel.getSizeById(it)?.let { size ->
+                formatAccessorySize(size, currentClothes.memoVisibility)} }
         )
 
         val formattedDate = currentClothes.createdAt.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))

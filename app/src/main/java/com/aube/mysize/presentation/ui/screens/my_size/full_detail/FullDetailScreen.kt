@@ -23,9 +23,7 @@ import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeContentUiModel
 import com.aube.mysize.presentation.ui.component.mysize.bottomsheet.SizePreviewBottomSheet
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeContent
-import com.aube.mysize.presentation.ui.screens.my_size.buildBrandGroupedSizeData
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
-import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
@@ -35,43 +33,20 @@ import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
 @Composable
 fun FullDetailScreen(
     backStackEntry: NavBackStackEntry,
-    bodyViewModel: BodySizeViewModel = hiltViewModel(),
-    topViewModel: TopSizeViewModel = hiltViewModel(),
-    bottomViewModel: BottomSizeViewModel = hiltViewModel(),
-    outerViewModel: OuterSizeViewModel = hiltViewModel(),
-    onePieceViewModel: OnePieceSizeViewModel = hiltViewModel(),
-    shoeViewModel: ShoeSizeViewModel = hiltViewModel(),
-    accessoryViewModel: AccessorySizeViewModel = hiltViewModel(),
+    topSizeViewModel: TopSizeViewModel = hiltViewModel(),
+    bottomSizeViewModel: BottomSizeViewModel = hiltViewModel(),
+    outerSizeViewModel: OuterSizeViewModel = hiltViewModel(),
+    onePieceSizeViewModel: OnePieceSizeViewModel = hiltViewModel(),
+    shoeSizeViewModel: ShoeSizeViewModel = hiltViewModel(),
+    accessorySizeViewModel: AccessorySizeViewModel = hiltViewModel(),
 ) {
-    val topSizes by topViewModel.sizes.collectAsState()
-    val bottomSizes by bottomViewModel.sizes.collectAsState()
-    val outerSizes by outerViewModel.sizes.collectAsState()
-    val onePieceSizes by onePieceViewModel.sizes.collectAsState()
-    val shoeSizes by shoeViewModel.sizes.collectAsState()
-    val accessorySizes by accessoryViewModel.sizes.collectAsState()
+    val topSizes by topSizeViewModel.sizes.collectAsState()
+    val bottomSizes by bottomSizeViewModel.sizes.collectAsState()
+    val outerSizes by outerSizeViewModel.sizes.collectAsState()
+    val onePieceSizes by onePieceSizeViewModel.sizes.collectAsState()
+    val shoeSizes by shoeSizeViewModel.sizes.collectAsState()
+    val accessorySizes by accessorySizeViewModel.sizes.collectAsState()
 
-    FullDetailScreen(
-        backStackEntry = backStackEntry,
-        topSizes = topSizes,
-        bottomSizes = bottomSizes,
-        outerSizes = outerSizes,
-        onePieceSizes = onePieceSizes,
-        shoeSizes = shoeSizes,
-        accessorySizes = accessorySizes,
-    )
-}
-
-
-@Composable
-fun FullDetailScreen(
-    backStackEntry: NavBackStackEntry,
-    topSizes: List<TopSize>,
-    bottomSizes: List<BottomSize>,
-    outerSizes: List<OuterSize>,
-    onePieceSizes: List<OnePieceSize>,
-    shoeSizes: List<ShoeSize>,
-    accessorySizes: List<AccessorySize>,
-) {
     val category = backStackEntry.arguments?.getString("category") ?: ""
     var selectedCategory by remember { mutableStateOf(SizeCategory.TOP) }
 
@@ -92,18 +67,12 @@ fun FullDetailScreen(
     ) {
         buildAllCategoryGroupedSizeData(
             topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes
-        ).filterKeys { it == selectedCategory.label }
-    }
-
-    val brandGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
-        buildBrandGroupedSizeData(
-            topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) { selectedSize = it }
+        ) { selectedSize = it }
     }
 
     val allBrandGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes, selectedBrand) {
         buildAllBrandGroupedSizeData(
-            allSizes = (topSizes + bottomSizes + outerSizes + onePieceSizes + shoeSizes + accessorySizes)
-                .filter { it.brand == selectedBrand },
+            allSizes = (topSizes + bottomSizes + outerSizes + onePieceSizes + shoeSizes + accessorySizes),
             onSizeClick = { selectedSize = it }
         )
     }
@@ -111,6 +80,18 @@ fun FullDetailScreen(
     if (selectedSize != null) {
         SizePreviewBottomSheet(
             size = selectedSize!!,
+            onEdit = {},
+            onDelete = { size ->
+                when (size) {
+                    is TopSize -> topSizeViewModel.delete(size)
+                    is BottomSize -> bottomSizeViewModel.delete(size)
+                    is OuterSize -> outerSizeViewModel.delete(size)
+                    is OnePieceSize -> onePieceSizeViewModel.delete(size)
+                    is ShoeSize -> shoeSizeViewModel.delete(size)
+                    is AccessorySize -> accessorySizeViewModel.delete(size)
+                }
+                selectedSize = null
+            },
             onDismiss = { selectedSize = null },
         )
     }
@@ -132,7 +113,7 @@ fun FullDetailScreen(
         searchQuery = selectedBrand,
         onSearchQueryChanged = { selectedBrand = it },
         categoryGroupedData = allCategoryGroupedData,
-        brandGroupedData = if(selectedBrand == "") brandGroupedData else allBrandGroupedData,
+        brandGroupedData = allBrandGroupedData,
     )
 }
 
@@ -180,7 +161,7 @@ fun buildAllCategoryGroupedSizeData(
 
 fun buildAllBrandGroupedSizeData(
     allSizes: List<ClothesSize>,
-    onSizeClick: (ClothesSize) -> Unit
+    onSizeClick: (ClothesSize) -> Unit = {}
 ): Map<String, Map<String, List<SizeContentUiModel>>> {
     val brandGrouped = allSizes.groupBy { it.brand }
 
@@ -202,27 +183,22 @@ fun buildAllBrandGroupedSizeData(
                 }
             }
             .mapValues { (_, groupedByCategory) ->
-                val typeGrouped = groupedByCategory
+                groupedByCategory
                     .groupBy { it.type }
                     .entries
                     .sortedWith(compareBy({ it.key.contains("기타") }, { it.key }))
-                    .map { (_, typeGroup) ->
-                        val sizeLabelCountMap = typeGroup.groupingBy { it.sizeLabel }.eachCount()
-                        val maxCount = sizeLabelCountMap.maxByOrNull { it.value }?.value ?: 0
-                        val candidates = sizeLabelCountMap.filter { it.value == maxCount }.keys
-                        val selected = typeGroup.filter { it.sizeLabel in candidates }
-                            .maxByOrNull { it.date }!!
-
-                        SizeContentUiModel(
-                            title = selected.type,
-                            sizeLabel = selected.sizeLabel,
-                            onClick = { onSizeClick(selected) }
-                        )
+                    .flatMap { (_, typeGroup) -> // ← 여기 flatMap!!
+                        typeGroup.sortedByDescending { it.date }.map { size ->
+                            SizeContentUiModel(
+                                title = size.type,
+                                sizeLabel = size.sizeLabel,
+                                onClick = { onSizeClick(size) }
+                            )
+                        }
                     }
-
-                typeGrouped
             }
 
         brand to categoryGrouped
     }
 }
+

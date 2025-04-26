@@ -20,7 +20,6 @@ import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.domain.model.size.toUi
-import com.aube.mysize.presentation.model.BodySizeCardUiModel
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.ui.component.mysize.bottomsheet.SizePreviewBottomSheet
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
@@ -36,48 +35,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MySizeScreen(
-    bodyViewModel: BodySizeViewModel = hiltViewModel(),
-    topViewModel: TopSizeViewModel = hiltViewModel(),
-    bottomViewModel: BottomSizeViewModel = hiltViewModel(),
-    outerViewModel: OuterSizeViewModel = hiltViewModel(),
-    onePieceViewModel: OnePieceSizeViewModel = hiltViewModel(),
-    shoeViewModel: ShoeSizeViewModel = hiltViewModel(),
-    accessoryViewModel: AccessorySizeViewModel = hiltViewModel(),
-    onNavigateToFullDetailByCategory: (SizeCategory) -> Unit,
-    onNavigateToFullDetailByBrand: (String) -> Unit
-) {
-    val bodySizes by bodyViewModel.sizes.collectAsState()
-    val topSizes by topViewModel.sizes.collectAsState()
-    val bottomSizes by bottomViewModel.sizes.collectAsState()
-    val outerSizes by outerViewModel.sizes.collectAsState()
-    val onePieceSizes by onePieceViewModel.sizes.collectAsState()
-    val shoeSizes by shoeViewModel.sizes.collectAsState()
-    val accessorySizes by accessoryViewModel.sizes.collectAsState()
-
-    val bodySizeCard = bodySizes.firstOrNull()?.toUi()
-
-    MySizeScreen(
-        bodySizeCard = bodySizeCard,
-        topSizes = topSizes,
-        bottomSizes = bottomSizes,
-        outerSizes = outerSizes,
-        onePieceSizes = onePieceSizes,
-        shoeSizes = shoeSizes,
-        accessorySizes = accessorySizes,
-        onNavigateToFullDetailByCategory =  onNavigateToFullDetailByCategory,
-        onNavigateToFullDetailByBrand = onNavigateToFullDetailByBrand
-    )
-}
-
-@Composable
-fun MySizeScreen(
-    bodySizeCard: BodySizeCardUiModel?,
-    topSizes: List<TopSize>,
-    bottomSizes: List<BottomSize>,
-    outerSizes: List<OuterSize>,
-    onePieceSizes: List<OnePieceSize>,
-    shoeSizes: List<ShoeSize>,
-    accessorySizes: List<AccessorySize>,
+    bodySizeViewModel: BodySizeViewModel = hiltViewModel(),
+    topSizeViewModel: TopSizeViewModel = hiltViewModel(),
+    bottomSizeViewModel: BottomSizeViewModel = hiltViewModel(),
+    outerSizeViewModel: OuterSizeViewModel = hiltViewModel(),
+    onePieceSizeViewModel: OnePieceSizeViewModel = hiltViewModel(),
+    shoeSizeViewModel: ShoeSizeViewModel = hiltViewModel(),
+    accessorySizeViewModel: AccessorySizeViewModel = hiltViewModel(),
     onNavigateToFullDetailByCategory: (SizeCategory) -> Unit,
     onNavigateToFullDetailByBrand: (String) -> Unit
 ) {
@@ -95,6 +59,17 @@ fun MySizeScreen(
 
     var selectedSize by remember { mutableStateOf<ClothesSize?>(null) }
 
+    val bodySizes by bodySizeViewModel.sizes.collectAsState()
+    val topSizes by topSizeViewModel.sizes.collectAsState()
+    val bottomSizes by bottomSizeViewModel.sizes.collectAsState()
+    val outerSizes by outerSizeViewModel.sizes.collectAsState()
+    val onePieceSizes by onePieceSizeViewModel.sizes.collectAsState()
+    val shoeSizes by shoeSizeViewModel.sizes.collectAsState()
+    val accessorySizes by accessorySizeViewModel.sizes.collectAsState()
+
+    val bodySizeCard = bodySizes.firstOrNull()?.toUi()
+
+
     val typeGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
         buildCategoryGroupedSizeData(
             topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) { selectedSize = it }
@@ -108,6 +83,18 @@ fun MySizeScreen(
     if (selectedSize != null) {
         SizePreviewBottomSheet(
             size = selectedSize!!,
+            onEdit = { /* TODO: Implement edit functionality */ },
+            onDelete = { size ->
+                when (size) {
+                    is TopSize -> topSizeViewModel.delete(size)
+                    is BottomSize -> bottomSizeViewModel.delete(size)
+                    is OuterSize -> outerSizeViewModel.delete(size)
+                    is OnePieceSize -> onePieceSizeViewModel.delete(size)
+                    is ShoeSize -> shoeSizeViewModel.delete(size)
+                    is AccessorySize -> accessorySizeViewModel.delete(size)
+                }
+                selectedSize = null
+            },
             onDismiss = { selectedSize = null },
         )
     }

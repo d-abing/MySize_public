@@ -185,7 +185,7 @@ fun ShoeSizeInputForm(
         LabeledTextField(
             value = note,
             onValueChange = { note = it },
-            label = "참고 사항",
+            label = "메모",
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done,
         )

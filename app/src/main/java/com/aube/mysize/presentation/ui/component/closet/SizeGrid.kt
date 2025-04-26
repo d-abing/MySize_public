@@ -41,6 +41,7 @@ import com.aube.mysize.domain.model.size.OnePieceSize
 import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
+import com.aube.mysize.presentation.model.MemoVisibility
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
@@ -160,7 +161,7 @@ fun SizeGrid(
     }
 }
 
-fun formatTopSize(size: TopSize): String = buildString {
+fun formatTopSize(size: TopSize, memoVisibility: MemoVisibility? = null): String = buildString {
     appendLine("👕")
     appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
     size.shoulder?.let { appendLine("어깨너비: ${it}cm") }
@@ -168,10 +169,10 @@ fun formatTopSize(size: TopSize): String = buildString {
     size.sleeve?.let { appendLine("소매길이: ${it}cm") }
     size.length?.let { appendLine("총장: ${it}cm") }
     size.fit?.let { appendLine("핏: $it") }
-    size.note?.let { append("메모: $it") }
+    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
 }
 
-fun formatBottomSize(size: BottomSize): String = buildString {
+fun formatBottomSize(size: BottomSize, memoVisibility: MemoVisibility? = null): String = buildString {
     appendLine("👖")
     appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
     size.waist?.let { appendLine("허리단면: ${it}cm") }
@@ -181,10 +182,10 @@ fun formatBottomSize(size: BottomSize): String = buildString {
     size.hem?.let { appendLine("밑단단면: ${it}cm") }
     size.length?.let { appendLine("총장: ${it}cm") }
     size.fit?.let { appendLine("핏: $it") }
-    size.note?.let { append("메모: $it") }
+    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
 }
 
-fun formatOuterSize(size: OuterSize): String = buildString {
+fun formatOuterSize(size: OuterSize, memoVisibility: MemoVisibility? = null): String = buildString {
     appendLine("🧥")
     appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
     size.shoulder?.let { appendLine("어깨너비: ${it}cm") }
@@ -192,10 +193,10 @@ fun formatOuterSize(size: OuterSize): String = buildString {
     size.sleeve?.let { appendLine("소매길이: ${it}cm") }
     size.length?.let { appendLine("총장: ${it}cm") }
     size.fit?.let { appendLine("핏: $it") }
-    size.note?.let { append("메모: $it") }
+    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
 }
 
-fun formatOnePieceSize(size: OnePieceSize): String = buildString {
+fun formatOnePieceSize(size: OnePieceSize, memoVisibility: MemoVisibility? = null): String = buildString {
     appendLine("👗")
     appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
     size.shoulder?.let { appendLine("어깨너비: ${it}cm") }
@@ -208,24 +209,24 @@ fun formatOnePieceSize(size: OnePieceSize): String = buildString {
     size.hem?.let { appendLine("밑단단면: ${it}cm") }
     size.length?.let { appendLine("총장: ${it}cm") }
     size.fit?.let { appendLine("핏: ${it}") }
-    size.note?.let { append("메모: ${it}") }
+    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
 }
 
-fun formatShoeSize(size: ShoeSize): String = buildString {
+fun formatShoeSize(size: ShoeSize, memoVisibility: MemoVisibility? = null): String = buildString {
     appendLine("👟")
     appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
     size.footLength?.let { appendLine("발길이: ${it}cm") }
     size.footWidth?.let { appendLine("발볼너비: ${it}cm") }
     size.fit?.let { appendLine("핏: ${it}") }
-    size.note?.let { append("메모: ${it}") }
+    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
 }
 
-fun formatAccessorySize(size: AccessorySize): String = buildString {
+fun formatAccessorySize(size: AccessorySize, memoVisibility: MemoVisibility? = null): String = buildString {
     appendLine("💍")
     appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
     size.bodyPart?.let { appendLine("착용 부위: ${it}") }
     size.fit?.let { appendLine("핏: ${it}") }
-    size.note?.let { append("메모: ${it}") }
+    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
 }
 
 @Composable

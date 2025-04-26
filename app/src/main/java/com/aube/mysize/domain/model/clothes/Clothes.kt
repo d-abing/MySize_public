@@ -1,6 +1,7 @@
 package com.aube.mysize.domain.model.clothes
 
 import com.aube.mysize.data.model.clothes.ClothesEntity
+import com.aube.mysize.presentation.model.MemoVisibility
 import com.aube.mysize.presentation.model.Visibility
 import java.time.LocalDateTime
 
@@ -17,7 +18,8 @@ data class Clothes(
     val updatedAt: LocalDateTime?,
     val createUserId: Long,
     val createUserProfileFilePath: String,
-    val visibility: Visibility
+    val visibility: Visibility,
+    val memoVisibility: MemoVisibility
 )
 
 fun Clothes.toEntity(): ClothesEntity {
@@ -34,6 +36,7 @@ fun Clothes.toEntity(): ClothesEntity {
         updatedAt = updatedAt,
         createUserId = createUserId,
         createUserProfileFilePath = createUserProfileFilePath,
-        visibility = visibility
+        visibility = visibility,
+        memoVisibility = memoVisibility
     )
 }

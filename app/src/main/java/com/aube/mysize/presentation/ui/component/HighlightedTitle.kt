@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -62,10 +64,11 @@ fun RowScope.HighlightedTitle(
     Box(
         modifier = Modifier
             .weight(1f)
+            .fillMaxHeight()
     ) {
         val color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f)
 
-        Canvas(modifier = Modifier.matchParentSize()) {
+        Canvas(modifier = Modifier.matchParentSize().padding(top = 4.dp)) {
             if (highlightProgress.value > 0f) {
                 val totalWidth = measuredText.size.width.toFloat() + 16.dp.toPx()
                 val width = (totalWidth * highlightProgress.value).coerceAtLeast(16.dp.toPx())
@@ -82,8 +85,9 @@ fun RowScope.HighlightedTitle(
         Text(
             text = text,
             style = style,
-
-            modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+            modifier = Modifier.padding(start = 8.dp)
+                .fillMaxHeight()
+                .align(Alignment.CenterStart)
         )
     }
 }

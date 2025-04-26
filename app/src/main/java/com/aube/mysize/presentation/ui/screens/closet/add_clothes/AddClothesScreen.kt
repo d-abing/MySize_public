@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,6 +46,7 @@ import com.aube.mysize.domain.model.size.OnePieceSize
 import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
+import com.aube.mysize.presentation.model.MemoVisibility
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.Visibility
 import com.aube.mysize.presentation.ui.component.closet.ImageBox
@@ -72,7 +72,6 @@ import java.time.LocalDateTime
 @Composable
 fun AddClothesScreen(
     navController: NavController,
-    snackbarHostState: SnackbarHostState,
     clothesViewModel: ClothesViewModel = hiltViewModel(),
     bodyViewModel: BodySizeViewModel = hiltViewModel(),
     topViewModel: TopSizeViewModel = hiltViewModel(),
@@ -94,7 +93,6 @@ fun AddClothesScreen(
 
     AddClothesScreen(
         navController = navController,
-        snackbarHostState =  snackbarHostState,
         bodySize = bodySizes.maxByOrNull { it.id },
         topSizes = topSizes,
         bottomSizes = bottomSizes,
@@ -111,7 +109,6 @@ fun AddClothesScreen(
 @Composable
 fun AddClothesScreen(
     navController: NavController,
-    snackbarHostState: SnackbarHostState,
     bodySize: BodySize?,
     topSizes: List<TopSize>,
     bottomSizes: List<BottomSize>,
@@ -149,6 +146,8 @@ fun AddClothesScreen(
     }
     var sharedBodyFields by remember { mutableStateOf(bodyFields) }
     var selectedVisibility by rememberSaveable { mutableStateOf(Visibility.PRIVATE) }
+
+    var selectedMemoVisibility by rememberSaveable { mutableStateOf(MemoVisibility.PRIVATE) }
 
     val cropLauncher = rememberLauncherForActivityResult(
         CropImageContract()
@@ -307,6 +306,8 @@ fun AddClothesScreen(
                     onAddNewBodySize = { onAddNewBodySize() },
                     selectedVisibility = selectedVisibility,
                     onVisibilityChanged = { selectedVisibility = it },
+                    selectedMemoVisibility = selectedMemoVisibility,
+                    onMemoVisibilityChanged = { selectedMemoVisibility = it },
                     onPrevious = {
                         selectedStep = 2
                         isOpenInFullMode = true
@@ -328,7 +329,8 @@ fun AddClothesScreen(
                                 updatedAt = null,
                                 createUserId = randomUserId,
                                 createUserProfileFilePath = "",
-                                visibility = selectedVisibility
+                                visibility = selectedVisibility,
+                                memoVisibility = selectedMemoVisibility
                             )
                         )
                         navController.popBackStack()

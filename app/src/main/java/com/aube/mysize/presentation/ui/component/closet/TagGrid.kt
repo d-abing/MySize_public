@@ -1,9 +1,7 @@
 package com.aube.mysize.presentation.ui.component.closet
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
@@ -96,10 +94,6 @@ fun TagGrid(
                     clothesList = taggedClothes,
                     onClick = { onClick(it) }
                 )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.aube.mysize.data.database
 
 import androidx.room.TypeConverter
+import com.aube.mysize.presentation.model.MemoVisibility
 import com.aube.mysize.presentation.model.Visibility
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -52,4 +53,11 @@ object TypeConverter {
 
     @TypeConverter
     fun toVisibility(name: String): Visibility = Visibility.valueOf(name)
+
+    @TypeConverter
+    fun fromMemoVisibility(memoVisibility: MemoVisibility): String = memoVisibility.name
+
+    @TypeConverter
+    fun toMemoVisibility(name: String): MemoVisibility = MemoVisibility.valueOf(name)
+
 }

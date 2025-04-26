@@ -136,7 +136,6 @@ fun MySizeApp() {
             composable(Screen.ClothesModify.route) {
                 AddClothesScreen(
                     navController = navController,
-                    snackbarHostState = snackbarHostState,
                     onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") },
                     onAddNewSize = { selectedCategory -> navController.navigate("add_size?category=${selectedCategory}") }
                 )
@@ -144,7 +143,6 @@ fun MySizeApp() {
             composable(Screen.AddClothes.route) {
                 AddClothesScreen(
                     navController = navController,
-                    snackbarHostState = snackbarHostState,
                     onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") },
                     onAddNewSize = { selectedCategory -> navController.navigate("add_size?category=${selectedCategory}") }
                 )
