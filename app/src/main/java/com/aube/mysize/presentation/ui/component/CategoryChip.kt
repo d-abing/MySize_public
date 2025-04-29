@@ -1,6 +1,6 @@
 package com.aube.mysize.presentation.ui.component
 
-import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +19,8 @@ import com.aube.mysize.presentation.model.SizeCategory
 
 @Composable
 fun CategoryChip(
+    addGuideChip: Boolean = false,
+    onGuideChipClick: () -> Unit = {},
     categories: List<SizeCategory>,
     selectedCategory: SizeCategory?,
     enableColorHighlight: Boolean = true,
@@ -28,7 +30,18 @@ fun CategoryChip(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Log.e("CategoryChip", "categories: $categories")
+        if(addGuideChip) {
+            item {
+                RainbowBorderChip(
+                    label = "?",
+                    modifier = Modifier
+                        .height(36.dp)
+                        .clickable {
+                            onGuideChipClick()
+                        }
+                )
+            }
+        }
 
         val allCategories = SizeCategory.entries.filter {
             categories.contains(SizeCategory.BODY) || it != SizeCategory.BODY

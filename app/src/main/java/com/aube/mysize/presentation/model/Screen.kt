@@ -17,6 +17,6 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object ClothesModify : Screen("clothes_modify/{id}", "옷 수정", Icons.Filled.Checkroom)
     object AddClothes : Screen("add_clothes", "옷 추가", Icons.Filled.AddCircle)
     object FullDetail : Screen("full_detail?category={category}&brand={brand}", "전체 사이즈 상세", Icons.AutoMirrored.Filled.Assignment)
-    object AddSize : Screen("add_size?category={category}", "추가", Icons.Filled.Straighten)
+    object AddSize : Screen("add_size?category={category}&id={id}", "추가", Icons.Filled.Straighten)
     object Settings : Screen("settings", "설정", Icons.Default.Settings)
 }

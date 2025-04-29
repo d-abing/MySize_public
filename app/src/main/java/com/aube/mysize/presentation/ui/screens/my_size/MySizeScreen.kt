@@ -18,10 +18,11 @@ import com.aube.mysize.domain.model.size.ClothesSize
 import com.aube.mysize.domain.model.size.OnePieceSize
 import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.ShoeSize
+import com.aube.mysize.domain.model.size.Size
 import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.SizeCategory
-import com.aube.mysize.presentation.ui.component.mysize.bottomsheet.SizePreviewBottomSheet
+import com.aube.mysize.presentation.ui.component.bottomsheet.SizePreviewBottomSheet
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore.saveIsBodySizeCardSticky
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
@@ -43,7 +44,8 @@ fun MySizeScreen(
     shoeSizeViewModel: ShoeSizeViewModel = hiltViewModel(),
     accessorySizeViewModel: AccessorySizeViewModel = hiltViewModel(),
     onNavigateToFullDetailByCategory: (SizeCategory) -> Unit,
-    onNavigateToFullDetailByBrand: (String) -> Unit
+    onNavigateToFullDetailByBrand: (String) -> Unit,
+    onEdit: (SizeCategory, Size) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -69,7 +71,6 @@ fun MySizeScreen(
 
     val bodySizeCard = bodySizes.firstOrNull()?.toUi()
 
-
     val typeGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
         buildCategoryGroupedSizeData(
             topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) { selectedSize = it }
@@ -83,7 +84,16 @@ fun MySizeScreen(
     if (selectedSize != null) {
         SizePreviewBottomSheet(
             size = selectedSize!!,
-            onEdit = { /* TODO: Implement edit functionality */ },
+            onEdit = { size ->
+                when (size) {
+                    is TopSize -> onEdit(SizeCategory.TOP, size)
+                    is BottomSize -> onEdit(SizeCategory.BOTTOM, size)
+                    is OuterSize -> onEdit(SizeCategory.OUTER, size)
+                    is OnePieceSize -> onEdit(SizeCategory.ONE_PIECE, size)
+                    is ShoeSize -> onEdit(SizeCategory.SHOE, size)
+                    is AccessorySize -> onEdit(SizeCategory.ACCESSORY, size)
+                }
+            },
             onDelete = { size ->
                 when (size) {
                     is TopSize -> topSizeViewModel.delete(size)
@@ -106,6 +116,18 @@ fun MySizeScreen(
     MySizeContent(
         isFullDetailMode = false,
         listState = listState,
+        onBodySizeEdit = { id ->
+            val bodySize = bodySizeViewModel.getSizeById(id)
+            if (bodySize != null) {
+                onEdit(SizeCategory.BODY, bodySize)
+            }
+        },
+        onBodySizeDelete = { id ->
+            val bodySize = bodySizeViewModel.getSizeById(id)
+            if (bodySize != null) {
+                bodySizeViewModel.delete(bodySize)
+            }
+        },
         isBodySizeCardSticky = isBodySizeCardSticky,
         onBodySizeCardStickyChanged = {
             isBodySizeCardSticky = !isBodySizeCardSticky

@@ -38,9 +38,10 @@ import com.aube.mysize.presentation.ui.screens.add_size.AddSizeScreen
 import com.aube.mysize.presentation.ui.screens.closet.ClosetScreen
 import com.aube.mysize.presentation.ui.screens.closet.add_clothes.AddClothesScreen
 import com.aube.mysize.presentation.ui.screens.closet.clothes_detail.ClothesDetailScreen
+import com.aube.mysize.presentation.ui.screens.closet.clothes_edit.ClothesEditScreen
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeScreen
 import com.aube.mysize.presentation.ui.screens.my_size.full_detail.FullDetailScreen
-import com.aube.mysize.presentation.ui.screens.recommend_size.RecommendSizeScreen
+import com.aube.mysize.presentation.ui.screens.recommend.RecommendScreen
 import com.aube.mysize.presentation.ui.screens.settings.SettingsScreen
 import com.aube.mysize.utils.setAppLocale
 import kotlinx.coroutines.CoroutineScope
@@ -105,14 +106,17 @@ fun MySizeApp() {
             startDestination = Screen.Closet.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Recommend.route) { RecommendSizeScreen() }
+            composable(Screen.Recommend.route) { RecommendScreen() }
             composable(Screen.MySize.route) {
                 MySizeScreen(
                     onNavigateToFullDetailByCategory = { sizeCategory ->
-                    navController.navigate("full_detail?category=${sizeCategory}&brand=")
+                        navController.navigate("full_detail?category=${sizeCategory}&brand=")
                     },
                     onNavigateToFullDetailByBrand = { brand ->
                         navController.navigate("full_detail?category=&brand=${brand}")
+                    },
+                    onEdit = { category, size ->
+                        navController.navigate("add_size?category=${category}&id=${size.id}")
                     }
                 )
             }
@@ -130,11 +134,16 @@ fun MySizeApp() {
                 ClothesDetailScreen(
                     clothesId = id,
                     onDelete = { navController.popBackStack() },
-                    onModify = {}
+                    onEdit = { navController.navigate("clothes_edit/${id}") }
                 )
             }
-            composable(Screen.ClothesModify.route) {
-                AddClothesScreen(
+            composable(
+                route = Screen.ClothesModify.route,
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("id") ?: return@composable
+                ClothesEditScreen(
+                    clothesId = id,
                     navController = navController,
                     onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") },
                     onAddNewSize = { selectedCategory -> navController.navigate("add_size?category=${selectedCategory}") }
@@ -155,7 +164,12 @@ fun MySizeApp() {
                     }
                 )
             ) { backStackEntry ->
-                FullDetailScreen(backStackEntry)
+                FullDetailScreen(
+                    backStackEntry = backStackEntry,
+                    onEdit = { category, size ->
+                        navController.navigate("add_size?category=${category}&id=${size.id}")
+                    }
+                )
             }
             composable(
                 route = Screen.AddSize.route,
@@ -163,6 +177,10 @@ fun MySizeApp() {
                     navArgument("category") {
                         type = NavType.StringType
                         defaultValue = "BODY"
+                    },
+                    navArgument("id") {
+                        type = NavType.IntType
+                        defaultValue = -1
                     }
                 )
             ) { backStackEntry ->

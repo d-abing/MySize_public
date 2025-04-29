@@ -1,8 +1,10 @@
 package com.aube.mysize.data.database
 
 import androidx.room.TypeConverter
+import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.presentation.model.MemoVisibility
 import com.aube.mysize.presentation.model.Visibility
+import com.google.gson.Gson
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -59,5 +61,17 @@ object TypeConverter {
 
     @TypeConverter
     fun toMemoVisibility(name: String): MemoVisibility = MemoVisibility.valueOf(name)
+
+    private val gson = Gson()
+
+    @TypeConverter
+    fun fromBodySize(bodySize: BodySize?): String? {
+        return bodySize?.let { gson.toJson(it) }
+    }
+
+    @TypeConverter
+    fun toBodySize(data: String?): BodySize? {
+        return data?.let { gson.fromJson(it, BodySize::class.java) }
+    }
 
 }

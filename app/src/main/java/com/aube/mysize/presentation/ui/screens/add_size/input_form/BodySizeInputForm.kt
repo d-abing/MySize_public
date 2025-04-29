@@ -18,13 +18,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.size.BodySize
-import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
-import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
-import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
+import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
+import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import java.time.LocalDate
 
 @Composable
 fun BodySizeInputForm(
+    oldSize: BodySize?,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
     onSaved: (BodySize) -> Unit
 ) {
@@ -38,6 +39,21 @@ fun BodySizeInputForm(
     var shoulder by remember { mutableStateOf("") }
     var arm by remember { mutableStateOf("") }
     var leg by remember { mutableStateOf("") }
+
+    LaunchedEffect(oldSize) {
+        oldSize?.let { size ->
+            gender = size.gender
+            height = size.height.toString()
+            weight = size.weight.toString()
+            chest = size.chest?.toString() ?: ""
+            waist = size.waist?.toString() ?: ""
+            hip = size.hip?.toString() ?: ""
+            neck = size.neck?.toString() ?: ""
+            shoulder = size.shoulder?.toString() ?: ""
+            arm = size.arm?.toString() ?: ""
+            leg = size.leg?.toString() ?: ""
+        }
+    }
 
     val heightFloat = height.toFloatOrNull()
     val weightFloat = weight.toFloatOrNull()

@@ -1,6 +1,5 @@
 package com.aube.mysize.presentation.ui.screens.closet.add_clothes
 
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,12 +27,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.aube.mysize.presentation.ui.component.closet.TagInput
+import com.aube.mysize.presentation.ui.screens.closet.component.TagInput
 
 @Composable
 fun AddClothesStepOne(
     selectedColor: Color?,
-    selectedImage: Uri?,
+    selectedImage: Any?,
     memo: String,
     onMemoChange: (String) -> Unit,
     tags: Set<String>,

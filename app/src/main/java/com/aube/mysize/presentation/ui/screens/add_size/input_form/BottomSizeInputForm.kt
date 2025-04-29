@@ -26,23 +26,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.size.BottomSize
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
-import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
-import com.aube.mysize.presentation.ui.component.addsize.BrandChipInput
-import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
-import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
+import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
+import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
+import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
 import java.time.LocalDate
 
 @Composable
 fun BottomSizeInputForm(
+    oldSize: BottomSize?,
     viewModel: BottomSizeViewModel,
     snackbarHostState: SnackbarHostState,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
     onSaved: (BottomSize) -> Unit
 ) {
+    val brandList by viewModel.brandList.collectAsState()
+
     var type by remember { mutableStateOf("") }
     var brand by remember { mutableStateOf("") }
-    val brandList by viewModel.brandList.collectAsState()
     var sizeLabel by remember { mutableStateOf("") }
     var waist by remember { mutableStateOf("") }
     var rise by remember { mutableStateOf("") }
@@ -52,6 +54,22 @@ fun BottomSizeInputForm(
     var length by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
+
+    LaunchedEffect(oldSize) {
+        oldSize?.let { size ->
+            type = size.type
+            brand = size.brand
+            sizeLabel = size.sizeLabel
+            waist = size.waist?.toString() ?: ""
+            rise = size.rise?.toString() ?: ""
+            hip = size.hip?.toString() ?: ""
+            thigh = size.thigh?.toString() ?: ""
+            hem = size.hem?.toString() ?: ""
+            length = size.length?.toString() ?: ""
+            fit = size.fit ?: ""
+            note = size.note ?: ""
+        }
+    }
 
     // Float 변환
     val waistFloat = waist.toFloatOrNull()

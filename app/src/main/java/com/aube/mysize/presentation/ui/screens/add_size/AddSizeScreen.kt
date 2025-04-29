@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -29,9 +30,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.aube.mysize.domain.model.size.AccessorySize
+import com.aube.mysize.domain.model.size.BodySize
+import com.aube.mysize.domain.model.size.BottomSize
+import com.aube.mysize.domain.model.size.OnePieceSize
+import com.aube.mysize.domain.model.size.OuterSize
+import com.aube.mysize.domain.model.size.ShoeSize
+import com.aube.mysize.domain.model.size.Size
+import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.ui.component.CategoryChip
-import com.aube.mysize.presentation.ui.component.addsize.SaveButton
+import com.aube.mysize.presentation.ui.screens.add_size.component.SaveButton
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.AccessorySizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.BodySizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.BottomSizeInputForm
@@ -69,8 +78,25 @@ fun AddSizeScreen(
     val listState = rememberLazyListState()
 
     val category = backStackEntry.arguments?.getString("category") ?: "BODY"
+    val categories =
+        when (category) {
+            "ADDBODY" -> SizeCategory.entries.filter { it == SizeCategory.BODY }
+            "BODY" -> SizeCategory.entries.toList()
+            else -> SizeCategory.entries.filter { it != SizeCategory.BODY }
+        }
     var selectedCategory by remember { mutableStateOf(SizeCategory.BODY) }
 
+    val id = backStackEntry.arguments?.getInt("id") ?: -1
+    val oldSize: Size? = when (category) {
+        SizeCategory.BODY.name -> bodyViewModel.getSizeById(id)
+        SizeCategory.TOP.name -> topViewModel.getSizeById(id)
+        SizeCategory.BOTTOM.name -> bottomViewModel.getSizeById(id)
+        SizeCategory.OUTER.name -> outerViewModel.getSizeById(id)
+        SizeCategory.ONE_PIECE.name -> onePieceViewModel.getSizeById(id)
+        SizeCategory.SHOE.name -> shoeViewModel.getSizeById(id)
+        SizeCategory.ACCESSORY.name -> accessoryViewModel.getSizeById(id)
+        else -> null
+    }
 
     BackHandler {
         navController.previousBackStackEntry
@@ -105,7 +131,7 @@ fun AddSizeScreen(
             // ───── 선택 chip ─────
             item {
                 CategoryChip(
-                    categories = SizeCategory.entries,
+                    categories = categories,
                     selectedCategory = selectedCategory,
                     onClick = { category -> selectedCategory = category }
                 )
@@ -119,20 +145,26 @@ fun AddSizeScreen(
                 // ───── 카테고리별 입력 UI 분기 ─────
                 when (selectedCategory) {
                     SizeCategory.BODY -> BodySizeInputForm(
+                        oldSize = oldSize as? BodySize,
                         onUpdateFormState = { mandatoryFilled, allValid ->
                             isMandatoryFieldsFilled = mandatoryFilled
                             isAllFieldsValid = allValid
                         },
                         onSaved = { bodySize ->
                             saveRequest = {
-                                bodyViewModel.insert(bodySize)
-
-                                if (category != "BODY") navController.popBackStack()
-                                else onNavigateToMySizeScreen()
+                                if (oldSize != null && oldSize.id != -1) { // my size -> add size
+                                    bodyViewModel.insert(bodySize.copy(id = oldSize.id))
+                                    navController.popBackStack()
+                                } else {
+                                    bodyViewModel.insert(bodySize)
+                                    if (category != "BODY") navController.popBackStack() // closet -> add size
+                                    else onNavigateToMySizeScreen() // add size
+                                }
                             }
                         }
                     )
                     SizeCategory.TOP -> TopSizeInputForm(
+                        oldSize = oldSize as? TopSize,
                         viewModel = topViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -141,17 +173,22 @@ fun AddSizeScreen(
                         },
                         onSaved = { topSize ->
                             saveRequest = {
-                                topViewModel.insert(topSize) { newId ->
-                                    if (category != "BODY") {
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_id", newId)
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_category", selectedCategory)
-                                        navController.popBackStack()
-                                    } else {
-                                        onNavigateToMySizeScreen()
+                                if (oldSize != null && oldSize.id != -1) {
+                                    topViewModel.insert(topSize.copy(id = oldSize.id)) {}
+                                    navController.popBackStack()
+                                } else {
+                                    topViewModel.insert(topSize) { newId ->
+                                        if (category != "BODY") {
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_id", newId)
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_category", selectedCategory)
+                                            navController.popBackStack()
+                                        } else {
+                                            onNavigateToMySizeScreen()
+                                        }
                                     }
                                 }
                             }
@@ -159,6 +196,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.BOTTOM -> BottomSizeInputForm(
+                        oldSize = oldSize as? BottomSize,
                         viewModel = bottomViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -167,17 +205,22 @@ fun AddSizeScreen(
                         },
                         onSaved = { bottomSize ->
                             saveRequest = {
-                                bottomViewModel.insert(bottomSize) { newId ->
-                                    if (category != "BODY") {
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_id", newId)
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_category", selectedCategory)
-                                        navController.popBackStack()
-                                    } else {
-                                        onNavigateToMySizeScreen()
+                                if (oldSize != null && oldSize.id != -1) {
+                                    bottomViewModel.insert(bottomSize.copy(id = oldSize.id)) {}
+                                    navController.popBackStack()
+                                } else {
+                                    bottomViewModel.insert(bottomSize) { newId ->
+                                        if (category != "BODY") {
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_id", newId)
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_category", selectedCategory)
+                                            navController.popBackStack()
+                                        } else {
+                                            onNavigateToMySizeScreen()
+                                        }
                                     }
                                 }
                             }
@@ -185,6 +228,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.OUTER -> OuterSizeInputForm(
+                        oldSize = oldSize as? OuterSize,
                         viewModel = outerViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -193,17 +237,22 @@ fun AddSizeScreen(
                         },
                         onSaved = { outerSize ->
                             saveRequest = {
-                                outerViewModel.insert(outerSize) { newId ->
-                                    if (category != "BODY") {
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_id", newId)
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_category", selectedCategory)
-                                        navController.popBackStack()
-                                    } else {
-                                        onNavigateToMySizeScreen()
+                                if (oldSize != null && oldSize.id != -1) {
+                                    outerViewModel.insert(outerSize.copy(id = oldSize.id)) {}
+                                    navController.popBackStack()
+                                } else {
+                                    outerViewModel.insert(outerSize) { newId ->
+                                        if (category != "BODY") {
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_id", newId)
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_category", selectedCategory)
+                                            navController.popBackStack()
+                                        } else {
+                                            onNavigateToMySizeScreen()
+                                        }
                                     }
                                 }
                             }
@@ -211,6 +260,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.ONE_PIECE -> OnePieceSizeInputForm(
+                        oldSize = oldSize as? OnePieceSize,
                         viewModel = onePieceViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -219,17 +269,22 @@ fun AddSizeScreen(
                         },
                         onSaved = { onePieceSize ->
                             saveRequest = {
-                                onePieceViewModel.insert(onePieceSize) { newId ->
-                                    if (category != "BODY") {
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_id", newId)
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_category", selectedCategory)
-                                        navController.popBackStack()
-                                    } else {
-                                        onNavigateToMySizeScreen()
+                                if (oldSize != null && oldSize.id != -1) {
+                                    onePieceViewModel.insert(onePieceSize.copy(id = oldSize.id)) {}
+                                    navController.popBackStack()
+                                } else {
+                                    onePieceViewModel.insert(onePieceSize) { newId ->
+                                        if (category != "BODY") {
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_id", newId)
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_category", selectedCategory)
+                                            navController.popBackStack()
+                                        } else {
+                                            onNavigateToMySizeScreen()
+                                        }
                                     }
                                 }
                             }
@@ -237,6 +292,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.SHOE -> ShoeSizeInputForm(
+                        oldSize = oldSize as? ShoeSize,
                         viewModel = shoeViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -245,17 +301,22 @@ fun AddSizeScreen(
                         },
                         onSaved = { shoeSize ->
                             saveRequest = {
-                                shoeViewModel.insert(shoeSize) { newId ->
-                                    if (category != "BODY") {
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_id", newId)
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_category", selectedCategory)
-                                        navController.popBackStack()
-                                    } else {
-                                        onNavigateToMySizeScreen()
+                                if (oldSize != null && oldSize.id != -1) {
+                                    shoeViewModel.insert(shoeSize.copy(id = oldSize.id)) {}
+                                    navController.popBackStack()
+                                } else {
+                                    shoeViewModel.insert(shoeSize) { newId ->
+                                        if (category != "BODY") {
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_id", newId)
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_category", selectedCategory)
+                                            navController.popBackStack()
+                                        } else {
+                                            onNavigateToMySizeScreen()
+                                        }
                                     }
                                 }
                             }
@@ -263,6 +324,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.ACCESSORY -> AccessorySizeInputForm(
+                        oldSize = oldSize as? AccessorySize,
                         viewModel = accessoryViewModel,
                         onUpdateFormState = { mandatoryFilled, allValid ->
                             isMandatoryFieldsFilled = mandatoryFilled
@@ -270,17 +332,22 @@ fun AddSizeScreen(
                         },
                         onSaved = { accessorySize ->
                             saveRequest = {
-                                accessoryViewModel.insert(accessorySize) { newId ->
-                                    if (category != "BODY") {
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_id", newId)
-                                        navController.previousBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("new_size_category", selectedCategory)
-                                        navController.popBackStack()
-                                    } else {
-                                        onNavigateToMySizeScreen()
+                                if (oldSize != null && oldSize.id != -1) {
+                                    accessoryViewModel.insert(accessorySize.copy(id = oldSize.id)) {}
+                                    navController.popBackStack()
+                                } else {
+                                    accessoryViewModel.insert(accessorySize) { newId ->
+                                        if (category != "BODY") {
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_id", newId)
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("new_size_category", selectedCategory)
+                                            navController.popBackStack()
+                                        } else {
+                                            onNavigateToMySizeScreen()
+                                        }
                                     }
                                 }
                             }
@@ -311,10 +378,11 @@ fun AddSizeScreen(
                 pressedElevation = 8.dp,
                 disabledElevation = 0.dp
             ),
-            icon = Icons.Filled.Add,
+            icon = if (id != -1) Icons.Filled.ModeEdit else Icons.Filled.Add,
             text = if (isAtBottom) null else when {
                 !isMandatoryFieldsFilled -> "필수 입력 미완료"
                 !isAllFieldsValid -> "입력값 확인"
+                (id != -1) -> "수정"
                 else -> "추가"
             },
             contentPadding = PaddingValues(horizontal = animatedPadding, vertical = 14.dp),

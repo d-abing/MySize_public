@@ -23,12 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.clothes.Clothes
-import com.aube.mysize.presentation.ui.component.closet.ClosetViewModeTabs
-import com.aube.mysize.presentation.ui.component.closet.ColorGrid
-import com.aube.mysize.presentation.ui.component.closet.PictureGrid
-import com.aube.mysize.presentation.ui.component.closet.SizeGrid
-import com.aube.mysize.presentation.ui.component.closet.TagGrid
-import com.aube.mysize.presentation.ui.component.mysize.MySizeTabRow
+import com.aube.mysize.presentation.ui.screens.closet.component.ClosetViewModeTabs
+import com.aube.mysize.presentation.ui.screens.closet.component.ColorGrid
+import com.aube.mysize.presentation.ui.screens.closet.component.PictureGrid
+import com.aube.mysize.presentation.ui.screens.closet.component.SizeGrid
+import com.aube.mysize.presentation.ui.screens.closet.component.TagGrid
+import com.aube.mysize.presentation.ui.screens.my_size.component.MySizeTabRow
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 
 @Composable

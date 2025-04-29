@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 @Entity(tableName = "body_size")
 data class BodySizeEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val id: Int = 0,
     val gender: String,
     val height: Float,
     val weight: Float,

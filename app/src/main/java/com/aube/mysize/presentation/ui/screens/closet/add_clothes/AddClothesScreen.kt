@@ -49,8 +49,8 @@ import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.MemoVisibility
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.Visibility
-import com.aube.mysize.presentation.ui.component.closet.ImageBox
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
+import com.aube.mysize.presentation.ui.screens.closet.component.ImageBox
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
@@ -325,6 +325,7 @@ fun AddClothesScreen(
                                 tags = tags,
                                 memo = memo,
                                 sharedBodyFields = sharedBodyFields,
+                                bodySize = bodySize,
                                 createdAt = LocalDateTime.now(),
                                 updatedAt = null,
                                 createUserId = randomUserId,

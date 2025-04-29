@@ -24,26 +24,40 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.size.AccessorySize
-import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
-import com.aube.mysize.presentation.ui.component.addsize.BrandChipInput
-import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
-import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
+import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
+import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
+import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import java.time.LocalDate
 
 @Composable
 fun AccessorySizeInputForm(
+    oldSize: AccessorySize?,
     viewModel: AccessorySizeViewModel,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
     onSaved: (AccessorySize) -> Unit
 ) {
+    val brandList by viewModel.brandList.collectAsState()
+
     var type by remember { mutableStateOf("") }
     var brand by remember { mutableStateOf("") }
-    val brandList by viewModel.brandList.collectAsState()
     var sizeLabel by remember { mutableStateOf("") }
     var bodyPart by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
+
+    LaunchedEffect(oldSize) {
+        oldSize?.let { size ->
+            type = size.type
+            brand = size.brand
+            sizeLabel = size.sizeLabel
+            bodyPart = size.bodyPart ?: ""
+            fit = size.fit ?: ""
+            note = size.note ?: ""
+        }
+    }
+
     var typeError by remember { mutableStateOf(false) }
     var brandError by remember { mutableStateOf(false) }
     var sizeLabelError by remember { mutableStateOf(false) }

@@ -26,28 +26,42 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
-import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
-import com.aube.mysize.presentation.ui.component.addsize.BrandChipInput
-import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
-import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
+import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
+import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
+import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import java.time.LocalDate
 
 @Composable
 fun ShoeSizeInputForm(
+    oldSize: ShoeSize?,
     viewModel: ShoeSizeViewModel,
     snackbarHostState: SnackbarHostState,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
     onSaved: (ShoeSize) -> Unit
 ) {
+    val brandList by viewModel.brandList.collectAsState()
+
     var type by remember { mutableStateOf("") }
     var brand by remember { mutableStateOf("") }
-    val brandList by viewModel.brandList.collectAsState()
     var sizeLabel by remember { mutableStateOf("") }
     var footLength by remember { mutableStateOf("") }
     var footWidth by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
+
+    LaunchedEffect(oldSize) {
+        oldSize?.let { size ->
+            type = size.type
+            brand = size.brand
+            sizeLabel = size.sizeLabel
+            footLength = size.footLength?.toString() ?: ""
+            footWidth = size.footWidth?.toString() ?: ""
+            fit = size.fit ?: ""
+            note = size.note ?: ""
+        }
+    }
 
     val footLengthFloat = footLength.toFloatOrNull()
     val widthFloat = footWidth.toFloatOrNull()

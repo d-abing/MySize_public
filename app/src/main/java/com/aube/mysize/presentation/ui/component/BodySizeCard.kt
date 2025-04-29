@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,16 +34,18 @@ fun BodySizeCard(
     containerColor: Color = MaterialTheme.colorScheme.background,
     title: String? = null,
     imageVector: ImageVector? = null,
+    sharedBodyFields: Set<String> = emptySet(),
     description: Map<String, String?>? = null,
     selectableKeys: Set<String>? = null,
     selectedKeys: Set<String>? = null,
-    onSelectionChanged: ((Set<String>) -> Unit)? = null
+    onSelectionChanged: ((Set<String>) -> Unit)? = null,
+    onEdit: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null,
 ) {
     val isSelectable = selectableKeys != null && selectedKeys != null && onSelectionChanged != null
 
     Card(
         modifier = Modifier
-            .padding(vertical = 8.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors(
@@ -68,8 +74,27 @@ fun BodySizeCard(
                 Spacer(modifier = Modifier.width(8.dp))
                 if (title != null) {
                     Text(
-                        text = title,
                         style = MaterialTheme.typography.titleMedium,
+                        text = title,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                if (onEdit != null && onDelete != null) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        modifier = Modifier.size(16.dp)
+                            .clickable { onEdit() },
+                        tint = MaterialTheme.colorScheme.onBackground.copy(0.8f),
+                        imageVector = Icons.Default.ModeEdit,
+                        contentDescription = "edit"
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        modifier = Modifier.size(16.dp)
+                            .clickable { onDelete() },
+                        tint = MaterialTheme.colorScheme.onBackground.copy(0.8f),
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "delete"
                     )
                 }
             }
@@ -90,7 +115,11 @@ fun BodySizeCard(
                 ) {
                     validGroups.forEachIndexed { index, groupKeys ->
                         val groupItems = groupKeys.mapNotNull { key ->
-                            description[key]?.let { value -> key to value }
+                            if (sharedBodyFields.isEmpty() || sharedBodyFields.contains(key)) {
+                                description[key]?.let { value -> key to value }
+                            } else {
+                                null
+                            }
                         }
 
                         if (groupItems.isNotEmpty()) {

@@ -50,14 +50,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.clothes.Clothes
+import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.Visibility
 import com.aube.mysize.presentation.ui.component.BodySizeCard
-import com.aube.mysize.presentation.ui.component.closet.formatAccessorySize
-import com.aube.mysize.presentation.ui.component.closet.formatBottomSize
-import com.aube.mysize.presentation.ui.component.closet.formatOnePieceSize
-import com.aube.mysize.presentation.ui.component.closet.formatOuterSize
-import com.aube.mysize.presentation.ui.component.closet.formatShoeSize
-import com.aube.mysize.presentation.ui.component.closet.formatTopSize
+import com.aube.mysize.presentation.ui.screens.closet.component.formatAccessorySize
+import com.aube.mysize.presentation.ui.screens.closet.component.formatBottomSize
+import com.aube.mysize.presentation.ui.screens.closet.component.formatOnePieceSize
+import com.aube.mysize.presentation.ui.screens.closet.component.formatOuterSize
+import com.aube.mysize.presentation.ui.screens.closet.component.formatShoeSize
+import com.aube.mysize.presentation.ui.screens.closet.component.formatTopSize
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
@@ -71,7 +72,7 @@ import java.time.format.DateTimeFormatter
 fun ClothesDetailScreen(
     clothesId: Int,
     onDelete: () -> Unit,
-    onModify: () -> Unit = {},
+    onEdit: () -> Unit = {},
     clothesViewModel: ClothesViewModel = hiltViewModel(),
     topSizeViewModel: TopSizeViewModel = hiltViewModel(),
     bottomSizeViewModel: BottomSizeViewModel = hiltViewModel(),
@@ -93,17 +94,23 @@ fun ClothesDetailScreen(
 
         val summaries = listOfNotNull(
             currentClothes.linkedSizeIds["TOP"]?.let { topSizeViewModel.getSizeById(it)?.let { size ->
-                formatTopSize(size, currentClothes.memoVisibility)} },
+                formatTopSize(size, currentClothes.memoVisibility)
+            } },
             currentClothes.linkedSizeIds["BOTTOM"]?.let { bottomSizeViewModel.getSizeById(it)?.let { size ->
-                formatBottomSize(size, currentClothes.memoVisibility)} },
+                formatBottomSize(size, currentClothes.memoVisibility)
+            } },
             currentClothes.linkedSizeIds["OUTER"]?.let { outerSizeViewModel.getSizeById(it)?.let { size ->
-                formatOuterSize(size, currentClothes.memoVisibility)} },
+                formatOuterSize(size, currentClothes.memoVisibility)
+            } },
             currentClothes.linkedSizeIds["ONE_PIECE"]?.let { onePieceSizeViewModel.getSizeById(it)?.let { size ->
-                formatOnePieceSize(size, currentClothes.memoVisibility)} },
+                formatOnePieceSize(size, currentClothes.memoVisibility)
+            } },
             currentClothes.linkedSizeIds["SHOE"]?.let { shoeSizeViewModel.getSizeById(it)?.let { size ->
-                formatShoeSize(size, currentClothes.memoVisibility)} },
+                formatShoeSize(size, currentClothes.memoVisibility)
+            } },
             currentClothes.linkedSizeIds["ACCESSORY"]?.let { accessorySizeViewModel.getSizeById(it)?.let { size ->
-                formatAccessorySize(size, currentClothes.memoVisibility)} }
+                formatAccessorySize(size, currentClothes.memoVisibility)
+            } }
         )
 
         val formattedDate = currentClothes.createdAt.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))
@@ -184,7 +191,7 @@ fun ClothesDetailScreen(
                                },
                                 onClick = {
                                     expanded = false
-                                    onModify()
+                                    onEdit()
                                 }
                             )
                             DropdownMenuItem(
@@ -252,20 +259,14 @@ fun ClothesDetailScreen(
 
             if(currentClothes.visibility == Visibility.PUBLIC && currentClothes.createUserId != 1L) { /* TODO */
                 if (currentClothes.sharedBodyFields.isNotEmpty()) {
+                    val bodySizeCard = currentClothes.bodySize?.toUi()
+
                     BodySizeCard(
+                        containerColor = MaterialTheme.colorScheme.secondary.copy(0.2f),
                         title = "공개된 신체 정보",
                         imageVector = Icons.Default.Person,
-                        selectableKeys = setOf(
-                            "키",
-                            "몸무게",
-                            "가슴 둘레",
-                            "허리 둘레",
-                            "엉덩이 둘레",
-                            "목 둘레",
-                            "어깨 너비",
-                            "팔 길이",
-                            "다리 안쪽 길이"
-                        ),
+                        sharedBodyFields = currentClothes.sharedBodyFields,
+                        description = bodySizeCard?.description,
                         selectedKeys = currentClothes.sharedBodyFields,
                     )
                 }

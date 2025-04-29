@@ -21,7 +21,7 @@ import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeContentUiModel
-import com.aube.mysize.presentation.ui.component.mysize.bottomsheet.SizePreviewBottomSheet
+import com.aube.mysize.presentation.ui.component.bottomsheet.SizePreviewBottomSheet
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeContent
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
@@ -39,6 +39,7 @@ fun FullDetailScreen(
     onePieceSizeViewModel: OnePieceSizeViewModel = hiltViewModel(),
     shoeSizeViewModel: ShoeSizeViewModel = hiltViewModel(),
     accessorySizeViewModel: AccessorySizeViewModel = hiltViewModel(),
+    onEdit: (SizeCategory, ClothesSize) -> Unit,
 ) {
     val topSizes by topSizeViewModel.sizes.collectAsState()
     val bottomSizes by bottomSizeViewModel.sizes.collectAsState()
@@ -80,7 +81,16 @@ fun FullDetailScreen(
     if (selectedSize != null) {
         SizePreviewBottomSheet(
             size = selectedSize!!,
-            onEdit = {},
+            onEdit = { size ->
+                when (size) {
+                    is TopSize -> onEdit(SizeCategory.TOP, size)
+                    is BottomSize -> onEdit(SizeCategory.BOTTOM, size)
+                    is OuterSize -> onEdit(SizeCategory.OUTER, size)
+                    is OnePieceSize -> onEdit(SizeCategory.ONE_PIECE, size)
+                    is ShoeSize -> onEdit(SizeCategory.SHOE, size)
+                    is AccessorySize -> onEdit(SizeCategory.ACCESSORY, size)
+                }
+            },
             onDelete = { size ->
                 when (size) {
                     is TopSize -> topSizeViewModel.delete(size)

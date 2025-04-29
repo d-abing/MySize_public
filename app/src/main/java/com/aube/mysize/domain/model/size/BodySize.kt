@@ -40,6 +40,7 @@ fun BodySize.toEntity(): BodySizeEntity {
 
 fun BodySize.toUi(): BodySizeCardUiModel {
     return BodySizeCardUiModel(
+        id = id,
         title = "신체",
         imageVector = Icons.Filled.Accessibility,
         description = mapOf(

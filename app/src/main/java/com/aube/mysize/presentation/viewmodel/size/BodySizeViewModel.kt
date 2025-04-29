@@ -29,6 +29,8 @@ class BodySizeViewModel @Inject constructor(
         }
     }
 
+    fun getSizeById(id: Int): BodySize? = sizes.value.find { it.id == id }
+
     fun insert(item: BodySize) {
         viewModelScope.launch { insertUseCase(item) }
     }

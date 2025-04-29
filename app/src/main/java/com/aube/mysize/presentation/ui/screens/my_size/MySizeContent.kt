@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.KeyboardActions
@@ -56,10 +57,12 @@ import com.aube.mysize.presentation.model.BodySizeCardUiModel
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeContentUiModel
 import com.aube.mysize.presentation.ui.component.CategoryChip
+import com.aube.mysize.presentation.ui.component.GuideButton
+import com.aube.mysize.presentation.ui.component.GuideDialog
 import com.aube.mysize.presentation.ui.component.HighlightedTitle
-import com.aube.mysize.presentation.ui.component.mysize.MySizeTabRow
-import com.aube.mysize.presentation.ui.component.mysize.SensitiveBodySizeCard
-import com.aube.mysize.presentation.ui.component.mysize.SubListBlock
+import com.aube.mysize.presentation.ui.screens.my_size.component.MySizeTabRow
+import com.aube.mysize.presentation.ui.screens.my_size.component.SensitiveBodySizeCard
+import com.aube.mysize.presentation.ui.screens.my_size.component.SubListBlock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -68,6 +71,8 @@ import kotlinx.coroutines.launch
 fun MySizeContent(
     isFullDetailMode: Boolean = false,
     listState: LazyListState,
+    onBodySizeEdit: ((Int) -> Unit)? = null,
+    onBodySizeDelete: ((Int) -> Unit)? = null,
     isBodySizeCardSticky: Boolean? = null,
     onBodySizeCardStickyChanged: (() -> Unit)? = null,
     bodySizeCard: BodySizeCardUiModel? = null,
@@ -90,6 +95,24 @@ fun MySizeContent(
     val highlightedCategory = remember { mutableStateOf<SizeCategory?>(null) }
     val bodySizeCardHeightPx = remember { mutableStateOf(0) }
     val stickyHeaderHeightPx = remember { mutableStateOf(0) }
+    var showGuideDialog by remember { mutableStateOf(false) }
+
+    if (showGuideDialog) {
+        GuideDialog(
+            title = "어떤 사이즈가 표시되나요?",
+            onDismiss = { showGuideDialog = false }
+        ) {
+            Text(
+                text = "가장 많이 저장한 사이즈 라벨을 보여드립니다.\n" +
+                        "여러 개가 같을 경우, 최근에 저장한 걸 사용해요.",
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 12.dp)
+            )
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -97,12 +120,14 @@ fun MySizeContent(
         state = listState
     ) {
         // 1. 바디 사이즈 카드
-        if (isBodySizeCardSticky != null && !isBodySizeCardSticky) {
+        if (isBodySizeCardSticky != null && !isBodySizeCardSticky && onBodySizeEdit != null && onBodySizeDelete != null) {
             bodySizeCard?.let { card ->
                 item {
                     SensitiveBodySizeCard(
                         bodySizeCard = card,
                         isBodySizeCardSticky = isBodySizeCardSticky,
+                        onEdit = { onBodySizeEdit(bodySizeCard.id) },
+                        onDelete = { onBodySizeDelete(bodySizeCard.id) },
                         modifier = Modifier
                             .padding(vertical = 4.dp, horizontal = 16.dp)
                             .onGloballyPositioned { coordinates ->
@@ -128,11 +153,13 @@ fun MySizeContent(
                         stickyHeaderHeightPx.value = layoutCoordinates.size.height
                     }
             ) {
-                if (isBodySizeCardSticky != null && isBodySizeCardSticky) {
+                if (isBodySizeCardSticky != null && isBodySizeCardSticky && onBodySizeEdit != null && onBodySizeDelete != null) {
                     bodySizeCard?.let { card ->
                         SensitiveBodySizeCard(
                             bodySizeCard = card,
                             isBodySizeCardSticky = isBodySizeCardSticky,
+                            onEdit = { onBodySizeEdit(bodySizeCard.id) },
+                            onDelete = { onBodySizeDelete(bodySizeCard.id) },
                             modifier = Modifier
                                 .padding(vertical = 4.dp, horizontal = 16.dp),
                             onBodySizeCardStickyChanged = {
@@ -154,6 +181,8 @@ fun MySizeContent(
 
                 if (selectedTab == 0) {
                     CategoryChip(
+                        addGuideChip = true,
+                        onGuideChipClick = { showGuideDialog = true },
                         categories = categorySectionIndices.keys.toList(),
                         selectedCategory = selectedCategory,
                         enableColorHighlight = isFullDetailMode,
@@ -179,80 +208,98 @@ fun MySizeContent(
                 } else {
                     val keyboardController = LocalSoftwareKeyboardController.current
 
-                    OutlinedTextField(
-                        value = searchQuery,
-                        onValueChange = { onSearchQueryChanged(it) },
-                        placeholder = {
-                            Text(
-                                "브랜드명 검색",
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        },
-                        textStyle = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        singleLine = true,
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = null,
-                                modifier = Modifier.clickable {
-                                    val matchedBrand = brandSectionIndices.keys.firstOrNull {
-                                        it.contains(searchQuery, ignoreCase = true)
-                                    }
-                                    matchedBrand?.let {
-                                        highlightedBrand.value = it
-                                        coroutineScope.launch {
-                                            val offset = if (isBodySizeCardSticky == false) {
-                                                -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
-                                            } else {
-                                                -stickyHeaderHeightPx.value
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                value = searchQuery,
+                                onValueChange = { onSearchQueryChanged(it) },
+                                placeholder = {
+                                    Text(
+                                        "브랜드명 검색",
+                                        style = MaterialTheme.typography.labelLarge
+                                    )
+                                },
+                                textStyle = MaterialTheme.typography.labelLarge,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp),
+                                singleLine = true,
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = null,
+                                        modifier = Modifier.clickable {
+                                            val matchedBrand = brandSectionIndices.keys.firstOrNull {
+                                                it.contains(searchQuery, ignoreCase = true)
                                             }
-                                            listState.animateScrollToItem(
-                                                brandSectionIndices[it] ?: 0,
-                                                offset
-                                            )
+                                            matchedBrand?.let {
+                                                highlightedBrand.value = it
+                                                coroutineScope.launch {
+                                                    val offset = if (isBodySizeCardSticky == false) {
+                                                        -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
+                                                    } else {
+                                                        -stickyHeaderHeightPx.value
+                                                    }
+                                                    listState.animateScrollToItem(
+                                                        brandSectionIndices[it] ?: 0,
+                                                        offset
+                                                    )
+                                                }
+                                            }
+                                            keyboardController?.hide()
                                         }
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                                keyboardActions = KeyboardActions(
+                                    onSearch = {
+                                        val matchedBrand = brandSectionIndices.keys.firstOrNull {
+                                            it.contains(searchQuery, ignoreCase = true)
+                                        }
+                                        matchedBrand?.let {
+                                            highlightedBrand.value = it
+                                            coroutineScope.launch {
+                                                listState.animateScrollToItem(
+                                                    brandSectionIndices[it] ?: 0,
+                                                    -stickyHeaderHeightPx.value
+                                                )
+                                            }
+                                        }
+                                        keyboardController?.hide()
                                     }
-                                    keyboardController?.hide()
-                                }
+                                ),
+                                colors = TextFieldDefaults.colors(
+                                    unfocusedContainerColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent
+                                )
                             )
-                        },
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                        keyboardActions = KeyboardActions(
-                            onSearch = {
-                                val matchedBrand = brandSectionIndices.keys.firstOrNull {
-                                    it.contains(searchQuery, ignoreCase = true)
-                                }
-                                matchedBrand?.let {
-                                    highlightedBrand.value = it
-                                    coroutineScope.launch {
-                                        listState.animateScrollToItem(
-                                            brandSectionIndices[it] ?: 0,
-                                            -stickyHeaderHeightPx.value
-                                        )
-                                    }
-                                }
-                                keyboardController?.hide()
-                            }
-                        ),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        )
-                    )
 
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                    )
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .padding(start = 16.dp),
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                            )
+                        }
 
+                        Column(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .height(56.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            GuideButton(
+                                onClick = { showGuideDialog = true },
+                            )
+                        }
+                    }
                     Spacer(modifier = Modifier.height(4.dp))
                 }
             }

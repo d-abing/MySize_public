@@ -3,6 +3,7 @@ package com.aube.mysize.data.model.clothes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.aube.mysize.domain.model.clothes.Clothes
+import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.presentation.model.MemoVisibility
 import com.aube.mysize.presentation.model.Visibility
 import java.time.LocalDateTime
@@ -17,6 +18,7 @@ data class ClothesEntity(
     val tags: Set<String>,
     val memo: String?,
     val sharedBodyFields: Set<String>,
+    val bodySize: BodySize?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime?,
     val createUserId: Long,
@@ -35,6 +37,7 @@ fun ClothesEntity.toDomain(): Clothes {
         tags = tags,
         memo = memo,
         sharedBodyFields = sharedBodyFields,
+        bodySize = bodySize,
         createdAt = createdAt,
         updatedAt = updatedAt,
         createUserId = createUserId,

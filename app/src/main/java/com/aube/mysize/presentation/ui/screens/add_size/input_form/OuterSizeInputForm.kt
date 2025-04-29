@@ -26,23 +26,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.presentation.ui.component.SizeOcrSelector
-import com.aube.mysize.presentation.ui.component.addsize.BorderColumn
-import com.aube.mysize.presentation.ui.component.addsize.BrandChipInput
-import com.aube.mysize.presentation.ui.component.addsize.LabeledTextField
-import com.aube.mysize.presentation.ui.component.addsize.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
+import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
+import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
+import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
 import java.time.LocalDate
 
 @Composable
 fun OuterSizeInputForm(
+    oldSize: OuterSize?,
     viewModel: OuterSizeViewModel,
     snackbarHostState: SnackbarHostState,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
     onSaved: (OuterSize) -> Unit
 ) {
+    val brandList by viewModel.brandList.collectAsState()
+
     var type by remember { mutableStateOf("") }
     var brand by remember { mutableStateOf("") }
-    val brandList by viewModel.brandList.collectAsState()
     var sizeLabel by remember { mutableStateOf("") }
     var shoulder by remember { mutableStateOf("") }
     var chest by remember { mutableStateOf("") }
@@ -50,6 +52,20 @@ fun OuterSizeInputForm(
     var length by remember { mutableStateOf("") }
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
+
+    LaunchedEffect(oldSize) {
+        oldSize?.let { size ->
+            type = size.type
+            brand = size.brand
+            sizeLabel = size.sizeLabel
+            shoulder = size.shoulder?.toString() ?: ""
+            chest = size.chest?.toString() ?: ""
+            sleeve = size.sleeve?.toString() ?: ""
+            length = size.length?.toString() ?: ""
+            fit = size.fit ?: ""
+            note = size.note ?: ""
+        }
+    }
 
     val shoulderFloat = shoulder.toFloatOrNull()
     val chestFloat = chest.toFloatOrNull()
