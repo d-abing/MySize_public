@@ -23,12 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.clothes.Clothes
+import com.aube.mysize.presentation.ui.component.chip_tap.MSTabRow
 import com.aube.mysize.presentation.ui.screens.closet.component.ClosetViewModeTabs
 import com.aube.mysize.presentation.ui.screens.closet.component.ColorGrid
 import com.aube.mysize.presentation.ui.screens.closet.component.PictureGrid
 import com.aube.mysize.presentation.ui.screens.closet.component.SizeGrid
 import com.aube.mysize.presentation.ui.screens.closet.component.TagGrid
-import com.aube.mysize.presentation.ui.screens.my_size.component.MySizeTabRow
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 
 @Composable
@@ -43,8 +43,6 @@ fun ClosetScreen(
     var selectedTab by remember { mutableIntStateOf(0) }
     var selectedViewMode by remember { mutableIntStateOf(0) }
 
-    var selectedColor by remember { mutableStateOf<Int?>(null) }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +50,7 @@ fun ClosetScreen(
         Column (
             modifier = Modifier.fillMaxSize()
         ) {
-            MySizeTabRow(
+            MSTabRow(
                 listOf("내 옷장 보기", "다른 옷장 둘러보기"),
                 selectedTabIndex = selectedTab,
                 onTabSelected = { selectedTab = it }
@@ -70,7 +68,6 @@ fun ClosetScreen(
                     ColorGrid(
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
                         colorList = colors,
-                        onColorSelected = { selectedColor = it },
                     )
                 } else if (selectedViewMode == 3) {
                     TagGrid(clothesList = clothes, onClick = onClothesClick)

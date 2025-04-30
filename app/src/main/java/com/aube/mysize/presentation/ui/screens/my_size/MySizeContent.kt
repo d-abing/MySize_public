@@ -56,11 +56,11 @@ import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.BodySizeCardUiModel
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeContentUiModel
-import com.aube.mysize.presentation.ui.component.CategoryChip
-import com.aube.mysize.presentation.ui.component.GuideButton
-import com.aube.mysize.presentation.ui.component.GuideDialog
 import com.aube.mysize.presentation.ui.component.HighlightedTitle
-import com.aube.mysize.presentation.ui.screens.my_size.component.MySizeTabRow
+import com.aube.mysize.presentation.ui.component.chip_tap.CategoryChip
+import com.aube.mysize.presentation.ui.component.chip_tap.MSTabRow
+import com.aube.mysize.presentation.ui.component.guide.GuideButton
+import com.aube.mysize.presentation.ui.component.guide.GuideDialog
 import com.aube.mysize.presentation.ui.screens.my_size.component.SensitiveBodySizeCard
 import com.aube.mysize.presentation.ui.screens.my_size.component.SubListBlock
 import kotlinx.coroutines.CoroutineScope
@@ -104,7 +104,7 @@ fun MySizeContent(
         ) {
             Text(
                 text = "가장 많이 저장한 사이즈 라벨을 보여드립니다.\n" +
-                        "여러 개가 같을 경우, 최근에 저장한 걸 사용해요.",
+                        "여러 개가 같을 경우, 최근에 저장한 걸 사용합니다.",
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -171,7 +171,7 @@ fun MySizeContent(
                     }
                 }
 
-                MySizeTabRow(
+                MSTabRow(
                     listOf("종류별 보기", "브랜드별 보기"),
                     selectedTabIndex = selectedTab,
                     onTabSelected = { selectedTab = it }
@@ -180,31 +180,53 @@ fun MySizeContent(
                 HorizontalDivider(thickness = 0.5.dp)
 
                 if (selectedTab == 0) {
-                    CategoryChip(
-                        addGuideChip = true,
-                        onGuideChipClick = { showGuideDialog = true },
-                        categories = categorySectionIndices.keys.toList(),
-                        selectedCategory = selectedCategory,
-                        enableColorHighlight = isFullDetailMode,
-                        onClick = { category ->
-                            selectedCategory = category
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(60.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            CategoryChip(
+                                addLikeChip = true,
+                                onLikeChipClick = { /* TODO */ },
+                                categories = categorySectionIndices.keys.toList(),
+                                selectedCategory = selectedCategory,
+                                enableColorHighlight = isFullDetailMode,
+                                onClick = { category ->
+                                    selectedCategory = category
 
-                            if (!isFullDetailMode) {
-                                highlightedCategory.value = category
+                                    if (!isFullDetailMode) {
+                                        highlightedCategory.value = category
 
-                                categorySectionIndices[category]?.let { index ->
-                                    coroutineScope.launch {
-                                        val offset = if (isBodySizeCardSticky == false) {
-                                            -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
-                                        } else {
-                                            -stickyHeaderHeightPx.value
+                                        categorySectionIndices[category]?.let { index ->
+                                            coroutineScope.launch {
+                                                val offset = if (isBodySizeCardSticky == false) {
+                                                    -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
+                                                } else {
+                                                    -stickyHeaderHeightPx.value
+                                                }
+                                                listState.animateScrollToItem(index, offset)
+                                            }
                                         }
-                                        listState.animateScrollToItem(index, offset)
                                     }
                                 }
-                            }
+                            )
                         }
-                    )
+
+                        Column(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .height(56.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            GuideButton(
+                                onClick = { showGuideDialog = true },
+                            )
+                        }
+                    }
                 } else {
                     val keyboardController = LocalSoftwareKeyboardController.current
 

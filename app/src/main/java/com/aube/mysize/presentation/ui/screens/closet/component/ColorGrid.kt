@@ -1,18 +1,30 @@
 package com.aube.mysize.presentation.ui.screens.closet.component
 
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,35 +32,88 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
+import com.aube.mysize.presentation.ui.component.button.RainbowBorderFAB
+import com.aube.mysize.presentation.ui.component.color_analysis.PersonalToneAnalysisView
+import com.aube.mysize.utils.AnimatedEnvelope
+import com.aube.mysize.utils.analyzePersonalTone
 import com.aube.mysize.utils.colorToHexString
 import com.aube.mysize.utils.isColorBright
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ColorGrid(
     modifier: Modifier = Modifier,
     colorList: List<Int>,
-    onColorSelected: (Int) -> Unit,
 ) {
-    LazyVerticalGrid(
-        modifier = modifier,
-        columns = GridCells.Adaptive(70.dp)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showSheet by remember { mutableStateOf(false) }
+    val showFab by remember { mutableStateOf(true) }
+    val fabEnterAnimation = remember { Animatable(0f) }
+
+    LaunchedEffect(showFab) {
+        fabEnterAnimation.animateTo(
+            targetValue = 20f,
+            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+        )
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        items(
-            items = colorList,
-            key = { color -> color }
-        ) { color ->
-            GalleryColorItem(
-                color = color,
-                onColorSelected = {
-                    onColorSelected(it)
+        LazyVerticalGrid(
+            modifier = modifier,
+            columns = GridCells.Adaptive(70.dp)
+        ) {
+            items(
+                items = colorList,
+                key = { color -> color }
+            ) { color ->
+                GalleryColorItem(
+                    color = color,
+                )
+            }
+        }
+
+        if(colorList.isNotEmpty()) {
+            RainbowBorderFAB(
+                onClick = { showSheet = true },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 90.dp, bottom = fabEnterAnimation.value.dp)
+                    .width(80.dp),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    AnimatedEnvelope()
                 }
-            )
+            }
+        }
+    }
+
+    if (showSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showSheet = false },
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.background,
+            dragHandle = null,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp)
+            ) {
+                Text(
+                    text =  "🎨 색상 분석 리포트 📑",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Spacer(Modifier.height(8.dp))
+                val result = analyzePersonalTone(colorList)
+                PersonalToneAnalysisView(result)
+            }
         }
     }
 }
@@ -57,26 +122,14 @@ fun ColorGrid(
 @Composable
 fun GalleryColorItem(
     color: Int,
-    onColorSelected: (Int) -> Unit,
 ) {
     var isClicking by remember { mutableStateOf(false) }
-    val actualSize = calculateColorSize(70.dp, 8.dp, 4.dp)
 
     Card(
         modifier = Modifier
             .padding(4.dp)
-            .width(70.dp)
-            .height(actualSize)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = {
-                        onColorSelected(color)
-                    },
-                    onTap = {
-                        isClicking = !isClicking
-                    }
-                )
-            },
+            .size(70.dp)
+            .clickable { isClicking = !isClicking },
         elevation = CardDefaults.cardElevation(2.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(color)
@@ -97,14 +150,4 @@ fun GalleryColorItem(
             }
         }
     }
-}
-
-@Composable
-fun calculateColorSize(minSize: Dp, layoutPaddings: Dp, contentPaddings: Dp): Dp {
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp // 화면의 너비를 dp로 가져옴
-    val actualScreenWidth = screenWidth - (layoutPaddings * 2) // 패딩을 제외한 실제 화면 너비 계산
-    val columnCount = (actualScreenWidth / minSize).toInt() // 생성될 열의 개수 계산
-    val paddingWidth = (columnCount + 1) * contentPaddings // 패딩의 총 너비 계산
-    return (actualScreenWidth - paddingWidth) / columnCount // 각 열의 너비 계산
 }

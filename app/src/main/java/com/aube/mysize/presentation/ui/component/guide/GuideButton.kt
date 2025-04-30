@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component
+package com.aube.mysize.presentation.ui.component.guide
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer

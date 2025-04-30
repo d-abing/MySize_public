@@ -68,13 +68,13 @@ fun BodySizeCard(
                         contentDescription = "Body Size Icon",
                         modifier = Modifier
                             .clip(CircleShape)
-                            .size(20.dp)
+                            .size(16.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 if (title != null) {
                     Text(
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         text = title,
                         modifier = Modifier.weight(1f)
                     )
@@ -88,7 +88,7 @@ fun BodySizeCard(
                         imageVector = Icons.Default.ModeEdit,
                         contentDescription = "edit"
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
                     Icon(
                         modifier = Modifier.size(16.dp)
                             .clickable { onDelete() },

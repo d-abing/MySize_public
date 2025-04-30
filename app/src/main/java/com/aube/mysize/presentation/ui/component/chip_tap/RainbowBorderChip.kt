@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component
+package com.aube.mysize.presentation.ui.component.chip_tap
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

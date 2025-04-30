@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.my_size.component
+package com.aube.mysize.presentation.ui.component.chip_tap
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MySizeTabRow(
+fun MSTabRow(
     tabs: List<String>,
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit

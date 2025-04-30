@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.settings
+package com.aube.mysize.presentation.ui.screens.settings.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row

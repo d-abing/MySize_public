@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component
+package com.aube.mysize.presentation.ui.component.button
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding

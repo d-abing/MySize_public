@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component
+package com.aube.mysize.presentation.ui.component.guide
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,7 @@ fun GuideDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.background, shape = MaterialTheme.shapes.medium)
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {

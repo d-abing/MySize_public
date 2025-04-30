@@ -45,7 +45,7 @@ import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.SizeCategory
-import com.aube.mysize.presentation.ui.screens.closet.component.BigSizeButton
+import com.aube.mysize.presentation.ui.component.button.BigSizeButton
 import java.time.format.DateTimeFormatter
 
 @Composable

@@ -1,6 +1,6 @@
-package com.aube.mysize.presentation.ui.screens.my_size.component
+package com.aube.mysize.presentation.ui.component.button
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,18 +18,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SizeButton(
+fun BigSizeButton(
     modifier: Modifier,
     title: String,
-    sizeLabel: String,
+    sizeLabel: String? = null,
+    titleMaxLines: Int = 2,
     onClick: () -> Unit
 ) {
     OutlinedButton(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        modifier = modifier
-            .border(1.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(16.dp)),
-        contentPadding = PaddingValues(4.dp)
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = 8.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(0.4f))
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,19 +40,19 @@ fun SizeButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 textAlign = TextAlign.Center,
                 text = title,
-                style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = titleMaxLines,
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center,
-                text = sizeLabel,
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (sizeLabel != null) {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = sizeLabel,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         }
     }
 }

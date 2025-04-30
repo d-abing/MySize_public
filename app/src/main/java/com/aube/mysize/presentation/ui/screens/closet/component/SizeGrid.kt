@@ -10,12 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.outlined.Circle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,92 +73,92 @@ fun SizeGrid(
     ) {
         items(clothesList) { clothes ->
 
-            LaunchedEffect(clothes.linkedSizeIds) {
-                delay(100)
-                isReady = true
-            }
+            if (clothes.linkedSizeIds.isNotEmpty()) {
 
-            if (isReady) {
+                LaunchedEffect(clothes.linkedSizeIds) {
+                    delay(100)
+                    isReady = true
+                }
 
-                Box(
-                    modifier = Modifier
-                        .aspectRatio(1f)
-                ) {
-
-
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(clothes.imageBytes)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        alpha = 0.4f,
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    val summaries = listOfNotNull(
-                        clothes.linkedSizeIds["TOP"]?.let {
-                            topSizeViewModel.getSizeById(it)?.let(::formatTopSize)
-                        },
-                        clothes.linkedSizeIds["BOTTOM"]?.let {
-                            bottomSizeViewModel.getSizeById(it)?.let(::formatBottomSize)
-                        },
-                        clothes.linkedSizeIds["OUTER"]?.let {
-                            outerSizeViewModel.getSizeById(it)?.let(::formatOuterSize)
-                        },
-                        clothes.linkedSizeIds["ONE_PIECE"]?.let {
-                            onePieceSizeViewModel.getSizeById(
-                                it
-                            )?.let(::formatOnePieceSize)
-                        },
-                        clothes.linkedSizeIds["SHOE"]?.let {
-                            shoeSizeViewModel.getSizeById(it)?.let(::formatShoeSize)
-                        },
-                        clothes.linkedSizeIds["ACCESSORY"]?.let {
-                            accessorySizeViewModel.getSizeById(
-                                it
-                            )?.let(::formatAccessorySize)
-                        }
-                    )
-
-                    val pagerState = rememberPagerState(pageCount = { summaries.size })
-
-
-                    Column(
+                if (isReady) {
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxSize()
-                            .padding(4.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                            .aspectRatio(1f)
                     ) {
-                        HorizontalPager(
-                            state = pagerState,
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(clothes.imageBytes)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            alpha = 0.4f,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        val summaries = listOfNotNull(
+                            clothes.linkedSizeIds["TOP"]?.let {
+                                topSizeViewModel.getSizeById(it)?.let(::formatTopSize)
+                            },
+                            clothes.linkedSizeIds["BOTTOM"]?.let {
+                                bottomSizeViewModel.getSizeById(it)?.let(::formatBottomSize)
+                            },
+                            clothes.linkedSizeIds["OUTER"]?.let {
+                                outerSizeViewModel.getSizeById(it)?.let(::formatOuterSize)
+                            },
+                            clothes.linkedSizeIds["ONE_PIECE"]?.let {
+                                onePieceSizeViewModel.getSizeById(
+                                    it
+                                )?.let(::formatOnePieceSize)
+                            },
+                            clothes.linkedSizeIds["SHOE"]?.let {
+                                shoeSizeViewModel.getSizeById(it)?.let(::formatShoeSize)
+                            },
+                            clothes.linkedSizeIds["ACCESSORY"]?.let {
+                                accessorySizeViewModel.getSizeById(
+                                    it
+                                )?.let(::formatAccessorySize)
+                            }
+                        )
+
+                        val pagerState = rememberPagerState(pageCount = { summaries.size })
+
+
+                        Column(
                             modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterHorizontally)
-                        ) { page ->
-                            Text(
-                                text = summaries[page],
+                                .align(Alignment.Center)
+                                .fillMaxSize()
+                                .padding(4.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            HorizontalPager(
+                                state = pagerState,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                textAlign = TextAlign.Center,
-                                overflow = TextOverflow.Ellipsis,
+                                    .weight(1f)
+                                    .align(Alignment.CenterHorizontally)
+                            ) { page ->
+                                Text(
+                                    text = summaries[page],
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.Center,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            PagerIndicator(
+                                modifier = Modifier
+                                    .wrapContentSize(),
+                                pageCount = summaries.size,
+                                currentPage = pagerState.currentPage
                             )
                         }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        PagerIndicator(
-                            modifier = Modifier
-                                .wrapContentSize(),
-                            pageCount = summaries.size,
-                            currentPage = pagerState.currentPage
-                        )
                     }
                 }
             }
@@ -240,10 +245,13 @@ fun PagerIndicator(
         horizontalArrangement = Arrangement.Center
     ) {
         repeat(pageCount) { index ->
-            Text(
-                text = if (index == currentPage) "●" else "○",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(horizontal = 2.dp)
+            Icon(
+                imageVector = if (index == currentPage) Icons.Filled.Circle else Icons.Outlined.Circle,
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(horizontal = 2.dp)
+                    .size(8.dp)
             )
         }
     }

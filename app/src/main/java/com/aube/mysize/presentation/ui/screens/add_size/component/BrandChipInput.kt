@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.aube.mysize.presentation.ui.component.MSSmallButton
+import com.aube.mysize.presentation.ui.component.button.MSSmallButton
 
 @Composable
 fun BrandChipInput(

@@ -40,7 +40,7 @@ import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.MemoVisibility
 import com.aube.mysize.presentation.model.Visibility
 import com.aube.mysize.presentation.ui.component.BodySizeCard
-import com.aube.mysize.presentation.ui.component.SelectOptionCard
+import com.aube.mysize.presentation.ui.component.button.SelectOptionButton
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import kotlinx.coroutines.launch
 
@@ -86,7 +86,7 @@ fun ColumnScope.AddClothesStepThree(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Visibility.entries.forEach { option ->
-                        SelectOptionCard(
+                        SelectOptionButton(
                             text = option.displayName,
                             icon = option.icon,
                             selected = selectedVisibility == option,
@@ -148,7 +148,7 @@ fun ColumnScope.AddClothesStepThree(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     MemoVisibility.entries.forEach { option ->
-                        SelectOptionCard(
+                        SelectOptionButton(
                             text = option.displayName,
                             icon = option.icon,
                             selected = selectedMemoVisibility == option,

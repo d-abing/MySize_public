@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.closet.clothes_edit
+package com.aube.mysize.presentation.ui.screens.closet.edit_clothes
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -70,7 +70,7 @@ import com.canhub.cropper.CropImageOptions
 import java.time.LocalDateTime
 
 @Composable
-fun ClothesEditScreen(
+fun EditClothesScreen(
     clothesId: Int,
     navController: NavController,
     clothesViewModel: ClothesViewModel = hiltViewModel(),
@@ -106,7 +106,7 @@ fun ClothesEditScreen(
             CircularProgressIndicator()
         }
     } else {
-        ClothesEditScreen(
+        EditClothesScreen(
             clothes = clothes!!,
             navController = navController,
             bodySize = bodySizes.maxByOrNull { it.id },
@@ -124,7 +124,7 @@ fun ClothesEditScreen(
 }
 
 @Composable
-fun ClothesEditScreen(
+fun EditClothesScreen(
     clothes: Clothes,
     navController: NavController,
     bodySize: BodySize?,
@@ -373,9 +373,4 @@ fun ClothesEditScreen(
 fun mapSaver() = Saver<MutableMap<String, Int>, Map<String, Int>>(
     save = { it.toMap() },
     restore = { it.toMutableMap() }
-)
-
-val setSaver = Saver<Set<String>, List<String>>(
-    save = { it.toList() },
-    restore = { it.toSet() }
 )

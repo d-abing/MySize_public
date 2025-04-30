@@ -39,7 +39,7 @@ import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.Size
 import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.SizeCategory
-import com.aube.mysize.presentation.ui.component.CategoryChip
+import com.aube.mysize.presentation.ui.component.chip_tap.CategoryChip
 import com.aube.mysize.presentation.ui.screens.add_size.component.SaveButton
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.AccessorySizeInputForm
 import com.aube.mysize.presentation.ui.screens.add_size.input_form.BodySizeInputForm

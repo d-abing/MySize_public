@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat.getString
 import com.aube.mysize.R
 import com.aube.mysize.presentation.ui.component.BodySizeCard
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
+import com.aube.mysize.presentation.ui.screens.settings.component.LanguageDropdown
 
 @Composable
 fun SettingsScreen(

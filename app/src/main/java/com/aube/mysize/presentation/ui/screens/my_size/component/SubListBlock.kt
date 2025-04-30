@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.presentation.model.SizeContentUiModel
+import com.aube.mysize.presentation.ui.component.button.SizeButton
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

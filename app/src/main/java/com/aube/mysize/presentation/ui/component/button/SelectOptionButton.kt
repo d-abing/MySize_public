@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component
+package com.aube.mysize.presentation.ui.component.button
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SelectOptionCard(
+fun SelectOptionButton(
     text: String,
     icon: ImageVector,
     selected: Boolean,

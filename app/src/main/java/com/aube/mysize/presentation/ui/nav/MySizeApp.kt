@@ -38,7 +38,7 @@ import com.aube.mysize.presentation.ui.screens.add_size.AddSizeScreen
 import com.aube.mysize.presentation.ui.screens.closet.ClosetScreen
 import com.aube.mysize.presentation.ui.screens.closet.add_clothes.AddClothesScreen
 import com.aube.mysize.presentation.ui.screens.closet.clothes_detail.ClothesDetailScreen
-import com.aube.mysize.presentation.ui.screens.closet.clothes_edit.ClothesEditScreen
+import com.aube.mysize.presentation.ui.screens.closet.edit_clothes.EditClothesScreen
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeScreen
 import com.aube.mysize.presentation.ui.screens.my_size.full_detail.FullDetailScreen
 import com.aube.mysize.presentation.ui.screens.recommend.RecommendScreen
@@ -134,7 +134,7 @@ fun MySizeApp() {
                 ClothesDetailScreen(
                     clothesId = id,
                     onDelete = { navController.popBackStack() },
-                    onEdit = { navController.navigate("clothes_edit/${id}") }
+                    onEdit = { navController.navigate("edit_clothes/${id}") }
                 )
             }
             composable(
@@ -142,7 +142,7 @@ fun MySizeApp() {
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: return@composable
-                ClothesEditScreen(
+                EditClothesScreen(
                     clothesId = id,
                     navController = navController,
                     onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") },

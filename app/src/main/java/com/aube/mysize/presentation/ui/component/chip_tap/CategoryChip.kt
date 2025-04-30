@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component
+package com.aube.mysize.presentation.ui.component.chip_tap
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,25 +19,31 @@ import com.aube.mysize.presentation.model.SizeCategory
 
 @Composable
 fun CategoryChip(
-    addGuideChip: Boolean = false,
-    onGuideChipClick: () -> Unit = {},
+    addLikeChip: Boolean = false,
+    onLikeChipClick: () -> Unit = {},
     categories: List<SizeCategory>,
     selectedCategory: SizeCategory?,
     enableColorHighlight: Boolean = true,
     onClick: (SizeCategory) -> Unit
 ) {
     LazyRow(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier = Modifier
+            .then(
+                if(addLikeChip)
+                    Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp)
+                else
+                    Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            ),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        if(addGuideChip) {
+        if(addLikeChip) {
             item {
                 RainbowBorderChip(
-                    label = "?",
+                    label = "❤",
                     modifier = Modifier
                         .height(36.dp)
                         .clickable {
-                            onGuideChipClick()
+                            onLikeChipClick()
                         }
                 )
             }

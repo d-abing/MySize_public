@@ -23,6 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.R
+import com.aube.mysize.presentation.ui.component.guide.GuideButton
+import com.aube.mysize.presentation.ui.component.guide.GuideDialog
 import com.aube.mysize.presentation.ui.component.ocr.PreviewImage
 import com.aube.mysize.presentation.ui.component.ocr.SizeLabelChip
 import com.aube.mysize.presentation.ui.component.ocr.SizeOcrButton
