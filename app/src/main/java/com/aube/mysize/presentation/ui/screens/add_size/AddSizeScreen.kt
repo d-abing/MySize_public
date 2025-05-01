@@ -5,17 +5,14 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ModeEdit
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,20 +21,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.aube.mysize.domain.model.size.AccessorySize
-import com.aube.mysize.domain.model.size.BodySize
-import com.aube.mysize.domain.model.size.BottomSize
-import com.aube.mysize.domain.model.size.OnePieceSize
-import com.aube.mysize.domain.model.size.OuterSize
-import com.aube.mysize.domain.model.size.ShoeSize
-import com.aube.mysize.domain.model.size.Size
-import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.ui.component.chip_tap.CategoryChip
 import com.aube.mysize.presentation.ui.screens.add_size.component.SaveButton
@@ -70,13 +58,16 @@ fun AddSizeScreen(
     accessoryViewModel: AccessorySizeViewModel = hiltViewModel(),
     onNavigateToMySizeScreen: () -> Unit
 ) {
-
     var isMandatoryFieldsFilled by remember { mutableStateOf(false) }
     var isAllFieldsValid by remember { mutableStateOf(false) }
     var saveRequest: (() -> Unit)? = null
 
     val listState = rememberLazyListState()
 
+    // *Route*
+    // 모든 사이즈 수정 시, 옷 사이즈 추가 시 (="해당 카테고리")
+    // 신체 사이즈 추가 시 (="ADDBODY")
+    // else ("BODY")
     val category = backStackEntry.arguments?.getString("category") ?: "BODY"
     val categories =
         when (category) {
@@ -86,17 +77,10 @@ fun AddSizeScreen(
         }
     var selectedCategory by remember { mutableStateOf(SizeCategory.BODY) }
 
+    // *Route*
+    // 모든 사이즈 수정 시 (!=-1)
+    // else (=-1)
     val id = backStackEntry.arguments?.getInt("id") ?: -1
-    val oldSize: Size? = when (category) {
-        SizeCategory.BODY.name -> bodyViewModel.getSizeById(id)
-        SizeCategory.TOP.name -> topViewModel.getSizeById(id)
-        SizeCategory.BOTTOM.name -> bottomViewModel.getSizeById(id)
-        SizeCategory.OUTER.name -> outerViewModel.getSizeById(id)
-        SizeCategory.ONE_PIECE.name -> onePieceViewModel.getSizeById(id)
-        SizeCategory.SHOE.name -> shoeViewModel.getSizeById(id)
-        SizeCategory.ACCESSORY.name -> accessoryViewModel.getSizeById(id)
-        else -> null
-    }
 
     BackHandler {
         navController.previousBackStackEntry
@@ -145,15 +129,16 @@ fun AddSizeScreen(
                 // ───── 카테고리별 입력 UI 분기 ─────
                 when (selectedCategory) {
                     SizeCategory.BODY -> BodySizeInputForm(
-                        oldSize = oldSize as? BodySize,
+                        oldSizeId = id,
+                        viewModel = bodyViewModel,
                         onUpdateFormState = { mandatoryFilled, allValid ->
                             isMandatoryFieldsFilled = mandatoryFilled
                             isAllFieldsValid = allValid
                         },
                         onSaved = { bodySize ->
                             saveRequest = {
-                                if (oldSize != null && oldSize.id != -1) { // my size -> add size
-                                    bodyViewModel.insert(bodySize.copy(id = oldSize.id))
+                                if (id != -1) { // my size -> add size
+                                    bodyViewModel.insert(bodySize.copy(id = id))
                                     navController.popBackStack()
                                 } else {
                                     bodyViewModel.insert(bodySize)
@@ -164,7 +149,7 @@ fun AddSizeScreen(
                         }
                     )
                     SizeCategory.TOP -> TopSizeInputForm(
-                        oldSize = oldSize as? TopSize,
+                        oldSizeId = id,
                         viewModel = topViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -173,8 +158,8 @@ fun AddSizeScreen(
                         },
                         onSaved = { topSize ->
                             saveRequest = {
-                                if (oldSize != null && oldSize.id != -1) {
-                                    topViewModel.insert(topSize.copy(id = oldSize.id)) {}
+                                if (id != -1) {
+                                    topViewModel.insert(topSize.copy(id = id)) {}
                                     navController.popBackStack()
                                 } else {
                                     topViewModel.insert(topSize) { newId ->
@@ -196,7 +181,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.BOTTOM -> BottomSizeInputForm(
-                        oldSize = oldSize as? BottomSize,
+                        oldSizeId = id,
                         viewModel = bottomViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -205,8 +190,8 @@ fun AddSizeScreen(
                         },
                         onSaved = { bottomSize ->
                             saveRequest = {
-                                if (oldSize != null && oldSize.id != -1) {
-                                    bottomViewModel.insert(bottomSize.copy(id = oldSize.id)) {}
+                                if (id != -1) {
+                                    bottomViewModel.insert(bottomSize.copy(id = id)) {}
                                     navController.popBackStack()
                                 } else {
                                     bottomViewModel.insert(bottomSize) { newId ->
@@ -228,7 +213,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.OUTER -> OuterSizeInputForm(
-                        oldSize = oldSize as? OuterSize,
+                        oldSizeId = id,
                         viewModel = outerViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -237,8 +222,8 @@ fun AddSizeScreen(
                         },
                         onSaved = { outerSize ->
                             saveRequest = {
-                                if (oldSize != null && oldSize.id != -1) {
-                                    outerViewModel.insert(outerSize.copy(id = oldSize.id)) {}
+                                if (id != -1) {
+                                    outerViewModel.insert(outerSize.copy(id = id)) {}
                                     navController.popBackStack()
                                 } else {
                                     outerViewModel.insert(outerSize) { newId ->
@@ -260,7 +245,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.ONE_PIECE -> OnePieceSizeInputForm(
-                        oldSize = oldSize as? OnePieceSize,
+                        oldSizeId = id,
                         viewModel = onePieceViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -269,8 +254,8 @@ fun AddSizeScreen(
                         },
                         onSaved = { onePieceSize ->
                             saveRequest = {
-                                if (oldSize != null && oldSize.id != -1) {
-                                    onePieceViewModel.insert(onePieceSize.copy(id = oldSize.id)) {}
+                                if (id != -1) {
+                                    onePieceViewModel.insert(onePieceSize.copy(id = id)) {}
                                     navController.popBackStack()
                                 } else {
                                     onePieceViewModel.insert(onePieceSize) { newId ->
@@ -292,7 +277,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.SHOE -> ShoeSizeInputForm(
-                        oldSize = oldSize as? ShoeSize,
+                        oldSizeId = id,
                         viewModel = shoeViewModel,
                         snackbarHostState = snackbarHostState,
                         onUpdateFormState = { mandatoryFilled, allValid ->
@@ -301,8 +286,8 @@ fun AddSizeScreen(
                         },
                         onSaved = { shoeSize ->
                             saveRequest = {
-                                if (oldSize != null && oldSize.id != -1) {
-                                    shoeViewModel.insert(shoeSize.copy(id = oldSize.id)) {}
+                                if (id != -1) {
+                                    shoeViewModel.insert(shoeSize.copy(id = id)) {}
                                     navController.popBackStack()
                                 } else {
                                     shoeViewModel.insert(shoeSize) { newId ->
@@ -324,7 +309,7 @@ fun AddSizeScreen(
                     )
 
                     SizeCategory.ACCESSORY -> AccessorySizeInputForm(
-                        oldSize = oldSize as? AccessorySize,
+                        oldSizeId = id,
                         viewModel = accessoryViewModel,
                         onUpdateFormState = { mandatoryFilled, allValid ->
                             isMandatoryFieldsFilled = mandatoryFilled
@@ -332,8 +317,8 @@ fun AddSizeScreen(
                         },
                         onSaved = { accessorySize ->
                             saveRequest = {
-                                if (oldSize != null && oldSize.id != -1) {
-                                    accessoryViewModel.insert(accessorySize.copy(id = oldSize.id)) {}
+                                if (id != -1) {
+                                    accessoryViewModel.insert(accessorySize.copy(id = id)) {}
                                     navController.popBackStack()
                                 } else {
                                     accessoryViewModel.insert(accessorySize) { newId ->
@@ -367,17 +352,7 @@ fun AddSizeScreen(
         )
 
         SaveButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .wrapContentWidth()
-                .defaultMinSize(minWidth = 56.dp),
             enabled = isAllFieldsValid,
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = 6.dp,
-                pressedElevation = 8.dp,
-                disabledElevation = 0.dp
-            ),
             icon = if (id != -1) Icons.Filled.ModeEdit else Icons.Filled.Add,
             text = if (isAtBottom) null else when {
                 !isMandatoryFieldsFilled -> "필수 입력 미완료"

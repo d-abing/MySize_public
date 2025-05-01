@@ -1,4 +1,3 @@
-package com.aube.mysize.utils
 
 import android.util.Log
 import com.google.mlkit.vision.common.InputImage

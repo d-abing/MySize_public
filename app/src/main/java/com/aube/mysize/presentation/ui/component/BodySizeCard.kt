@@ -99,7 +99,7 @@ fun BodySizeCard(
                 }
             }
 
-            val group1Keys = listOf("키", "몸무게", "성별")
+            val group1Keys = listOf("키", "몸무게", "발 길이", "발 너비")
             val group2Keys = listOf("가슴둘레", "허리둘레", "엉덩이둘레")
             val group3Keys = listOf("목둘레", "어깨너비", "팔 길이", "다리 안쪽 길이")
             val groups = listOf(group1Keys, group2Keys, group3Keys)

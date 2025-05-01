@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.closet.component
+package com.aube.mysize.presentation.ui.screens.closet.my_closet
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -35,16 +35,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aube.mysize.presentation.ui.component.button.RainbowBorderFAB
-import com.aube.mysize.presentation.ui.component.color_analysis.PersonalToneAnalysisView
-import com.aube.mysize.utils.AnimatedEnvelope
-import com.aube.mysize.utils.analyzePersonalTone
-import com.aube.mysize.utils.colorToHexString
+import com.aube.mysize.presentation.ui.component.lottie.Animation
+import com.aube.mysize.presentation.ui.screens.closet.component.PersonalToneAnalysisView
+import com.aube.mysize.utils.color_anlysis.analyzePersonalTone
 import com.aube.mysize.utils.isColorBright
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ColorGrid(
-    modifier: Modifier = Modifier,
     colorList: List<Int>,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -63,7 +61,7 @@ fun ColorGrid(
         modifier = Modifier.fillMaxSize()
     ) {
         LazyVerticalGrid(
-            modifier = modifier,
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
             columns = GridCells.Adaptive(70.dp)
         ) {
             items(
@@ -87,7 +85,7 @@ fun ColorGrid(
                 Box(
                     contentAlignment = Alignment.Center
                 ) {
-                    AnimatedEnvelope()
+                    Animation("report.json", modifier = Modifier.size(50.dp))
                 }
             }
         }
@@ -141,7 +139,7 @@ fun GalleryColorItem(
                 .fillMaxSize()
         ) {
             if (isClicking) {
-                val hexString = colorToHexString(color)
+                val hexString = String.format("#%06X", color and 0xFFFFFF)
                 Text(
                     fontSize = 12.sp,
                     text = hexString,

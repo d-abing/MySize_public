@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.closet.component
+package com.aube.mysize.presentation.ui.screens.closet.my_closet
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,99 +66,97 @@ fun SizeGrid(
     accessorySizeViewModel: AccessorySizeViewModel = hiltViewModel(),
 ) {
     var isReady by remember { mutableStateOf(false) }
+    val filteredList = clothesList.filter { it.linkedSizeIds.isNotEmpty() }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
     ) {
-        items(clothesList) { clothes ->
+        items(filteredList) { clothes ->
 
-            if (clothes.linkedSizeIds.isNotEmpty()) {
+            LaunchedEffect(clothes.linkedSizeIds) {
+                delay(100)
+                isReady = true
+            }
 
-                LaunchedEffect(clothes.linkedSizeIds) {
-                    delay(100)
-                    isReady = true
-                }
+            if (isReady) {
+                Box(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(clothes.imageBytes)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        alpha = 0.4f,
+                        modifier = Modifier.fillMaxSize()
+                    )
 
-                if (isReady) {
-                    Box(
+                    val summaries = listOfNotNull(
+                        clothes.linkedSizeIds["TOP"]?.let {
+                            topSizeViewModel.getSizeById(it)?.let(::formatTopSize)
+                        },
+                        clothes.linkedSizeIds["BOTTOM"]?.let {
+                            bottomSizeViewModel.getSizeById(it)?.let(::formatBottomSize)
+                        },
+                        clothes.linkedSizeIds["OUTER"]?.let {
+                            outerSizeViewModel.getSizeById(it)?.let(::formatOuterSize)
+                        },
+                        clothes.linkedSizeIds["ONE_PIECE"]?.let {
+                            onePieceSizeViewModel.getSizeById(
+                                it
+                            )?.let(::formatOnePieceSize)
+                        },
+                        clothes.linkedSizeIds["SHOE"]?.let {
+                            shoeSizeViewModel.getSizeById(it)?.let(::formatShoeSize)
+                        },
+                        clothes.linkedSizeIds["ACCESSORY"]?.let {
+                            accessorySizeViewModel.getSizeById(
+                                it
+                            )?.let(::formatAccessorySize)
+                        }
+                    )
+
+                    val pagerState = rememberPagerState(pageCount = { summaries.size })
+
+
+                    Column(
                         modifier = Modifier
-                            .aspectRatio(1f)
+                            .align(Alignment.Center)
+                            .fillMaxSize()
+                            .padding(4.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(clothes.imageBytes)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            alpha = 0.4f,
-                            modifier = Modifier.fillMaxSize()
-                        )
-
-                        val summaries = listOfNotNull(
-                            clothes.linkedSizeIds["TOP"]?.let {
-                                topSizeViewModel.getSizeById(it)?.let(::formatTopSize)
-                            },
-                            clothes.linkedSizeIds["BOTTOM"]?.let {
-                                bottomSizeViewModel.getSizeById(it)?.let(::formatBottomSize)
-                            },
-                            clothes.linkedSizeIds["OUTER"]?.let {
-                                outerSizeViewModel.getSizeById(it)?.let(::formatOuterSize)
-                            },
-                            clothes.linkedSizeIds["ONE_PIECE"]?.let {
-                                onePieceSizeViewModel.getSizeById(
-                                    it
-                                )?.let(::formatOnePieceSize)
-                            },
-                            clothes.linkedSizeIds["SHOE"]?.let {
-                                shoeSizeViewModel.getSizeById(it)?.let(::formatShoeSize)
-                            },
-                            clothes.linkedSizeIds["ACCESSORY"]?.let {
-                                accessorySizeViewModel.getSizeById(
-                                    it
-                                )?.let(::formatAccessorySize)
-                            }
-                        )
-
-                        val pagerState = rememberPagerState(pageCount = { summaries.size })
-
-
-                        Column(
+                        HorizontalPager(
+                            state = pagerState,
                             modifier = Modifier
-                                .align(Alignment.Center)
-                                .fillMaxSize()
-                                .padding(4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            HorizontalPager(
-                                state = pagerState,
+                                .weight(1f)
+                                .align(Alignment.CenterHorizontally)
+                        ) { page ->
+                            Text(
+                                text = summaries[page],
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterHorizontally)
-                            ) { page ->
-                                Text(
-                                    text = summaries[page],
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    textAlign = TextAlign.Center,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            PagerIndicator(
-                                modifier = Modifier
-                                    .wrapContentSize(),
-                                pageCount = summaries.size,
-                                currentPage = pagerState.currentPage
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        PagerIndicator(
+                            modifier = Modifier
+                                .wrapContentSize(),
+                            pageCount = summaries.size,
+                            currentPage = pagerState.currentPage
+                        )
                     }
                 }
             }

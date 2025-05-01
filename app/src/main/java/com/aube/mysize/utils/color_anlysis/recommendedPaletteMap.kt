@@ -1,4 +1,4 @@
-package com.aube.mysize.utils
+package com.aube.mysize.utils.color_anlysis
 
 import com.aube.mysize.presentation.model.Detail
 import com.aube.mysize.presentation.model.Season

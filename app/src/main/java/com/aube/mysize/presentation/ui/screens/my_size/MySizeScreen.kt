@@ -71,7 +71,7 @@ fun MySizeScreen(
 
     val bodySizeCard = bodySizes.firstOrNull()?.toUi()
 
-    val typeGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
+    val categoryGroupedData = remember(topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) {
         buildCategoryGroupedSizeData(
             topSizes, bottomSizes, outerSizes, onePieceSizes, shoeSizes, accessorySizes) { selectedSize = it }
     }
@@ -141,7 +141,7 @@ fun MySizeScreen(
         highlightedBrand = highlightedBrand,
         searchQuery = searchQuery,
         onSearchQueryChanged = { searchQuery = it },
-        categoryGroupedData = typeGroupedData,
+        categoryGroupedData = categoryGroupedData,
         onNavigateToFullDetailByCategory = onNavigateToFullDetailByCategory,
         brandGroupedData = brandGroupedData,
         onNavigateToFullDetailByBrand = onNavigateToFullDetailByBrand

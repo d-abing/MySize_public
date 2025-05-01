@@ -1,11 +1,6 @@
 package com.aube.mysize.presentation.ui.screens.closet.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Straighten
-import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -14,18 +9,14 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun ClosetViewModeTabs(
+    closetViewModes: List<ImageVector>,
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit
 ) {
-    val closetViewModes = listOf(
-        Icons.Default.GridView,       // 사진 보기
-        Icons.Default.Straighten,     // 사이즈 보기
-        Icons.Default.Palette,         // 색상 보기
-        Icons.Default.Tag             // 태그 보기
-    )
 
     TabRow(
         selectedTabIndex = selectedTabIndex,

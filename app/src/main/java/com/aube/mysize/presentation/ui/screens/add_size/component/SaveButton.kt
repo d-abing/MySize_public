@@ -1,16 +1,18 @@
 package com.aube.mysize.presentation.ui.screens.add_size.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,10 +25,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SaveButton(
-    modifier: Modifier = Modifier,
+fun BoxScope.SaveButton(
     enabled: Boolean = true,
-    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
     icon: ImageVector? = null,
     text: String? = null,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
@@ -35,10 +35,18 @@ fun SaveButton(
     Button(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(16.dp)
+            .wrapContentWidth()
+            .defaultMinSize(minWidth = 56.dp)
             .wrapContentHeight()
             .defaultMinSize(minHeight = 50.dp),
-        elevation = elevation,
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 6.dp,
+            pressedElevation = 8.dp,
+            disabledElevation = 0.dp
+        ),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (enabled) Color.Black else MaterialTheme.colorScheme.surfaceVariant,
             contentColor = if (enabled) Color.White else MaterialTheme.colorScheme.onSurfaceVariant

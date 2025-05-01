@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component.color_analysis
+package com.aube.mysize.presentation.ui.screens.closet.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -93,6 +93,7 @@ fun <T> ToneBar(
                 .clip(RoundedCornerShape(8.dp))
         ) {
             toneMap.forEach { (label, ratio) ->
+                if (ratio == 0f) return@forEach
                 Box(
                     modifier = Modifier
                         .weight(ratio)
@@ -122,6 +123,8 @@ fun <T> ToneBar(
                 .height(20.dp)
         ) {
             toneMap.forEach { (label, ratio) ->
+                if (ratio == 0f) return@forEach
+
                 Box(
                     modifier = Modifier
                         .weight(ratio)

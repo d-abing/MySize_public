@@ -101,7 +101,7 @@ fun SizePreviewBottomSheet(
                     Section("🧥 스타일") {
                         size.fit?.let { LabelValue(value = it) }
                     }
-                    Section("📝 참고사항") {
+                    Section("📝 메모") {
                         size.note?.let { LabelValue(value = it) }
                     }
                 }

@@ -77,7 +77,7 @@ fun MySizeApp() {
                         )
                     },
                     actions = {
-                        IconButton(onClick = { /*  */ }) {
+                        IconButton(onClick = { /* TODO */ }) {
                             Icon(
                                 imageVector = Icons.Filled.Straighten,
                                 tint = Color.Black,
@@ -103,10 +103,14 @@ fun MySizeApp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Closet.route,
+            startDestination = Screen.Recommend.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Recommend.route) { RecommendScreen() }
+            composable(Screen.Recommend.route) {
+                RecommendScreen(
+                 onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") }
+                )
+            }
             composable(Screen.MySize.route) {
                 MySizeScreen(
                     onNavigateToFullDetailByCategory = { sizeCategory ->
@@ -138,7 +142,7 @@ fun MySizeApp() {
                 )
             }
             composable(
-                route = Screen.ClothesModify.route,
+                route = Screen.EditClothes.route,
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: return@composable

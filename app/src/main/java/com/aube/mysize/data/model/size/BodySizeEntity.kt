@@ -18,6 +18,8 @@ data class BodySizeEntity(
     val shoulder: Float?,
     val arm: Float?,
     val leg: Float?,
+    val footLength: Float?,
+    val footWidth: Float?,
     val date: LocalDate
 )
 
@@ -35,6 +37,8 @@ fun BodySizeEntity.toDomain(): BodySize {
         shoulder = shoulder,
         arm = arm,
         leg = leg,
+        footLength = footLength,
+        footWidth = footWidth,
         date = date
     )
 }

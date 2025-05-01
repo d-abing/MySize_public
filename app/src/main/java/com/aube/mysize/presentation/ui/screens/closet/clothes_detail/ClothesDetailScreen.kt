@@ -53,12 +53,12 @@ import com.aube.mysize.domain.model.clothes.Clothes
 import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.Visibility
 import com.aube.mysize.presentation.ui.component.BodySizeCard
-import com.aube.mysize.presentation.ui.screens.closet.component.formatAccessorySize
-import com.aube.mysize.presentation.ui.screens.closet.component.formatBottomSize
-import com.aube.mysize.presentation.ui.screens.closet.component.formatOnePieceSize
-import com.aube.mysize.presentation.ui.screens.closet.component.formatOuterSize
-import com.aube.mysize.presentation.ui.screens.closet.component.formatShoeSize
-import com.aube.mysize.presentation.ui.screens.closet.component.formatTopSize
+import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatAccessorySize
+import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatBottomSize
+import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatOnePieceSize
+import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatOuterSize
+import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatShoeSize
+import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatTopSize
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
@@ -144,7 +144,10 @@ fun ClothesDetailScreen(
                     Button(
                         modifier = Modifier
                             .wrapContentHeight(),
-                        onClick = {}
+                        onClick = {
+                            clothesViewModel.delete(currentClothes)
+                            onDelete()
+                        }
                     ) {
                         Text(
                             text = "팔로우",

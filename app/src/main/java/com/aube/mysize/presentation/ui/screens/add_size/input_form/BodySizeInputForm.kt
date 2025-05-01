@@ -21,11 +21,13 @@ import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
 import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import java.time.LocalDate
 
 @Composable
 fun BodySizeInputForm(
-    oldSize: BodySize?,
+    oldSizeId: Int?,
+    viewModel: BodySizeViewModel,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
     onSaved: (BodySize) -> Unit
 ) {
@@ -39,8 +41,12 @@ fun BodySizeInputForm(
     var shoulder by remember { mutableStateOf("") }
     var arm by remember { mutableStateOf("") }
     var leg by remember { mutableStateOf("") }
+    var footLength by remember { mutableStateOf("") }
+    var footWidth by remember { mutableStateOf("") }
 
-    LaunchedEffect(oldSize) {
+    LaunchedEffect(oldSizeId) {
+        val oldSize = oldSizeId?.let { viewModel.getSizeById(it) }
+
         oldSize?.let { size ->
             gender = size.gender
             height = size.height.toString()
@@ -52,6 +58,8 @@ fun BodySizeInputForm(
             shoulder = size.shoulder?.toString() ?: ""
             arm = size.arm?.toString() ?: ""
             leg = size.leg?.toString() ?: ""
+            footLength = size.footLength?.toString() ?: ""
+            footWidth = size.footWidth?.toString() ?: ""
         }
     }
 
@@ -64,6 +72,8 @@ fun BodySizeInputForm(
     val shoulderFloat = shoulder.toFloatOrNull()
     val armFloat = arm.toFloatOrNull()
     val legFloat = leg.toFloatOrNull()
+    val footLengthFloat = footLength.toFloatOrNull()
+    val footWidthFloat = footWidth.toFloatOrNull()
 
     var genderError by remember { mutableStateOf(false) }
     var heightError by remember { mutableStateOf(false) }
@@ -75,6 +85,8 @@ fun BodySizeInputForm(
     var shoulderError by remember { mutableStateOf(false) }
     var armError by remember { mutableStateOf(false) }
     var legError by remember { mutableStateOf(false) }
+    var footLengthError by remember { mutableStateOf(false) }
+    var footWidthError by remember { mutableStateOf(false) }
 
     val isGenderValid = gender.isNotBlank()
     val isHeightValid = height.isNotBlank() && heightFloat != null
@@ -86,6 +98,8 @@ fun BodySizeInputForm(
     val isShoulderValid = shoulder.isBlank() || shoulderFloat != null
     val isArmValid = arm.isBlank() || armFloat != null
     val isLegValid = leg.isBlank() || legFloat != null
+    val isFootLengthValid = footLength.isBlank() || footLengthFloat != null
+    val isFootWidthValid = footWidth.isBlank() || footWidthFloat != null
 
     genderError = !isGenderValid
     heightError = !isHeightValid
@@ -97,14 +111,18 @@ fun BodySizeInputForm(
     shoulderError = !isShoulderValid
     armError = !isArmValid
     legError = !isLegValid
+    footLengthError = !isFootLengthValid
+    footWidthError = !isFootWidthValid
 
     val isRequiredValid = isGenderValid && isHeightValid && isWeightValid
-    val isFormValid = isRequiredValid && isChestValid && isWaistValid && isHipValid && isNeckValid && isShoulderValid && isArmValid && isLegValid
+    val isFormValid = isRequiredValid && isChestValid && isWaistValid && isHipValid
+            && isNeckValid && isShoulderValid && isArmValid && isLegValid
+            && isFootLengthValid && isFootWidthValid
 
     val genderBackgroundColor = if (genderError) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f) else Color.Transparent
     val genderBorderColor = if (genderError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
 
-    LaunchedEffect(gender, height, weight, chest, waist, hip, neck, shoulder, arm, leg) {
+    LaunchedEffect(gender, height, weight, chest, waist, hip, neck, shoulder, arm, leg, footLength, footWidth) {
         onUpdateFormState(isRequiredValid, isFormValid)
     }
 
@@ -131,7 +149,9 @@ fun BodySizeInputForm(
         LabeledTextField(neck, { neck = it }, "목 둘레 (cm)", isError = neckError)
         LabeledTextField(shoulder, { shoulder = it }, "어깨 너비 (cm)", isError = shoulderError)
         LabeledTextField(arm, { arm = it }, "팔 길이 (cm)", isError = armError)
-        LabeledTextField(leg, { leg = it }, "다리 안쪽 길이 (cm)", isError = legError, imeAction = ImeAction.Done) {}
+        LabeledTextField(leg, { leg = it }, "다리 안쪽 길이 (cm)", isError = legError)
+        LabeledTextField(footLength, { footLength = it }, "발 길이 (mm)", isError = footLengthError)
+        LabeledTextField(footWidth, { footWidth = it }, "발 너비 (mm)", isError = footWidthError, imeAction = ImeAction.Done)
 
         val currentBodySize = BodySize(
             gender = gender,
@@ -144,6 +164,8 @@ fun BodySizeInputForm(
             shoulder = shoulderFloat,
             arm = armFloat,
             leg = legFloat,
+            footLength = footLengthFloat,
+            footWidth = footWidthFloat,
             date = LocalDate.now()
         )
 

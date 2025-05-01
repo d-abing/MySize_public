@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.closet.component
+package com.aube.mysize.presentation.ui.screens.closet.my_closet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

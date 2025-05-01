@@ -33,7 +33,7 @@ import java.time.LocalDate
 
 @Composable
 fun AccessorySizeInputForm(
-    oldSize: AccessorySize?,
+    oldSizeId: Int?,
     viewModel: AccessorySizeViewModel,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
     onSaved: (AccessorySize) -> Unit
@@ -47,7 +47,9 @@ fun AccessorySizeInputForm(
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
 
-    LaunchedEffect(oldSize) {
+    LaunchedEffect(oldSizeId) {
+        val oldSize = oldSizeId?.let { viewModel.getSizeById(it) }
+
         oldSize?.let { size ->
             type = size.type
             brand = size.brand

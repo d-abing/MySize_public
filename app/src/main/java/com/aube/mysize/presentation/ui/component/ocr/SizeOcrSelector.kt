@@ -1,5 +1,7 @@
 package com.aube.mysize.presentation.ui.component
 
+import SizeExtractionResult
+import SizeOcrManager
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -28,8 +30,6 @@ import com.aube.mysize.presentation.ui.component.guide.GuideDialog
 import com.aube.mysize.presentation.ui.component.ocr.PreviewImage
 import com.aube.mysize.presentation.ui.component.ocr.SizeLabelChip
 import com.aube.mysize.presentation.ui.component.ocr.SizeOcrButton
-import com.aube.mysize.utils.SizeExtractionResult
-import com.aube.mysize.utils.SizeOcrManager
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions

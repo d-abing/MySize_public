@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,10 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.R
+import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.presentation.ui.component.BodySizeCard
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.ui.screens.settings.component.LanguageDropdown
+import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
+import java.time.LocalDate
 
 @Composable
 fun SettingsScreen(
@@ -113,6 +118,70 @@ fun SettingsScreen(
         SettingItem(
             title = "앱 버전",
             description = "현재 버전: ${getString(context, R.string.app_version)}",
+        )
+
+        /* TODO 나중에 삭제 할 것 */
+        HorizontalDivider()
+
+        val bodySizeViewModel = hiltViewModel<BodySizeViewModel>()
+
+        SettingItem(
+            title = "더미 데이터 추가",
+            description = "더미 데이터 추가",
+            content = {
+
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
+                            bodySizeViewModel.insert(
+                                BodySize(
+                                    gender = "남성",
+                                    height = 175f,
+                                    weight = 70f,
+                                    chest = 90f,
+                                    waist = 75f,
+                                    hip = 95f,
+                                    neck = 38f,
+                                    shoulder = 42f,
+                                    arm = 60f,
+                                    leg = 80f,
+                                    footLength = 230f,
+                                    footWidth = 100f,
+                                    date = LocalDate.now()
+                                )
+                            )
+                        }
+                    ) {
+                        Text("남성")
+                    }
+
+                    Button(
+                        onClick = {
+                            bodySizeViewModel.insert(
+                                BodySize(
+                                    gender = "여성",
+                                    height = 165f,
+                                    weight = 60f,
+                                    chest = 85f,
+                                    waist = 65f,
+                                    hip = 90f,
+                                    neck = 35f,
+                                    shoulder = 38f,
+                                    arm = 55f,
+                                    leg = 75f,
+                                    footLength = 220f,
+                                    footWidth = 95f,
+                                    date = LocalDate.now()
+                                )
+                            )
+                        }
+                    ) {
+                        Text("여성")
+                    }
+                }
+            }
         )
     }
 }

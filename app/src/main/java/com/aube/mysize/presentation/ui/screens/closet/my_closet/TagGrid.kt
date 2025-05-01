@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.screens.closet.component
+package com.aube.mysize.presentation.ui.screens.closet.my_closet
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.clothes.Clothes
+import com.aube.mysize.presentation.ui.screens.closet.component.SimpleImageGrid
 
 @Composable
 fun TagGrid(

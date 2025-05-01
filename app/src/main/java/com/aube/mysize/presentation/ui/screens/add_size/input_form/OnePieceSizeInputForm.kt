@@ -35,7 +35,7 @@ import java.time.LocalDate
 
 @Composable
 fun OnePieceSizeInputForm(
-    oldSize: OnePieceSize?,
+    oldSizeId: Int?,
     viewModel: OnePieceSizeViewModel,
     snackbarHostState: SnackbarHostState,
     onUpdateFormState: (isMandatoryFieldsFilled: Boolean, isAllFieldsValid: Boolean) -> Unit,
@@ -58,7 +58,9 @@ fun OnePieceSizeInputForm(
     var fit by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
 
-    LaunchedEffect(oldSize) {
+    LaunchedEffect(oldSizeId) {
+        val oldSize = oldSizeId?.let { viewModel.getSizeById(it) }
+
         oldSize?.let { size ->
             type = size.type
             brand = size.brand
