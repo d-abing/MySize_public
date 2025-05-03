@@ -14,14 +14,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,19 +33,26 @@ import com.aube.mysize.R
 import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.presentation.model.RecommendedSizeResult
 import com.aube.mysize.presentation.model.SizeCategory
+import com.aube.mysize.presentation.model.UserPreference
 import com.aube.mysize.presentation.ui.component.chip_tap.MSTabRow
 import com.aube.mysize.presentation.ui.component.guide.GuideDialog
 import com.aube.mysize.presentation.ui.component.ocr.SizeOcrCard
+import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
+import com.aube.mysize.presentation.ui.datastore.SettingsDataStore.getUserPreference
 import com.aube.mysize.presentation.ui.screens.recommend.component.EmptyBodySize
 import com.aube.mysize.presentation.ui.screens.recommend.ocr_recommend.RecommendSizeFromImage
+import com.aube.mysize.presentation.ui.screens.recommend.shop_recommend.RecommendedShopsView
+import com.aube.mysize.presentation.ui.screens.recommend.shop_recommend.UserPreferenceScreen
 import com.aube.mysize.presentation.ui.screens.recommend.type_recommend.RecommendedSizesView
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
-import com.aube.mysize.utils.recommendAccessorySizes
-import com.aube.mysize.utils.recommendBottomSizes
-import com.aube.mysize.utils.recommendOnePieceSizes
-import com.aube.mysize.utils.recommendOuterSizes
-import com.aube.mysize.utils.recommendShoeSizes
-import com.aube.mysize.utils.recommendTopSizes
+import com.aube.mysize.utils.recommend.recommendAccessorySizes
+import com.aube.mysize.utils.recommend.recommendBottomSizes
+import com.aube.mysize.utils.recommend.recommendOnePieceSizes
+import com.aube.mysize.utils.recommend.recommendOuterSizes
+import com.aube.mysize.utils.recommend.recommendShoeSizes
+import com.aube.mysize.utils.recommend.recommendTopSizes
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 @Composable
 fun RecommendScreen(
@@ -63,8 +74,21 @@ fun RecommendScreen(
     onAddNewBodySize: () -> Unit,
     bodySize: BodySize?,
 ) {
-    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     var selectedCategory by rememberSaveable { mutableStateOf<SizeCategory?>(null) }
+
+    var recommendShopStep by rememberSaveable { mutableStateOf(1) }
+    var userPreference by remember { mutableStateOf<UserPreference?>(null) }
+
+    LaunchedEffect(Unit) {
+        getUserPreference(context).firstOrNull()?.let {
+            userPreference = it
+            recommendShopStep = 2
+        }
+    }
 
     var showGuideDialog by remember { mutableStateOf(false) }
 
@@ -113,7 +137,6 @@ fun RecommendScreen(
             }
 
             if (selectedTabIndex == 0) {
-                
                 when (selectedCategory) {
                     null ->
                         LazyColumn(
@@ -154,7 +177,28 @@ fun RecommendScreen(
                 }
 
             } else if (selectedTabIndex == 1) {
-                /* TODO */
+
+                if (recommendShopStep == 1) {
+                    UserPreferenceScreen(
+                        onSave = { userPref ->
+                            userPreference = userPref
+                            coroutineScope.launch {
+                                SettingsDataStore.saveUserPreference(context, userPreference!!)
+                            }
+                            recommendShopStep = 2
+                        }
+                    )
+                } else if (recommendShopStep == 2) {
+                    RecommendedShopsView(
+                        userPreference = userPreference,
+                        bodySize = bodySize
+                    ) {
+                        userPreference = it
+                        coroutineScope.launch {
+                            SettingsDataStore.saveUserPreference(context, userPreference!!)
+                        }
+                    }
+                }
             }
         }
     }

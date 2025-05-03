@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
-import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.SingleSelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
-import com.aube.mysize.utils.genderTypes
+import com.aube.mysize.utils.size.genderTypes
 import java.time.LocalDate
 
 @Composable
@@ -134,7 +134,7 @@ fun BodySizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 성별", genderBorderColor, genderBackgroundColor) {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = genderTypes,
                 selectedOption = gender,
                 onSelect = { gender = it }

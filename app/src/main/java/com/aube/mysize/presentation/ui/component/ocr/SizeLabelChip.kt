@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
-import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.SingleSelectableChipGroup
 
 @Composable
 fun SizeLabelChip(
@@ -22,7 +22,7 @@ fun SizeLabelChip(
     if (extractedSizeMap.isNotEmpty()) {
         Spacer(Modifier.height(8.dp))
         BorderColumn("추출된 사이즈 선택") {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = extractedLabelList,
                 selectedOption = selectedExtractedLabel,
                 onSelect = onSelect

@@ -29,12 +29,12 @@ import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
-import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.SingleSelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
-import com.aube.mysize.utils.normalizeTopKey
-import com.aube.mysize.utils.topFits
-import com.aube.mysize.utils.topKeys
-import com.aube.mysize.utils.topTypes
+import com.aube.mysize.utils.size.normalizeTopKey
+import com.aube.mysize.utils.size.topFits
+import com.aube.mysize.utils.size.topKeys
+import com.aube.mysize.utils.size.topTypes
 import java.time.LocalDate
 
 @Composable
@@ -128,7 +128,7 @@ fun TopSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 상의 종류", typeBorderColor, typeBackgroundColor) {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = topTypes,
                 selectedOption = type,
                 onSelect = { type = it }
@@ -215,7 +215,7 @@ fun TopSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = topFits,
                 selectedOption = fit,
                 onSelect = { fit = it }

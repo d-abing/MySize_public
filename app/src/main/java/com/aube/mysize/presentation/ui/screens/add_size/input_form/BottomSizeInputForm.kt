@@ -29,12 +29,12 @@ import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
-import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.SingleSelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
-import com.aube.mysize.utils.bottomFits
-import com.aube.mysize.utils.bottomKeys
-import com.aube.mysize.utils.bottomTypes
-import com.aube.mysize.utils.normalizeBottomKey
+import com.aube.mysize.utils.size.bottomFits
+import com.aube.mysize.utils.size.bottomKeys
+import com.aube.mysize.utils.size.bottomTypes
+import com.aube.mysize.utils.size.normalizeBottomKey
 import java.time.LocalDate
 
 @Composable
@@ -137,7 +137,7 @@ fun BottomSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 하의 종류", typeBorderColor, typeBackgroundColor) {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = bottomTypes,
                 selectedOption = type,
                 onSelect = { type = it }
@@ -234,7 +234,7 @@ fun BottomSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = bottomFits,
                 selectedOption = fit,
                 onSelect = { fit = it }

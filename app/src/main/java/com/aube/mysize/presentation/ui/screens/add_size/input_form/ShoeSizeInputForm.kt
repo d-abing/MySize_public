@@ -29,12 +29,12 @@ import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
-import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.SingleSelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
-import com.aube.mysize.utils.normalizeShoeKey
-import com.aube.mysize.utils.shoeFits
-import com.aube.mysize.utils.shoeKeys
-import com.aube.mysize.utils.shoeTypes
+import com.aube.mysize.utils.size.normalizeShoeKey
+import com.aube.mysize.utils.size.shoeFits
+import com.aube.mysize.utils.size.shoeKeys
+import com.aube.mysize.utils.size.shoeTypes
 import java.time.LocalDate
 
 @Composable
@@ -111,7 +111,7 @@ fun ShoeSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 신발 종류", typeBorderColor, typeBackgroundColor) {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = shoeTypes,
                 selectedOption = type,
                 onSelect = { type = it }
@@ -188,7 +188,7 @@ fun ShoeSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = shoeFits,
                 selectedOption = fit,
                 onSelect = { fit = it }

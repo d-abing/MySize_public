@@ -59,10 +59,10 @@ import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
-import com.aube.mysize.utils.generateMD5Hash
 import com.aube.mysize.utils.getBitmapFromUri
-import com.aube.mysize.utils.saver.mapSaver
-import com.aube.mysize.utils.saver.setSaver
+import com.aube.mysize.utils.save.generateMD5Hash
+import com.aube.mysize.utils.save.mapSaver
+import com.aube.mysize.utils.save.setSaver
 import com.aube.mysize.utils.toBytes
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions

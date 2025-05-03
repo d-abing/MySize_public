@@ -22,23 +22,25 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SelectableChipGroup(
-    options: List<String>,
-    selectedOption: String,
-    onSelect: (String) -> Unit,
-    onDelete: ((String) -> Unit)? = null,
+fun <T : Any> SingleSelectableChipGroup(
+    options: List<T>,
+    selectedOption: T?,
+    onSelect: (T) -> Unit,
+    optionTextSelector: (T) -> String = { it.toString() },
+    onDelete: ((T) -> Unit)? = null,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         options.forEach { option ->
+            val label = optionTextSelector(option)
             FilterChip(
                 selected = selectedOption == option,
                 onClick = { onSelect(option) },
                 label = {
                     Text(
-                        text = option,
+                        text = label,
                         fontSize = MaterialTheme.typography.labelMedium.fontSize
                     )
                 },
@@ -51,13 +53,14 @@ fun SelectableChipGroup(
                 modifier = Modifier
                     .heightIn(min = 28.dp, max = 36.dp),
                 trailingIcon = {
-                    if (onDelete != null && option != "기타 브랜드") {
+                    if (onDelete != null && label != "기타 브랜드") {
                         Spacer(Modifier.width(20.dp))
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "삭제",
                             tint = Color.DarkGray,
-                            modifier = Modifier.clickable { onDelete(option) }
+                            modifier = Modifier
+                                .clickable { onDelete(option) }
                                 .size(10.dp)
                         )
                     }

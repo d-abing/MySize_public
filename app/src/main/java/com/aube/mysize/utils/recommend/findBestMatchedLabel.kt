@@ -1,4 +1,4 @@
-package com.aube.mysize.utils
+package com.aube.mysize.utils.recommend
 
 import kotlin.math.absoluteValue
 

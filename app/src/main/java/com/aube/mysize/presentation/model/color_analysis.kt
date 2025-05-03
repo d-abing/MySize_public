@@ -2,6 +2,24 @@ package com.aube.mysize.presentation.model
 
 import androidx.compose.ui.graphics.Color
 
+data class PersonalToneAnalysisResult(
+    val temperatureRatio: Map<Temperature, Float>,
+    val seasonRatio: Map<Season, Float>,
+    val detailRatio: Map<Detail, Float>,
+    val bestMatchedColors: List<Int>,
+    val recommendedColors: List<Int>,
+    val mainTone: ToneCombination
+)
+
+data class ToneCombination(
+    val temperature: Temperature,
+    val season: Season,
+    val detailTone: Detail
+) {
+    val displayName: String
+        get() = "${temperature.toDisplayName()} ${season.toDisplayName()} ${detailTone.toDisplayName()}"
+}
+
 enum class Temperature { WARM, COOL;
 
     companion object {

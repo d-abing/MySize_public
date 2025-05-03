@@ -42,7 +42,6 @@ fun RowScope.HighlightedTitle(
         )
     }
 
-    // 트리거되면 애니메이션 시작
     LaunchedEffect(isHighlighted) {
         if (isHighlighted) {
             scope.launch {

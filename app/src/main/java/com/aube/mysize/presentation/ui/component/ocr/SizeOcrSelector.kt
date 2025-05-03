@@ -112,6 +112,11 @@ fun SizeOcrSelector(
             selectedExtractedLabel = label
             onLabelSelected(extractedSizeMap, selectedExtractedLabel)
         }
+
+        /* TODO 나중에 삭제할 것 */
+        Text(
+            text = extractedSizeMap.toString()
+        )
     }
 
     if (showGuideDialog) {

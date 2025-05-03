@@ -29,12 +29,12 @@ import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
-import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.SingleSelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
-import com.aube.mysize.utils.normalizeOnePieceKey
-import com.aube.mysize.utils.onePieceFits
-import com.aube.mysize.utils.onePieceKeys
-import com.aube.mysize.utils.onePieceTypes
+import com.aube.mysize.utils.size.normalizeOnePieceKey
+import com.aube.mysize.utils.size.onePieceFits
+import com.aube.mysize.utils.size.onePieceKeys
+import com.aube.mysize.utils.size.onePieceTypes
 import java.time.LocalDate
 
 @Composable
@@ -154,7 +154,7 @@ fun OnePieceSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 일체형 종류", typeBorderColor, typeBackgroundColor) {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = onePieceTypes,
                 selectedOption = type,
                 onSelect = { type = it }
@@ -266,7 +266,7 @@ fun OnePieceSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = onePieceFits,
                 selectedOption = fit,
                 onSelect = { fit = it }

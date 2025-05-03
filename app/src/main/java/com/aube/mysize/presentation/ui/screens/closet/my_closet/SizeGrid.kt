@@ -39,12 +39,12 @@ import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
-import com.aube.mysize.utils.formatAccessorySize
-import com.aube.mysize.utils.formatBottomSize
-import com.aube.mysize.utils.formatOnePieceSize
-import com.aube.mysize.utils.formatOuterSize
-import com.aube.mysize.utils.formatShoeSize
-import com.aube.mysize.utils.formatTopSize
+import com.aube.mysize.utils.size.formatAccessorySize
+import com.aube.mysize.utils.size.formatBottomSize
+import com.aube.mysize.utils.size.formatOnePieceSize
+import com.aube.mysize.utils.size.formatOuterSize
+import com.aube.mysize.utils.size.formatShoeSize
+import com.aube.mysize.utils.size.formatTopSize
 
 @Composable
 fun SizeGrid(

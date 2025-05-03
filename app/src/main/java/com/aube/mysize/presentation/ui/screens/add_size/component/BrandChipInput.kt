@@ -30,11 +30,11 @@ fun BrandChipInput(
     var newBrand by remember { mutableStateOf("") }
 
     Column {
-        SelectableChipGroup(
+        SingleSelectableChipGroup(
             options = brandList,
             selectedOption = selectedBrand,
             onSelect = onSelect,
-            onDelete = onDelete,
+            onDelete = onDelete
         )
 
         Spacer(Modifier.height(8.dp))

@@ -5,6 +5,10 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.aube.mysize.presentation.model.AgeGroup
+import com.aube.mysize.presentation.model.PriceRange
+import com.aube.mysize.presentation.model.Style
+import com.aube.mysize.presentation.model.UserPreference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -85,5 +89,48 @@ object SettingsDataStore {
             .map { preferences ->
                 preferences[IS_BODY_SIZE_REVEALED_KEY] ?: false
             }
+    }
+
+    object PreferenceKeys {
+        val STYLE = stringPreferencesKey("style")
+        val AGE = stringPreferencesKey("age")
+        val PRICE = stringPreferencesKey("price")
+    }
+
+    suspend fun saveUserPreference(context: Context, value: UserPreference) {
+        context.dataStore.edit { prefs ->
+            prefs[PreferenceKeys.STYLE] = value.styles.joinToString(",")
+            prefs[PreferenceKeys.AGE] = value.ageGroup.name
+            prefs[PreferenceKeys.PRICE] = value.priceRange.name
+        }
+    }
+
+    suspend fun clearUserPreference(context: Context) {
+        context.dataStore.edit { prefs ->
+            prefs.remove(PreferenceKeys.STYLE)
+            prefs.remove(PreferenceKeys.AGE)
+            prefs.remove(PreferenceKeys.PRICE)
+        }
+    }
+
+    fun getUserPreference(context: Context): Flow<UserPreference?> {
+        return context.dataStore.data.map { prefs ->
+            val styleString = prefs[PreferenceKeys.STYLE]
+            val ageString = prefs[PreferenceKeys.AGE]
+            val priceString = prefs[PreferenceKeys.PRICE]
+
+            val styles = styleString
+                ?.split(",")
+                ?.mapNotNull { raw -> Style.entries.find { it.name == raw } }
+
+            val ageGroup = ageString?.let { str -> AgeGroup.entries.find { it.name == str } }
+            val priceRange = priceString?.let { str -> PriceRange.entries.find { it.name == str } }
+
+            if (!styles.isNullOrEmpty() && ageGroup != null && priceRange != null) {
+                UserPreference(styles, ageGroup, priceRange)
+            } else {
+                null
+            }
+        }
     }
 }

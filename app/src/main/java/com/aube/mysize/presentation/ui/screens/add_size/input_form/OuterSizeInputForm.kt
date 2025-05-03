@@ -29,12 +29,12 @@ import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
-import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.SingleSelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
-import com.aube.mysize.utils.normalizeOuterKey
-import com.aube.mysize.utils.outerFits
-import com.aube.mysize.utils.outerKeys
-import com.aube.mysize.utils.outerTypes
+import com.aube.mysize.utils.size.normalizeOuterKey
+import com.aube.mysize.utils.size.outerFits
+import com.aube.mysize.utils.size.outerKeys
+import com.aube.mysize.utils.size.outerTypes
 import java.time.LocalDate
 
 @Composable
@@ -123,7 +123,7 @@ fun OuterSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 아우터 종류", typeBorderColor, typeBackgroundColor) {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = outerTypes,
                 selectedOption = type,
                 onSelect = { type = it }
@@ -210,7 +210,7 @@ fun OuterSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = outerFits,
                 selectedOption = fit,
                 onSelect = { fit = it }

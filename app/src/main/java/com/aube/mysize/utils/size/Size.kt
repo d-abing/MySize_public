@@ -1,4 +1,4 @@
-package com.aube.mysize.utils
+package com.aube.mysize.utils.size
 
 import com.aube.mysize.domain.model.size.AccessorySize
 import com.aube.mysize.domain.model.size.BottomSize

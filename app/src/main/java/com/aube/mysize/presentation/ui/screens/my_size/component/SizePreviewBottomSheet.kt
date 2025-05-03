@@ -1,4 +1,4 @@
-package com.aube.mysize.presentation.ui.component.bottomsheet
+package com.aube.mysize.presentation.ui.screens.my_size.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +30,8 @@ import com.aube.mysize.domain.model.size.OnePieceSize
 import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
+import com.aube.mysize.presentation.ui.component.bottomsheet.LabelValue
+import com.aube.mysize.presentation.ui.component.bottomsheet.Section
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

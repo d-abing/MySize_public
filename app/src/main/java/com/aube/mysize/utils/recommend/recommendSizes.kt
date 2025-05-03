@@ -1,4 +1,4 @@
-package com.aube.mysize.utils
+package com.aube.mysize.utils.recommend
 
 import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.presentation.model.RecommendedSizeResult
@@ -17,7 +17,6 @@ fun recommendTopSizes(bodySize: BodySize): RecommendedSizeResult {
         "반소매 티" to SizeDetail(mapOf("가슴단면" to chest)),
         "카라 티" to SizeDetail(mapOf("어깨너비" to shoulder)),
         "민소매 티" to SizeDetail(mapOf("가슴단면" to chest)),
-        "기타 상의" to SizeDetail(mapOf("가슴단면" to chest))
     )
 
     val mostSelectedLabel = mapOf(
@@ -28,7 +27,6 @@ fun recommendTopSizes(bodySize: BodySize): RecommendedSizeResult {
         "반소매 티" to "M",
         "카라 티" to "L",
         "민소매 티" to "S",
-        "기타 상의" to "M"
     )
 
     return RecommendedSizeResult.Success(SizeCategory.TOP, typeToSizeMap, mostSelectedLabel)
@@ -47,7 +45,6 @@ fun recommendBottomSizes(bodySize: BodySize): RecommendedSizeResult {
         "레깅스" to SizeDetail(mapOf("엉덩이단면" to hip)),
         "미니스커트" to SizeDetail(mapOf("허리단면" to waist)),
         "롱스커트" to SizeDetail(mapOf("엉덩이단면" to hip)),
-        "기타 하의" to SizeDetail(mapOf("허리단면" to waist))
     )
 
     val mostSelectedLabel = mapOf(
@@ -59,7 +56,6 @@ fun recommendBottomSizes(bodySize: BodySize): RecommendedSizeResult {
         "레깅스" to "FREE",
         "미니스커트" to "S",
         "롱스커트" to "M",
-        "기타 하의" to "M"
     )
 
     return RecommendedSizeResult.Success(SizeCategory.BOTTOM, typeToSizeMap, mostSelectedLabel)
@@ -90,13 +86,11 @@ fun recommendOnePieceSizes(bodySize: BodySize): RecommendedSizeResult {
     val typeToSizeMap = mapOf(
         "원피스" to SizeDetail(mapOf("가슴단면" to chest, "허리단면" to waist, "엉덩이단면" to hip)),
         "점프수트" to SizeDetail(mapOf("가슴단면" to chest, "허리단면" to waist, "엉덩이단면" to hip)),
-        "기타 일체형" to SizeDetail(mapOf("가슴단면" to chest, "허리단면" to waist, "엉덩이단면" to hip))
     )
 
     val mostSelectedLabel = mapOf(
         "원피스" to "FREE",
         "점프수트" to "M",
-        "기타 일체형" to "M"
     )
 
     return RecommendedSizeResult.Success(SizeCategory.ONE_PIECE, typeToSizeMap, mostSelectedLabel)
@@ -109,14 +103,12 @@ fun recommendShoeSizes(bodySize: BodySize): RecommendedSizeResult {
         "운동화" to SizeDetail(mapOf("발길이" to footLength)),
         "구두" to SizeDetail(mapOf("발길이" to footLength - 0.5f)),
         "샌들" to SizeDetail(mapOf("발길이" to footLength)),
-        "기타 신발" to SizeDetail(mapOf("발길이" to footLength))
     )
 
     val mostSelectedLabel = mapOf(
         "운동화" to "260",
         "구두" to "255",
         "샌들" to "260",
-        "기타 신발" to "260"
     )
 
     return RecommendedSizeResult.Success(SizeCategory.SHOE, typeToSizeMap, mostSelectedLabel)
@@ -126,13 +118,11 @@ fun recommendAccessorySizes(bodySize: BodySize): RecommendedSizeResult {
     val neck = bodySize.neck ?: return RecommendedSizeResult.Failure("목둘레 정보가 필요합니다.")
 
     val typeToSizeMap = mapOf(
-        "목걸이" to SizeDetail(mapOf("목둘레" to neck)),
-        "기타 악세사리" to SizeDetail(mapOf("목둘레" to neck))
+        "목걸이" to SizeDetail(mapOf("길이" to neck)),
     )
 
     val mostSelectedLabel = mapOf(
         "목걸이" to "FREE",
-        "기타 악세사리" to "FREE"
     )
 
     return RecommendedSizeResult.Success(SizeCategory.ACCESSORY, typeToSizeMap, mostSelectedLabel)

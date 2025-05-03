@@ -1,4 +1,4 @@
-package com.aube.mysize.utils.saver
+package com.aube.mysize.utils.save
 
 import androidx.compose.runtime.saveable.Saver
 

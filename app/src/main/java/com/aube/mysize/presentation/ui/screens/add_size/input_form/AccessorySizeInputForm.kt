@@ -27,10 +27,10 @@ import com.aube.mysize.domain.model.size.AccessorySize
 import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
-import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
+import com.aube.mysize.presentation.ui.screens.add_size.component.SingleSelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
-import com.aube.mysize.utils.accessoryFits
-import com.aube.mysize.utils.accessoryTypes
+import com.aube.mysize.utils.size.accessoryFits
+import com.aube.mysize.utils.size.accessoryTypes
 import java.time.LocalDate
 
 @Composable
@@ -94,7 +94,7 @@ fun AccessorySizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 악세사리 종류", typeBorderColor, typeBackgroundColor) {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = accessoryTypes,
                 selectedOption = type,
                 onSelect = { type = it }
@@ -128,7 +128,7 @@ fun AccessorySizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            SelectableChipGroup(
+            SingleSelectableChipGroup(
                 options = accessoryFits,
                 selectedOption = fit,
                 onSelect = { fit = it }

@@ -55,6 +55,7 @@ import com.aube.mysize.domain.model.clothes.Clothes
 import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.Visibility
 import com.aube.mysize.presentation.ui.component.BodySizeCard
+import com.aube.mysize.presentation.ui.component.MemoWithLinks
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
@@ -62,12 +63,12 @@ import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
-import com.aube.mysize.utils.formatAccessorySize
-import com.aube.mysize.utils.formatBottomSize
-import com.aube.mysize.utils.formatOnePieceSize
-import com.aube.mysize.utils.formatOuterSize
-import com.aube.mysize.utils.formatShoeSize
-import com.aube.mysize.utils.formatTopSize
+import com.aube.mysize.utils.size.formatAccessorySize
+import com.aube.mysize.utils.size.formatBottomSize
+import com.aube.mysize.utils.size.formatOnePieceSize
+import com.aube.mysize.utils.size.formatOuterSize
+import com.aube.mysize.utils.size.formatShoeSize
+import com.aube.mysize.utils.size.formatTopSize
 import kotlinx.coroutines.delay
 import java.time.format.DateTimeFormatter
 
@@ -329,7 +330,7 @@ fun ClothesDetailScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             if (!currentClothes.memo.isNullOrBlank()) {
-                Text(
+                MemoWithLinks(
                     text = currentClothes.memo,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 12.dp)

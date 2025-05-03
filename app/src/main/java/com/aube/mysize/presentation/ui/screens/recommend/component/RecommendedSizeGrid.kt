@@ -74,7 +74,7 @@ fun RecommendedSizeGrid(
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text =
-                                if(isRecommendSizeStep && categoryItem == SizeCategory.ACCESSORY) "목걸이"
+                                if(isRecommendSizeStep && categoryItem == SizeCategory.ACCESSORY) "악세사리\n(목걸이)"
                                 else categoryItem.label,
                             style = MaterialTheme.typography.labelMedium,
                             textAlign = TextAlign.Center

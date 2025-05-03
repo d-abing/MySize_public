@@ -21,8 +21,8 @@ import com.aube.mysize.domain.model.size.ShoeSize
 import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeContentUiModel
-import com.aube.mysize.presentation.ui.component.bottomsheet.SizePreviewBottomSheet
 import com.aube.mysize.presentation.ui.screens.my_size.MySizeContent
+import com.aube.mysize.presentation.ui.screens.my_size.component.SizePreviewBottomSheet
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel

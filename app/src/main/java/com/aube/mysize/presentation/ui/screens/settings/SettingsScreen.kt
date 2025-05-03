@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,8 +31,10 @@ import com.aube.mysize.R
 import com.aube.mysize.domain.model.size.BodySize
 import com.aube.mysize.presentation.ui.component.BodySizeCard
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
+import com.aube.mysize.presentation.ui.datastore.SettingsDataStore.clearUserPreference
 import com.aube.mysize.presentation.ui.screens.settings.component.LanguageDropdown
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
@@ -40,6 +43,8 @@ fun SettingsScreen(
     onBodySizeSelected: (Set<String>) -> Unit
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     val selectedLanguageCode by produceState(initialValue = "en") {
         SettingsDataStore.getLanguage(context).collect { lang ->
             value = lang
@@ -179,6 +184,15 @@ fun SettingsScreen(
                         }
                     ) {
                         Text("여성")
+                    }
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                clearUserPreference(context)
+                            }
+                        }
+                    ) {
+                        Text("UserPref 초기화")
                     }
                 }
             }

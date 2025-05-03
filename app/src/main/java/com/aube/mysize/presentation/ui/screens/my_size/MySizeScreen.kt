@@ -22,9 +22,9 @@ import com.aube.mysize.domain.model.size.Size
 import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.SizeCategory
-import com.aube.mysize.presentation.ui.component.bottomsheet.SizePreviewBottomSheet
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore
 import com.aube.mysize.presentation.ui.datastore.SettingsDataStore.saveIsBodySizeCardSticky
+import com.aube.mysize.presentation.ui.screens.my_size.component.SizePreviewBottomSheet
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
