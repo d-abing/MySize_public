@@ -31,6 +31,10 @@ import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
 import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
+import com.aube.mysize.utils.normalizeTopKey
+import com.aube.mysize.utils.topFits
+import com.aube.mysize.utils.topKeys
+import com.aube.mysize.utils.topTypes
 import java.time.LocalDate
 
 @Composable
@@ -99,12 +103,17 @@ fun TopSizeInputForm(
     lengthError = !isLengthValid
 
     val isRequiredValid = isTypeValid && isBrandValid && isSizeLabelValid
-    val isFormValid = isRequiredValid && isShoulderValid && isChestValid && isLengthValid && isSleeveValid
+    val isFormValid =
+        isRequiredValid && isShoulderValid && isChestValid && isLengthValid && isSleeveValid
 
-    val typeBorderColor = if (typeError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
-    val typeBackgroundColor = if (typeError) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f) else Color.Transparent
-    val brandBorderColor = if (brandError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
-    val brandBackgroundColor = if (brandError) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f) else Color.Transparent
+    val typeBorderColor =
+        if (typeError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
+    val typeBackgroundColor =
+        if (typeError) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f) else Color.Transparent
+    val brandBorderColor =
+        if (brandError) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
+    val brandBackgroundColor =
+        if (brandError) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f) else Color.Transparent
 
     val focusRequester = remember { FocusRequester() }
 
@@ -119,10 +128,6 @@ fun TopSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 상의 종류", typeBorderColor, typeBackgroundColor) {
-            val topTypes = listOf(
-                "맨투맨", "니트", "후드티", "셔츠/블라우스", "베스트/뷔스티에",
-                "긴소매 티", "반소매 티", "카라 티", "민소매 티", "기타 상의"
-            )
             SelectableChipGroup(
                 options = topTypes,
                 selectedOption = type,
@@ -156,14 +161,11 @@ fun TopSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         SizeOcrSelector(
-            keyList = listOf(
-                "어깨", "가슴", "소매길이", "총장", "총기장", // 한글
-                "SHOULDER", "CHEST", "SLEEVE", "LENGTH"  // 영어
-            ),
+            keyList = topKeys,
             keyMapping = ::normalizeTopKey,
             initialSizeLabel = sizeLabel.uppercase(),
             snackbarHostState = snackbarHostState,
-            onExtracted = { extractedSizeMap  ->
+            onExtracted = { extractedSizeMap ->
                 val sizeMap = extractedSizeMap
                 val selectedSize = sizeLabel.uppercase()
                 sizeLabel = selectedSize
@@ -213,7 +215,6 @@ fun TopSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            val topFits = listOf("슬림핏", "레귤러핏", "오버핏")
             SelectableChipGroup(
                 options = topFits,
                 selectedOption = fit,
@@ -243,17 +244,5 @@ fun TopSizeInputForm(
         )
 
         onSaved(currentTopSize)
-    }
-}
-
-private fun normalizeTopKey(original: String): String {
-    val upper = original.uppercase()
-
-    return when {
-        "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
-        "CHEST" in upper || "BUST" in upper || "가슴" in original -> "CHEST"
-        "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
-        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
-        else -> upper
     }
 }

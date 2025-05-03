@@ -108,7 +108,8 @@ fun MySizeApp() {
         ) {
             composable(Screen.Recommend.route) {
                 RecommendScreen(
-                 onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") }
+                    snackbarHostState = snackbarHostState,
+                    onAddNewBodySize = { navController.navigate("add_size?category=ADDBODY") }
                 )
             }
             composable(Screen.MySize.route) {

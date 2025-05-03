@@ -17,11 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.MoreVert
@@ -30,7 +32,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,18 +48,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.clothes.Clothes
 import com.aube.mysize.domain.model.size.toUi
 import com.aube.mysize.presentation.model.Visibility
 import com.aube.mysize.presentation.ui.component.BodySizeCard
-import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatAccessorySize
-import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatBottomSize
-import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatOnePieceSize
-import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatOuterSize
-import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatShoeSize
-import com.aube.mysize.presentation.ui.screens.closet.my_closet.formatTopSize
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
@@ -66,6 +62,13 @@ import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
+import com.aube.mysize.utils.formatAccessorySize
+import com.aube.mysize.utils.formatBottomSize
+import com.aube.mysize.utils.formatOnePieceSize
+import com.aube.mysize.utils.formatOuterSize
+import com.aube.mysize.utils.formatShoeSize
+import com.aube.mysize.utils.formatTopSize
+import kotlinx.coroutines.delay
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -156,72 +159,159 @@ fun ClothesDetailScreen(
                     }
                 } else {
                     var expanded by remember { mutableStateOf(false) }
+                    var showBodySizeTooltip by remember { mutableStateOf(false) }
+                    var showVisibilityTooltip by remember { mutableStateOf(false) }
 
-                    Box {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "더보기",
-                            modifier = Modifier.clickable {
-                                expanded = true
-                            }
-                        )
-
-                        DropdownMenu(
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Box(
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.background)
-                                .width(85.dp),
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                                .wrapContentHeight()
+                                .background(MaterialTheme.colorScheme.background),
                         ) {
-                            DropdownMenuItem(
-                                text = {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        Icon(
-                                            modifier = Modifier.size(16.dp).padding(end = 4.dp),
-                                            tint = Color.DarkGray,
-                                            imageVector = Icons.Default.ModeEdit,
-                                            contentDescription = "수정"
-                                        )
-                                        Text(
-                                            text = "수정",
-                                            style = MaterialTheme.typography.labelMedium
-                                                .copy(Color.DarkGray),
-                                        )
+                            Icon(
+                                imageVector = Icons.Default.Accessibility,
+                                contentDescription = "신체 정보",
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable { showBodySizeTooltip = true }
+                            )
+
+                            DropdownMenu(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .wrapContentHeight(),
+                                expanded = showBodySizeTooltip,
+                                onDismissRequest = { showBodySizeTooltip = false }
+                            ) {
+                                val bodySizeCard = currentClothes.bodySize?.toUi()
+
+                                BodySizeCard(
+                                    containerColor = MaterialTheme.colorScheme.background,
+                                    title = "공개된 신체 정보",
+                                    imageVector = Icons.Default.Person,
+                                    sharedBodyFields = currentClothes.sharedBodyFields,
+                                    description = bodySizeCard?.description,
+                                    selectedKeys = currentClothes.sharedBodyFields,
+                                )
+                            }
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .wrapContentHeight()
+                                .background(MaterialTheme.colorScheme.background)
+                        ) {
+                            Icon(
+                                imageVector =
+                                if (clothes?.visibility == Visibility.PUBLIC) Visibility.PUBLIC.icon
+                                else Visibility.PRIVATE.icon,
+                                contentDescription =
+                                if (clothes?.visibility == Visibility.PUBLIC) Visibility.PUBLIC.displayName
+                                else Visibility.PRIVATE.displayName,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable {
+                                        showVisibilityTooltip = true
                                     }
-                               },
-                                onClick = {
-                                    expanded = false
-                                    onEdit()
+                            )
+
+                            if (showVisibilityTooltip) {
+                                LaunchedEffect(Unit) {
+                                    delay(600)
+                                    showVisibilityTooltip = false
+                                }
+                            }
+
+                            DropdownMenu(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .padding(horizontal = 8.dp)
+                                    .wrapContentHeight(),
+                                expanded = showVisibilityTooltip,
+                                onDismissRequest = { showVisibilityTooltip = false }
+                            ) {
+                                Text(
+                                    text = if (clothes?.visibility == Visibility.PUBLIC)
+                                        Visibility.PUBLIC.displayName
+                                    else
+                                        Visibility.PRIVATE.displayName,
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                            }
+                        }
+
+
+                        Box {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "더보기",
+                                modifier = Modifier.clickable {
+                                    expanded = true
                                 }
                             )
-                            DropdownMenuItem(
-                                text = {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        Icon(
-                                            modifier = Modifier.size(16.dp).padding(end = 4.dp),
-                                            tint = Color.DarkGray,
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "삭제"
-                                        )
-                                        Text(
-                                            text = "삭제",
-                                            style = MaterialTheme.typography.labelMedium
-                                                .copy(Color.DarkGray),
-                                        )
-                                    }
-                               },
-                                onClick = {
-                                    expanded = false
-                                    clothesViewModel.delete(currentClothes)
-                                    onDelete()
+
+                            DropdownMenu(
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .background(MaterialTheme.colorScheme.background),
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            expanded = false
+                                            onEdit()
+                                        }
+                                        .padding(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ModeEdit,
+                                        contentDescription = "수정",
+                                        tint = Color.DarkGray,
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .size(12.dp)
+                                    )
+                                    Text(
+                                        text = "수정",
+                                        style = MaterialTheme.typography.labelMedium.copy(color = Color.DarkGray),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
                                 }
-                            )
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            expanded = false
+                                            onDelete()
+                                        }
+                                        .padding(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "삭제",
+                                        tint = Color.DarkGray,
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .size(12.dp)
+                                    )
+                                    Text(
+                                        text = "삭제",
+                                        style = MaterialTheme.typography.labelMedium.copy(color = Color.DarkGray),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                            }
                         }
                     }
                 }

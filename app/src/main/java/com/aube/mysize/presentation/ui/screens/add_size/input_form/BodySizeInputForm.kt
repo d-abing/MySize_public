@@ -22,6 +22,7 @@ import com.aube.mysize.presentation.ui.screens.add_size.component.BorderColumn
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
 import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BodySizeViewModel
+import com.aube.mysize.utils.genderTypes
 import java.time.LocalDate
 
 @Composable
@@ -133,9 +134,8 @@ fun BodySizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 성별", genderBorderColor, genderBackgroundColor) {
-            val options = listOf("남성", "여성")
             SelectableChipGroup(
-                options = options,
+                options = genderTypes,
                 selectedOption = gender,
                 onSelect = { gender = it }
             )

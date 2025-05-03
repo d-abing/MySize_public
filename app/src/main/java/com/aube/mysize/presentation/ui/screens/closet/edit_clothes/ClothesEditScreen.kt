@@ -27,7 +27,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,7 +50,6 @@ import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.ui.screens.closet.add_clothes.AddClothesStepOne
 import com.aube.mysize.presentation.ui.screens.closet.add_clothes.AddClothesStepThree
 import com.aube.mysize.presentation.ui.screens.closet.add_clothes.AddClothesStepTwo
-import com.aube.mysize.presentation.ui.screens.closet.add_clothes.setSaver
 import com.aube.mysize.presentation.ui.screens.closet.component.ImageBox
 import com.aube.mysize.presentation.viewmodel.clothes.ClothesViewModel
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
@@ -63,6 +61,8 @@ import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
 import com.aube.mysize.utils.generateMD5Hash
 import com.aube.mysize.utils.getBitmapFromUri
+import com.aube.mysize.utils.saver.mapSaver
+import com.aube.mysize.utils.saver.setSaver
 import com.aube.mysize.utils.toBytes
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
@@ -156,7 +156,7 @@ fun EditClothesScreen(
         mutableStateOf(clothes.tags)
     }
     val selectedSizeIds = remember { mutableStateMapOf(*clothes.linkedSizeIds.toList().toTypedArray()) }
-    val savedSelectedSizeIds = rememberSaveable(saver = mapSaver()) {
+    val savedSelectedSizeIds = rememberSaveable(saver = mapSaver) {
         mutableStateMapOf()
     }
 
@@ -338,29 +338,27 @@ fun EditClothesScreen(
                         var imageBytes = oldImage
                         if (imageBytes == null && selectedImage != null) {
                             imageBytes = (context.getBitmapFromUri(selectedImage)).toBytes()
-
-                            val randomUserId = listOf(1L, 2L).random()
-
-                            onClothesSaved(
-                                Clothes(
-                                    id = clothes.id,
-                                    imageBytes = imageBytes,
-                                    hash = generateMD5Hash(imageBytes),
-                                    dominantColor = selectedColor!!.toArgb(),
-                                    linkedSizeIds = selectedSizeIds,
-                                    tags = tags,
-                                    memo = memo,
-                                    sharedBodyFields = sharedBodyFields,
-                                    bodySize = bodySize,
-                                    createdAt = LocalDateTime.now(),
-                                    updatedAt = null,
-                                    createUserId = randomUserId,
-                                    createUserProfileFilePath = "",
-                                    visibility = selectedVisibility,
-                                    memoVisibility = selectedMemoVisibility
-                                )
-                            )
                         }
+
+                        onClothesSaved(
+                            Clothes(
+                                id = clothes.id,
+                                imageBytes = imageBytes!!,
+                                hash = generateMD5Hash(imageBytes),
+                                dominantColor = selectedColor!!.toArgb(),
+                                linkedSizeIds = selectedSizeIds,
+                                tags = tags,
+                                memo = memo,
+                                sharedBodyFields = sharedBodyFields,
+                                bodySize = bodySize,
+                                createdAt = LocalDateTime.now(),
+                                updatedAt = null,
+                                createUserId = clothes.createUserId,
+                                createUserProfileFilePath = "",
+                                visibility = selectedVisibility,
+                                memoVisibility = selectedMemoVisibility
+                            )
+                        )
                         navController.popBackStack()
                     }
                 )
@@ -368,9 +366,3 @@ fun EditClothesScreen(
 
     }
 }
-
-
-fun mapSaver() = Saver<MutableMap<String, Int>, Map<String, Int>>(
-    save = { it.toMap() },
-    restore = { it.toMutableMap() }
-)

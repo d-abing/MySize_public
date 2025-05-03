@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +47,8 @@ fun ColorGrid(
     colorList: List<Int>,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var showSheet by remember { mutableStateOf(false) }
+    var showSheet by rememberSaveable { mutableStateOf(false) }
+
     val showFab by remember { mutableStateOf(true) }
     val fabEnterAnimation = remember { Animatable(0f) }
 
@@ -68,7 +70,7 @@ fun ColorGrid(
                 items = colorList,
                 key = { color -> color }
             ) { color ->
-                GalleryColorItem(
+                ColorItem(
                     color = color,
                 )
             }
@@ -118,7 +120,7 @@ fun ColorGrid(
 
 
 @Composable
-fun GalleryColorItem(
+fun ColorItem(
     color: Int,
 ) {
     var isClicking by remember { mutableStateOf(false) }

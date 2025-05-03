@@ -31,6 +31,10 @@ import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
 import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
+import com.aube.mysize.utils.normalizeOuterKey
+import com.aube.mysize.utils.outerFits
+import com.aube.mysize.utils.outerKeys
+import com.aube.mysize.utils.outerTypes
 import java.time.LocalDate
 
 @Composable
@@ -119,9 +123,6 @@ fun OuterSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 아우터 종류", typeBorderColor, typeBackgroundColor) {
-            val outerTypes = listOf("환절기 코트", "겨울 코트", "롱 패딩", "숏 패딩", "패딩 베스트",
-                "카디건", "폴리스", "후드 집업", "블루종", "무스탕", "퍼 재킷", "아노락 재킷",
-                "트레이닝 재킷", "사파리 재킷", "스타디움 재킷", "레더 재킷", "트러커 재킷", "블레이저 재킷", "기타 아우터")
             SelectableChipGroup(
                 options = outerTypes,
                 selectedOption = type,
@@ -155,10 +156,7 @@ fun OuterSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         SizeOcrSelector(
-            keyList = listOf(
-                "어깨", "가슴", "소매길이", "총장", "총기장", // 한글
-                "SHOULDER", "CHEST", "SLEEVE", "LENGTH"  // 영어
-            ),
+            keyList = outerKeys,
             keyMapping = ::normalizeOuterKey,
             initialSizeLabel = sizeLabel.uppercase(),
             snackbarHostState = snackbarHostState,
@@ -212,9 +210,8 @@ fun OuterSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            val fits = listOf("슬림핏", "레귤러핏", "오버핏")
             SelectableChipGroup(
-                options = fits,
+                options = outerFits,
                 selectedOption = fit,
                 onSelect = { fit = it }
             )
@@ -244,17 +241,5 @@ fun OuterSizeInputForm(
         )
 
         onSaved(currentOuterSize)
-    }
-}
-
-private fun normalizeOuterKey(original: String): String {
-    val upper = original.uppercase()
-
-    return when {
-        "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
-        "CHEST" in upper || "BUST" in upper || "가슴" in original -> "CHEST"
-        "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
-        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
-        else -> upper
     }
 }

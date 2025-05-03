@@ -17,7 +17,6 @@ fun ClosetViewModeTabs(
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit
 ) {
-
     TabRow(
         selectedTabIndex = selectedTabIndex,
         modifier = Modifier.fillMaxWidth(),

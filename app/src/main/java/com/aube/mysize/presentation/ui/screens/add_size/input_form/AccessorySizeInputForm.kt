@@ -29,6 +29,8 @@ import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
 import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
+import com.aube.mysize.utils.accessoryFits
+import com.aube.mysize.utils.accessoryTypes
 import java.time.LocalDate
 
 @Composable
@@ -92,7 +94,6 @@ fun AccessorySizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 악세사리 종류", typeBorderColor, typeBackgroundColor) {
-            val accessoryTypes = listOf("반지", "팔찌", "목걸이", "모자", "벨트", "시계", "가방", "기타")
             SelectableChipGroup(
                 options = accessoryTypes,
                 selectedOption = type,
@@ -127,9 +128,8 @@ fun AccessorySizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            val fits = listOf("작음", "딱 맞음", "큼")
             SelectableChipGroup(
-                options = fits,
+                options = accessoryFits,
                 selectedOption = fit,
                 onSelect = { fit = it }
             )

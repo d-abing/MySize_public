@@ -52,6 +52,7 @@ fun BodySize.toUi(): BodySizeCardUiModel {
             "몸무게" to "${weight.toInt()}kg",
             "발 길이" to footLength?.let { "${it.toInt()}mm" },
             "발 너비" to footWidth?.let { "${it.toInt()}mm"},
+            "성별" to gender,
             "가슴둘레" to chest?.let { "${it.toInt()}cm" },
             "허리둘레" to waist?.let { "${it.toInt()}cm" },
             "엉덩이둘레" to hip?.let { "${it.toInt()}cm" },

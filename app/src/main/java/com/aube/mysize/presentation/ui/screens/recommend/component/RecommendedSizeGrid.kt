@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aube.mysize.presentation.model.SizeCategory
@@ -27,6 +28,9 @@ import com.aube.mysize.presentation.model.SizeCategory
 @Composable
 fun RecommendedSizeGrid(
     modifier: Modifier = Modifier,
+    isRecommendSizeStep: Boolean = false,
+    maxItemsInEachRow: Int = 3,
+    itemHeight: Dp? = null,
     onClick: (SizeCategory) -> Unit
 ) {
     val categoryItems = SizeCategory.entries.filter { it != SizeCategory.BODY }
@@ -37,7 +41,7 @@ fun RecommendedSizeGrid(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        val itemSize = (maxWidth - (spacing * 2) - 1.dp) / 3
+        val itemSize = (maxWidth - (spacing * (maxItemsInEachRow - 1)) - 1.dp) / maxItemsInEachRow
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
@@ -48,6 +52,7 @@ fun RecommendedSizeGrid(
             categoryItems.forEach { categoryItem ->
                 Box(
                     modifier = Modifier
+                        .then( if(itemHeight != null) Modifier.height(itemHeight) else Modifier)
                         .width(itemSize)
                         .clip(RoundedCornerShape(16.dp))
                         .clickable { onClick(categoryItem) }
@@ -68,7 +73,9 @@ fun RecommendedSizeGrid(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text = categoryItem.label,
+                            text =
+                                if(isRecommendSizeStep && categoryItem == SizeCategory.ACCESSORY) "목걸이"
+                                else categoryItem.label,
                             style = MaterialTheme.typography.labelMedium,
                             textAlign = TextAlign.Center
                         )

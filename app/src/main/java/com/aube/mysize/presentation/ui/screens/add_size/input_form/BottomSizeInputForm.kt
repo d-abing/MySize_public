@@ -31,6 +31,10 @@ import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
 import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
+import com.aube.mysize.utils.bottomFits
+import com.aube.mysize.utils.bottomKeys
+import com.aube.mysize.utils.bottomTypes
+import com.aube.mysize.utils.normalizeBottomKey
 import java.time.LocalDate
 
 @Composable
@@ -133,10 +137,6 @@ fun BottomSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 하의 종류", typeBorderColor, typeBackgroundColor) {
-            val bottomTypes = listOf(
-                "청바지", "슬랙스", "면바지", "반바지", "트레이닝팬츠", "조거팬츠", "레깅스",
-                "미니스커트", "미디스커트", "롱스커트", "기타 하의"
-            )
             SelectableChipGroup(
                 options = bottomTypes,
                 selectedOption = type,
@@ -170,10 +170,7 @@ fun BottomSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         SizeOcrSelector(
-            keyList = listOf(
-                "허리", "밑위", "엉덩이", "허벅지", "힙", "밑단", "총장", "총기장", // 한글
-                "WAIST", "RISE", "HIP", "THIGH", "HEM", "LENGTH"  // 영어
-            ),
+            keyList = bottomKeys,
             keyMapping = ::normalizeBottomKey,
             initialSizeLabel = sizeLabel.uppercase(),
             snackbarHostState = snackbarHostState,
@@ -237,7 +234,6 @@ fun BottomSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            val bottomFits = listOf("슬림핏", "레귤러핏", "루즈핏", "테이퍼드핏")
             SelectableChipGroup(
                 options = bottomFits,
                 selectedOption = fit,
@@ -271,18 +267,5 @@ fun BottomSizeInputForm(
         )
 
         onSaved(currentBottomSize)
-    }
-}
-
-private fun normalizeBottomKey(original: String): String {
-    val upper = original.uppercase()
-    return when {
-        "WAIST" in upper || "허리" in original -> "WAIST"
-        "RISE" in upper || "밑위" in original -> "RISE"
-        "HIP" in upper || "엉덩이" in original || "힙" in original -> "HIP"
-        "THIGH" in upper || "허벅지" in original -> "THIGH"
-        "HEM" in upper || "밑단" in original -> "HEM"
-        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
-        else -> upper
     }
 }

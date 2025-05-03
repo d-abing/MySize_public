@@ -3,32 +3,24 @@ package com.aube.mysize.presentation.ui.screens.closet.my_closet
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.outlined.Circle
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -40,20 +32,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.aube.mysize.domain.model.clothes.Clothes
-import com.aube.mysize.domain.model.size.AccessorySize
-import com.aube.mysize.domain.model.size.BottomSize
-import com.aube.mysize.domain.model.size.OnePieceSize
-import com.aube.mysize.domain.model.size.OuterSize
-import com.aube.mysize.domain.model.size.ShoeSize
-import com.aube.mysize.domain.model.size.TopSize
-import com.aube.mysize.presentation.model.MemoVisibility
+import com.aube.mysize.presentation.ui.component.PagerIndicator
 import com.aube.mysize.presentation.viewmodel.size.AccessorySizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.BottomSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.OuterSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
 import com.aube.mysize.presentation.viewmodel.size.TopSizeViewModel
-import kotlinx.coroutines.delay
+import com.aube.mysize.utils.formatAccessorySize
+import com.aube.mysize.utils.formatBottomSize
+import com.aube.mysize.utils.formatOnePieceSize
+import com.aube.mysize.utils.formatOuterSize
+import com.aube.mysize.utils.formatShoeSize
+import com.aube.mysize.utils.formatTopSize
 
 @Composable
 fun SizeGrid(
@@ -65,7 +56,13 @@ fun SizeGrid(
     shoeSizeViewModel: ShoeSizeViewModel = hiltViewModel(),
     accessorySizeViewModel: AccessorySizeViewModel = hiltViewModel(),
 ) {
-    var isReady by remember { mutableStateOf(false) }
+    val topSizes by topSizeViewModel.sizes.collectAsState()
+    val bottomSizes by bottomSizeViewModel.sizes.collectAsState()
+    val outerSizes by outerSizeViewModel.sizes.collectAsState()
+    val onePieceSizes by onePieceSizeViewModel.sizes.collectAsState()
+    val shoeSizes by shoeSizeViewModel.sizes.collectAsState()
+    val accessorySizes by accessorySizeViewModel.sizes.collectAsState()
+
     val filteredList = clothesList.filter { it.linkedSizeIds.isNotEmpty() }
 
     LazyVerticalGrid(
@@ -74,12 +71,28 @@ fun SizeGrid(
     ) {
         items(filteredList) { clothes ->
 
-            LaunchedEffect(clothes.linkedSizeIds) {
-                delay(100)
-                isReady = true
+            val summaries = remember(
+                clothes.linkedSizeIds,
+                topSizes,
+                bottomSizes,
+                outerSizes,
+                onePieceSizes,
+                shoeSizes,
+                accessorySizes
+            ) {
+                listOfNotNull(
+                    clothes.linkedSizeIds["TOP"]?.let { id -> topSizes.find { it.id == id }?.let(::formatTopSize) },
+                    clothes.linkedSizeIds["BOTTOM"]?.let { id -> bottomSizes.find { it.id == id }?.let(::formatBottomSize) },
+                    clothes.linkedSizeIds["OUTER"]?.let { id -> outerSizes.find { it.id == id }?.let(::formatOuterSize) },
+                    clothes.linkedSizeIds["ONE_PIECE"]?.let { id -> onePieceSizes.find { it.id == id }?.let(::formatOnePieceSize) },
+                    clothes.linkedSizeIds["SHOE"]?.let { id -> shoeSizes.find { it.id == id }?.let(::formatShoeSize) },
+                    clothes.linkedSizeIds["ACCESSORY"]?.let { id -> accessorySizes.find { it.id == id }?.let(::formatAccessorySize) }
+                )
             }
 
-            if (isReady) {
+            if (summaries.isNotEmpty()) {
+                val pagerState = rememberPagerState(pageCount = { summaries.size })
+
                 Box(
                     modifier = Modifier
                         .aspectRatio(1f)
@@ -94,34 +107,6 @@ fun SizeGrid(
                         alpha = 0.4f,
                         modifier = Modifier.fillMaxSize()
                     )
-
-                    val summaries = listOfNotNull(
-                        clothes.linkedSizeIds["TOP"]?.let {
-                            topSizeViewModel.getSizeById(it)?.let(::formatTopSize)
-                        },
-                        clothes.linkedSizeIds["BOTTOM"]?.let {
-                            bottomSizeViewModel.getSizeById(it)?.let(::formatBottomSize)
-                        },
-                        clothes.linkedSizeIds["OUTER"]?.let {
-                            outerSizeViewModel.getSizeById(it)?.let(::formatOuterSize)
-                        },
-                        clothes.linkedSizeIds["ONE_PIECE"]?.let {
-                            onePieceSizeViewModel.getSizeById(
-                                it
-                            )?.let(::formatOnePieceSize)
-                        },
-                        clothes.linkedSizeIds["SHOE"]?.let {
-                            shoeSizeViewModel.getSizeById(it)?.let(::formatShoeSize)
-                        },
-                        clothes.linkedSizeIds["ACCESSORY"]?.let {
-                            accessorySizeViewModel.getSizeById(
-                                it
-                            )?.let(::formatAccessorySize)
-                        }
-                    )
-
-                    val pagerState = rememberPagerState(pageCount = { summaries.size })
-
 
                     Column(
                         modifier = Modifier
@@ -164,93 +149,4 @@ fun SizeGrid(
     }
 }
 
-fun formatTopSize(size: TopSize, memoVisibility: MemoVisibility? = null): String = buildString {
-    appendLine("👕")
-    appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
-    size.shoulder?.let { appendLine("어깨너비: ${it}cm") }
-    size.chest?.let { appendLine("가슴단면: ${it}cm") }
-    size.sleeve?.let { appendLine("소매길이: ${it}cm") }
-    size.length?.let { appendLine("총장: ${it}cm") }
-    size.fit?.let { appendLine("핏: $it") }
-    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
-}
 
-fun formatBottomSize(size: BottomSize, memoVisibility: MemoVisibility? = null): String = buildString {
-    appendLine("👖")
-    appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
-    size.waist?.let { appendLine("허리단면: ${it}cm") }
-    size.rise?.let { appendLine("밑위: ${it}cm") }
-    size.hip?.let { appendLine("엉덩이단면: ${it}cm") }
-    size.thigh?.let { appendLine("허벅지단면: ${it}cm") }
-    size.hem?.let { appendLine("밑단단면: ${it}cm") }
-    size.length?.let { appendLine("총장: ${it}cm") }
-    size.fit?.let { appendLine("핏: $it") }
-    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
-}
-
-fun formatOuterSize(size: OuterSize, memoVisibility: MemoVisibility? = null): String = buildString {
-    appendLine("🧥")
-    appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
-    size.shoulder?.let { appendLine("어깨너비: ${it}cm") }
-    size.chest?.let { appendLine("가슴단면: ${it}cm") }
-    size.sleeve?.let { appendLine("소매길이: ${it}cm") }
-    size.length?.let { appendLine("총장: ${it}cm") }
-    size.fit?.let { appendLine("핏: $it") }
-    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
-}
-
-fun formatOnePieceSize(size: OnePieceSize, memoVisibility: MemoVisibility? = null): String = buildString {
-    appendLine("👗")
-    appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
-    size.shoulder?.let { appendLine("어깨너비: ${it}cm") }
-    size.chest?.let { appendLine("가슴단면: ${it}cm") }
-    size.waist?.let { appendLine("허리단면: ${it}cm") }
-    size.hip?.let { appendLine("엉덩이단면: ${it}cm") }
-    size.sleeve?.let { appendLine("소매길이: ${it}cm") }
-    size.rise?.let { appendLine("밑위: ${it}cm") }
-    size.thigh?.let { appendLine("허벅지단면: ${it}cm") }
-    size.hem?.let { appendLine("밑단단면: ${it}cm") }
-    size.length?.let { appendLine("총장: ${it}cm") }
-    size.fit?.let { appendLine("핏: ${it}") }
-    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
-}
-
-fun formatShoeSize(size: ShoeSize, memoVisibility: MemoVisibility? = null): String = buildString {
-    appendLine("👟")
-    appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
-    size.footLength?.let { appendLine("발길이: ${it}cm") }
-    size.footWidth?.let { appendLine("발볼너비: ${it}cm") }
-    size.fit?.let { appendLine("핏: ${it}") }
-    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
-}
-
-fun formatAccessorySize(size: AccessorySize, memoVisibility: MemoVisibility? = null): String = buildString {
-    appendLine("💍")
-    appendLine("${size.type} ${size.sizeLabel} - ${size.brand}")
-    size.bodyPart?.let { appendLine("착용 부위: ${it}") }
-    size.fit?.let { appendLine("핏: ${it}") }
-    if (memoVisibility != null && memoVisibility == MemoVisibility.PUBLIC) size.note?.let { append("메모: $it") }
-}
-
-@Composable
-fun PagerIndicator(
-    pageCount: Int,
-    currentPage: Int,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        repeat(pageCount) { index ->
-            Icon(
-                imageVector = if (index == currentPage) Icons.Filled.Circle else Icons.Outlined.Circle,
-                tint = MaterialTheme.colorScheme.primary,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(horizontal = 2.dp)
-                    .size(8.dp)
-            )
-        }
-    }
-}

@@ -31,6 +31,10 @@ import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
 import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.ShoeSizeViewModel
+import com.aube.mysize.utils.normalizeShoeKey
+import com.aube.mysize.utils.shoeFits
+import com.aube.mysize.utils.shoeKeys
+import com.aube.mysize.utils.shoeTypes
 import java.time.LocalDate
 
 @Composable
@@ -107,9 +111,6 @@ fun ShoeSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 신발 종류", typeBorderColor, typeBackgroundColor) {
-            val shoeTypes = listOf(
-                "운동화", "구두", "부츠", "슬리퍼", "샌들", "로퍼", "플랫슈즈", "기타"
-            )
             SelectableChipGroup(
                 options = shoeTypes,
                 selectedOption = type,
@@ -143,10 +144,7 @@ fun ShoeSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         SizeOcrSelector(
-            keyList = listOf(
-                "길이", "너비", // 한글
-                "LENGTH", "WIDTH" // 영어
-            ),
+            keyList = shoeKeys,
             keyMapping = ::normalizeShoeKey,
             initialSizeLabel = sizeLabel.uppercase(),
             snackbarHostState = snackbarHostState,
@@ -190,9 +188,8 @@ fun ShoeSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            val fits = listOf("작음", "딱 맞음", "큼")
             SelectableChipGroup(
-                options = fits,
+                options = shoeFits,
                 selectedOption = fit,
                 onSelect = { fit = it }
             )
@@ -220,14 +217,3 @@ fun ShoeSizeInputForm(
         onSaved(currentShoeSize)
     }
 }
-
-private fun normalizeShoeKey(original: String): String {
-    val upper = original.uppercase()
-
-    return when {
-        "WIDTH" in upper || "너비" in original || "발볼" in original -> "FOOT WIDTH"
-        "LENGTH" in upper || "길이" in original -> "FOOT LENGTH"
-        else -> upper
-    }
-}
-

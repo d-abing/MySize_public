@@ -35,8 +35,9 @@ fun GuideDialog(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
-                    .fillMaxWidth()
+                modifier = Modifier
+                    .padding(top = 8.dp, bottom = 16.dp)
+                    .align(Alignment.CenterHorizontally)
             )
             content()
             Spacer(modifier = Modifier.height(12.dp))

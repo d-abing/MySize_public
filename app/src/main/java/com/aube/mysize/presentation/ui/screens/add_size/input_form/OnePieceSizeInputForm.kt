@@ -31,6 +31,10 @@ import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
 import com.aube.mysize.presentation.ui.screens.add_size.component.SelectableChipGroup
 import com.aube.mysize.presentation.viewmodel.size.OnePieceSizeViewModel
+import com.aube.mysize.utils.normalizeOnePieceKey
+import com.aube.mysize.utils.onePieceFits
+import com.aube.mysize.utils.onePieceKeys
+import com.aube.mysize.utils.onePieceTypes
 import java.time.LocalDate
 
 @Composable
@@ -150,9 +154,8 @@ fun OnePieceSizeInputForm(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         BorderColumn("* 일체형 종류", typeBorderColor, typeBackgroundColor) {
-            val types = listOf("원피스", "점프수트", "멜빵바지", "기타")
             SelectableChipGroup(
-                options = types,
+                options = onePieceTypes,
                 selectedOption = type,
                 onSelect = { type = it }
             )
@@ -184,10 +187,7 @@ fun OnePieceSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         SizeOcrSelector(
-            keyList = listOf(
-                "어깨", "가슴", "허리", "엉덩이", "소매길이", "밑위", "허벅지", "밑단", "총장", "총기장", // 한글
-                "SHOULDER", "CHEST", "WAIST", "HIP", "SLEEVE", "RISE", "THIGH", "HEM", "LENGTH"  // 영어
-            ),
+            keyList = onePieceKeys,
             keyMapping = ::normalizeOnePieceKey,
             initialSizeLabel = sizeLabel.uppercase(),
             snackbarHostState = snackbarHostState,
@@ -266,9 +266,8 @@ fun OnePieceSizeInputForm(
         Spacer(Modifier.height(8.dp))
 
         BorderColumn("핏") {
-            val topFits = listOf("슬림핏", "레귤러핏", "오버핏")
             SelectableChipGroup(
-                options = topFits,
+                options = onePieceFits,
                 selectedOption = fit,
                 onSelect = { fit = it }
             )
@@ -303,22 +302,5 @@ fun OnePieceSizeInputForm(
         )
 
         onSaved(currentOnePieceSize)
-    }
-}
-
-private fun normalizeOnePieceKey(original: String): String {
-    val upper = original.uppercase()
-
-    return when {
-        "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
-        "CHEST" in upper || "BUST" in original || "가슴" in original -> "CHEST"
-        "WAIST" in upper || "허리" in original -> "WAIST"
-        "HIP" in upper || "엉덩이" in original -> "HIP"
-        "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
-        "RISE" in upper || "밑위" in original -> "RISE"
-        "THIGH" in upper || "허벅지" in original -> "THIGH"
-        "HEM" in upper || "밑단" in original -> "HEM"
-        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
-        else -> upper
     }
 }

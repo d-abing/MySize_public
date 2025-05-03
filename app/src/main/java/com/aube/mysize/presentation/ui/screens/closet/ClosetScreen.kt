@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,6 +44,7 @@ fun ClosetScreen(
     onNavigateToAddClothes: () -> Unit
 ) {
     val clothes by viewModel.clothesList.collectAsState()
+    var clothesList by remember { mutableStateOf(clothes) }
     val colors = clothes.map { it.dominantColor }.sortedBy { it }
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
@@ -61,6 +64,8 @@ fun ClosetScreen(
         HorizontalDivider(thickness = 0.5.dp)
 
         if (selectedTab == 0) {
+            clothesList = clothes.filter{ it.createUserId == 1L}
+
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -78,13 +83,13 @@ fun ClosetScreen(
                     )
 
                     if (selectedViewMode == 0) {
-                        PictureGrid(clothesList = clothes, onClick = onClothesClick)
+                        PictureGrid(clothesList = clothesList, onClick = onClothesClick)
                     } else if (selectedViewMode == 1) {
-                        SizeGrid(clothesList = clothes)
+                        SizeGrid(clothesList = clothesList)
                     } else if (selectedViewMode == 2) {
                         ColorGrid(colorList = colors)
                     } else if (selectedViewMode == 3) {
-                        TagGrid(clothesList = clothes, onClick = onClothesClick)
+                        TagGrid(clothesList = clothesList, onClick = onClothesClick)
                     }
                 }
 
@@ -99,6 +104,8 @@ fun ClosetScreen(
                 }
             }
         } else {
+            clothesList = clothes.filter{ it.createUserId != 1L}
+
             val closetViewModes = listOf(
                 Icons.Default.GridView,       // 사진 보기
                 Icons.Default.Favorite,       // 좋아요 보기
@@ -112,11 +119,11 @@ fun ClosetScreen(
             )
 
             if (selectedViewMode == 0) {
-                PictureGrid(clothesList = clothes, onClick = onClothesClick)
+                PictureGrid(clothesList = clothesList, onClick = onClothesClick)
             } else if (selectedViewMode == 1) {
                 /* TODO */
             } else if (selectedViewMode == 2) {
-                /* TODO */
+                TagGrid(clothesList = clothesList, onClick = onClothesClick)
             } else if (selectedViewMode == 3) {
                 /* TODO */
             }

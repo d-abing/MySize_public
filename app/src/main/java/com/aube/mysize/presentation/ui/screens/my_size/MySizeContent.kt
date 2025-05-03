@@ -107,7 +107,6 @@ fun MySizeContent(
                         "여러 개가 같을 경우, 최근에 저장한 걸 사용합니다.",
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
-                    .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .padding(bottom = 12.dp)
             )
@@ -182,6 +181,7 @@ fun MySizeContent(
                 if (selectedTab == 0) {
                     Row(
                         modifier = Modifier.fillMaxWidth()
+                            .padding(top = 1.dp)
                     ) {
                         Column(
                             modifier = Modifier

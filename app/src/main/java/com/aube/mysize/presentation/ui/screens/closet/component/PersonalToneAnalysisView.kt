@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,42 +32,44 @@ fun PersonalToneAnalysisView(
     result: PersonalToneAnalysisResult,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.padding(16.dp)) {
-        Text("퍼스널 컬러 분석 \"${result.mainTone.displayName}\"", style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(12.dp))
+    LazyColumn(modifier = modifier.padding(16.dp)) {
+        item {
+            Text("퍼스널 컬러 분석 \"${result.mainTone.displayName}\"", style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(12.dp))
 
-        ToneBar(
-            title = "톤",
-            toneMap = result.temperatureRatio,
-            toneColor = Temperature.colors,
-            labelMapper = { it.toDisplayName() }
-        )
+            ToneBar(
+                title = "톤",
+                toneMap = result.temperatureRatio,
+                toneColor = Temperature.colors,
+                labelMapper = { it.toDisplayName() }
+            )
 
-        Spacer(Modifier.height(8.dp))
-        ToneBar(
-            title = "시즌",
-            toneMap = result.seasonRatio,
-            toneColor = Season.colors,
-            labelMapper = { it.toDisplayName() }
-        )
+            Spacer(Modifier.height(8.dp))
+            ToneBar(
+                title = "시즌",
+                toneMap = result.seasonRatio,
+                toneColor = Season.colors,
+                labelMapper = { it.toDisplayName() }
+            )
 
-        Spacer(Modifier.height(8.dp))
-        ToneBar(
-            title = "세부",
-            toneMap = result.detailRatio,
-            toneColor = Detail.colors,
-            labelMapper = { it.toDisplayName() }
-        )
+            Spacer(Modifier.height(8.dp))
+            ToneBar(
+                title = "세부",
+                toneMap = result.detailRatio,
+                toneColor = Detail.colors,
+                labelMapper = { it.toDisplayName() }
+            )
 
-        Spacer(Modifier.height(16.dp))
-        Text("내 옷장에서 가장 잘 어울리는 색상", style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(8.dp))
-        ColorPreviewBox(result.bestMatchedColors)
+            Spacer(Modifier.height(16.dp))
+            Text("내 옷장에서 가장 잘 어울리는 색상", style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(8.dp))
+            ColorPreviewBox(result.bestMatchedColors)
 
-        Spacer(Modifier.height(16.dp))
-        Text("추천 색상", style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(8.dp))
-        ColorPreviewBox(result.recommendedColors)
+            Spacer(Modifier.height(16.dp))
+            Text("추천 색상", style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(8.dp))
+            ColorPreviewBox(result.recommendedColors)
+        }
     }
 }
 
