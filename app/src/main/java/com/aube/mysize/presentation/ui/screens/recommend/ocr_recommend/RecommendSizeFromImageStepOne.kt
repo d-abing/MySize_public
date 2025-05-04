@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.aube.mysize.presentation.model.SizeCategory
 
 @Composable
-fun RecommendSizeStepOne(
+fun RecommendSizeFromImageStepOne(
     onCategoryClick: (SizeCategory) -> Unit,
 ) {
     Column(

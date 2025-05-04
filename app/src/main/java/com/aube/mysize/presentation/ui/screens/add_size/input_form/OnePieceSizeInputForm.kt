@@ -234,7 +234,7 @@ fun OnePieceSizeInputForm(
                 length = ""
             },
             onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
-                if (!selectedExtractedLabel.contains("알 수 없는 사이즈")) {
+                if (!selectedExtractedLabel.contains("임시 사이즈")) {
                     sizeLabel = selectedExtractedLabel
                 } else {
                     focusRequester.requestFocus()

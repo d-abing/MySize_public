@@ -81,6 +81,7 @@ fun AddSizeScreen(
     // 모든 사이즈 수정 시 (!=-1)
     // else (=-1)
     val id = backStackEntry.arguments?.getInt("id") ?: -1
+    var oldSizeId by remember { mutableStateOf<Int?>(null) }
 
     BackHandler {
         navController.previousBackStackEntry
@@ -92,6 +93,9 @@ fun AddSizeScreen(
     LaunchedEffect(Unit) {
         if (category != "ADDBODY") {
             selectedCategory = SizeCategory.valueOf(category)
+        }
+        if (id != -1) {
+            oldSizeId = id
         }
     }
 
@@ -129,7 +133,7 @@ fun AddSizeScreen(
                 // ───── 카테고리별 입력 UI 분기 ─────
                 when (selectedCategory) {
                     SizeCategory.BODY -> BodySizeInputForm(
-                        oldSizeId = id,
+                        oldSizeId = oldSizeId,
                         viewModel = bodyViewModel,
                         onUpdateFormState = { mandatoryFilled, allValid ->
                             isMandatoryFieldsFilled = mandatoryFilled
@@ -137,7 +141,7 @@ fun AddSizeScreen(
                         },
                         onSaved = { bodySize ->
                             saveRequest = {
-                                if (id != -1) { // my size -> add size
+                                if (id != -1) { // my size -> add size && recommend -> add size
                                     bodyViewModel.insert(bodySize.copy(id = id))
                                     navController.popBackStack()
                                 } else {

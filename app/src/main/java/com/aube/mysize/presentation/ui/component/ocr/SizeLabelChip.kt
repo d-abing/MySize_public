@@ -27,7 +27,7 @@ fun SizeLabelChip(
                 selectedOption = selectedExtractedLabel,
                 onSelect = onSelect
             )
-            if (extractedLabelList.any{ it.contains("알 수 없는")}) {
+            if (extractedLabelList.any{ it.contains("임시")}) {
                 Spacer(Modifier.height(4.dp))
                 Text(
                     modifier = Modifier

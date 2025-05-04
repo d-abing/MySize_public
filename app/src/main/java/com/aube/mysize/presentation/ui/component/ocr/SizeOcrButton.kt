@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SizeOcrButton(
+    text: String,
     onClick: () -> Unit
 ) {
     Button(
@@ -39,7 +40,7 @@ fun SizeOcrButton(
                     contentDescription = "자동 추출",
                 )
                 Spacer(Modifier.width(4.dp))
-                Text("상세 사이즈 캡쳐화면으로 자동 입력하기")
+                Text(text)
             }
         }
     }

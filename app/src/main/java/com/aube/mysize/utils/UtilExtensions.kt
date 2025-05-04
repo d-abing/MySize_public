@@ -9,6 +9,9 @@ import android.media.ExifInterface
 import android.net.Uri
 import java.io.ByteArrayOutputStream
 
+fun Float.roundTo1Decimal(): Float =
+    String.format("%.1f", this).toFloat()
+
 fun Bitmap.toBytes(): ByteArray {
     val stream = ByteArrayOutputStream()
     compress(Bitmap.CompressFormat.JPEG, 50, stream)

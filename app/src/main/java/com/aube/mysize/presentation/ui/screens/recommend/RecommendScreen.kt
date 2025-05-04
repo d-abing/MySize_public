@@ -58,20 +58,24 @@ import kotlinx.coroutines.launch
 fun RecommendScreen(
     snackbarHostState: SnackbarHostState,
     onAddNewBodySize: () -> Unit,
+    onEditBodySize: (BodySize) -> Unit,
     bodySizeViewModel: BodySizeViewModel = hiltViewModel(),
 ) {
     val bodySize by bodySizeViewModel.sizes.collectAsState()
+    val currentBodySize = bodySize.firstOrNull()
 
     RecommendScreen(
         snackbarHostState = snackbarHostState,
         onAddNewBodySize = onAddNewBodySize,
-        bodySize = bodySize.firstOrNull()
+        onEditBodySize = onEditBodySize,
+        bodySize = currentBodySize
     )
 }
 @Composable
 fun RecommendScreen(
     snackbarHostState: SnackbarHostState,
     onAddNewBodySize: () -> Unit,
+    onEditBodySize: (BodySize) -> Unit,
     bodySize: BodySize?,
 ) {
     val context = LocalContext.current
@@ -163,17 +167,19 @@ fun RecommendScreen(
                     SizeCategory.BODY -> // SizeOcrCard 바로 가기 눌렀을 때
                         RecommendSizeFromImage(
                             snackbarHostState = snackbarHostState,
-                            recommendedResult = recommendedResult as List<RecommendedSizeResult.Success>,
-                        ) {
-                            selectedCategory = null
-                        }
+                            recommendedResult = recommendedResult,
+                            backHandler = {
+                                selectedCategory = null
+                            },
+                            onEditBodySize = { onEditBodySize(bodySize) }
+                        )
 
                     else ->
                         RecommendedSizesView(
-                            recommendedResult as List<RecommendedSizeResult.Success>,
-                        ){
-                            selectedCategory = null
-                        }
+                            recommendedResult = recommendedResult,
+                            backHandler = { selectedCategory = null },
+                            onEditBodySize = { onEditBodySize(bodySize) }
+                        )
                 }
 
             } else if (selectedTabIndex == 1) {

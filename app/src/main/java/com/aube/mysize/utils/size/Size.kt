@@ -52,7 +52,7 @@ val onePieceKeys = listOf(
     "SHOULDER", "CHEST", "WAIST", "HIP", "SLEEVE", "RISE", "THIGH", "HEM", "LENGTH"  // 영어
 )
 val shoeKeys = listOf(
-    "길이", "너비", // 한글
+    "길이", "너비", "발볼", // 한글
     "LENGTH", "WIDTH" // 영어
 )
 

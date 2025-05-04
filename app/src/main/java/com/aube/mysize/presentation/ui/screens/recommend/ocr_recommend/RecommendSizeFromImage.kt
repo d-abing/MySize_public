@@ -4,8 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,12 +20,12 @@ import com.aube.mysize.presentation.model.SizeCategory
 @Composable
 fun RecommendSizeFromImage(
     snackbarHostState: SnackbarHostState,
-    recommendedResult: List<RecommendedSizeResult.Success>,
+    recommendedResult: List<RecommendedSizeResult>,
     backHandler: () -> Unit,
+    onEditBodySize: () -> Unit,
 ) {
     var selectedCategory by rememberSaveable { mutableStateOf<SizeCategory?>(null) }
     var selectedStep by rememberSaveable { mutableIntStateOf(1) }
-
 
     BackHandler {
         backHandler()
@@ -36,21 +34,20 @@ fun RecommendSizeFromImage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
         when (selectedStep) {
             1 ->
-                RecommendSizeStepOne(
+                RecommendSizeFromImageStepOne(
                     onCategoryClick = {
                         selectedCategory = it
                         selectedStep = 2
                     }
                 )
             2 ->
-                RecommendSizeStepTwo(
+                RecommendSizeFromImageStepTwo(
                     selectedStep = selectedStep,
                     snackbarHostState = snackbarHostState,
                     selectedCategory = selectedCategory,
@@ -58,7 +55,8 @@ fun RecommendSizeFromImage(
                     backHandler = {
                         selectedCategory = null
                         selectedStep = 1
-                    }
+                    },
+                    onEditBodySize = onEditBodySize
                 )
         }
     }

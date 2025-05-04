@@ -104,7 +104,10 @@ fun SizeOcrSelector(
     Column {
         GuideButton(text = "캡쳐화면 가이드 보기", onClick = { showGuideDialog = true })
 
-        SizeOcrButton(onClick = { galleryLauncher.launch("image/*") })
+        SizeOcrButton(
+            text = "상세 사이즈 캡쳐화면으로 자동 입력하기",
+            onClick = { galleryLauncher.launch("image/*") }
+        )
 
         PreviewImage(extractedImageUri)
 
@@ -112,11 +115,6 @@ fun SizeOcrSelector(
             selectedExtractedLabel = label
             onLabelSelected(extractedSizeMap, selectedExtractedLabel)
         }
-
-        /* TODO 나중에 삭제할 것 */
-        Text(
-            text = extractedSizeMap.toString()
-        )
     }
 
     if (showGuideDialog) {

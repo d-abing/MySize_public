@@ -175,7 +175,7 @@ class SizeOcrManager(
                     if (currentSizeLabel == null) {
                         // 사이즈라벨이 없는 경우, 임시 라벨 부여
                         chunkIndex++
-                        currentSizeLabel = "알 수 없는 사이즈$chunkIndex"
+                        currentSizeLabel = "임시 사이즈$chunkIndex"
                         sizeLabels.add(currentSizeLabel)
                     }
                     sizeMap[currentSizeLabel] = headers.zip(currentChunk).toMap()

@@ -205,7 +205,7 @@ fun RecommendedShopsView(
                                 text = "내 체형에 딱 맞는 쇼핑몰",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.padding(start = 8.dp, top = 16.dp, bottom = 16.dp)
+                                modifier = Modifier.padding(start = 8.dp, top = 16.dp, bottom = 8.dp)
                             )
                         }
                         items(matchedBodyShops) { shop ->

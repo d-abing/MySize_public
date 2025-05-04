@@ -31,72 +31,85 @@ import com.aube.mysize.presentation.model.RecommendedSizeResult
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeDetail
 import com.aube.mysize.presentation.ui.component.lottie.Animation
+import com.aube.mysize.presentation.ui.screens.recommend.component.EmptyShoeSize
 import kotlinx.coroutines.launch
 
 @Composable
 fun RecommendedSizesView(
-    recommendedResult: List<RecommendedSizeResult.Success>,
+    recommendedResult: List<RecommendedSizeResult>,
     backHandler: () -> Unit,
+    onEditBodySize: () -> Unit
 ) {
     BackHandler {
         backHandler()
     }
 
-    RecommendedSizeDetailList(recommendedResult.first())
+    RecommendedSizeDetailList(recommendedResult.first(), onEditBodySize)
 }
 
 @Composable
-fun RecommendedSizeDetailList(result: RecommendedSizeResult.Success) {
-    val category = result.category
-    val typeToSizeMap = result.typeToSizeMap
-    val mostSelectedLabel = result.mostSelectedLabel
+fun RecommendedSizeDetailList(
+    result: RecommendedSizeResult,
+    onEditBodySize: () -> Unit
+) {
 
-    val coroutineScope = rememberCoroutineScope()
-    val listState = rememberLazyListState()
+    when (result) {
+        is RecommendedSizeResult.Success -> {
+            val category = result.category
+            val typeToSizeMap = result.typeToSizeMap
+            val mostSelectedLabel = result.mostSelectedLabel
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
-        state = listState
-    ) {
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+            val coroutineScope = rememberCoroutineScope()
+            val listState = rememberLazyListState()
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
+                state = listState
             ) {
-                Animation(
-                    name = "star_effect.json",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                )
-                Text(
-                    text = "사용자님께 가장 잘 어울리는 사이즈에요!",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-                Animation(
-                    name = "bottom_arrow.json",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                        .height(50.dp)
-                        .clickable {
-                            coroutineScope.launch {
-                                listState.animateScrollToItem(1)
-                            }
-                        }
-                )
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                    ) {
+                        Animation(
+                            name = "star_effect.json",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                        )
+                        Text(
+                            text = "사용자님께 가장 잘 어울리는 사이즈에요!",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                        Animation(
+                            name = "bottom_arrow.json",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp)
+                                .height(50.dp)
+                                .clickable {
+                                    coroutineScope.launch {
+                                        listState.animateScrollToItem(1)
+                                    }
+                                }
+                        )
+                    }
+                }
+
+                typeToSizeMap.forEach { (type, sizeDetail) ->
+                    item {
+                        RecommendedSizeCard(category, type, sizeDetail, mostSelectedLabel[type])
+                    }
+                }
             }
         }
-
-        typeToSizeMap.forEach { (type, sizeDetail) ->
-            item {
-                RecommendedSizeCard(category, type, sizeDetail, mostSelectedLabel[type])
-            }
+        is RecommendedSizeResult.Failure -> {
+            EmptyShoeSize(result, onEditBodySize)
         }
     }
 }
@@ -157,7 +170,7 @@ fun RecommendedSizeCard(
             mostSelectedLabel?.let { label ->
                 Column {
                     Text(
-                        text = "📌 비슷한 체형을 가진 사용자가\n가장 많이 입는 사이즈",
+                        text = "📌 비슷한 체형의 사용자가\n가장 많이 입는 사이즈",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary,
                     )

@@ -9,16 +9,12 @@ data class UserPreference(
 enum class Style(val displayName: String) {
     ALL("전체"),
     MINIMAL("미니멀"),
-    MODERN("모던"),
     CASUAL("캐주얼"),
     STREET("스트릿"),
     ROMANTIC("로맨틱"),
     VINTAGE("빈티지"),
     CLASSIC("클래식"),
-    FORMAL("포멀"),
     SPORTS("스포츠"),
-    BOHEMIAN("보헤미안"),
-    PUNK("펑크")
 }
 
 
