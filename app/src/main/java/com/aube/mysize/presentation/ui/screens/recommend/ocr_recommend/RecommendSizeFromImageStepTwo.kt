@@ -85,6 +85,7 @@ fun RecommendSizeFromImageStepTwo(
     }
 
     val failureResult = recommendedResult.find { it is RecommendedSizeResult.Failure } as? RecommendedSizeResult.Failure
+    val successResult = recommendedResult.filterIsInstance<RecommendedSizeResult.Success>()
 
     var hasLaunchedGallery by rememberSaveable { mutableStateOf(false) }
 
@@ -161,8 +162,6 @@ fun RecommendSizeFromImageStepTwo(
     if (selectedCategory == SizeCategory.SHOE && failureResult != null) {
         EmptyShoeSize(failureResult, onEditBodySize)
     } else {
-        recommendedResult as List<RecommendedSizeResult.Success>
-
         if (hasLaunchedGallery) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -204,7 +203,7 @@ fun RecommendSizeFromImageStepTwo(
                     }
 
                     bestLabelsMap =
-                        recommendedResult
+                        successResult
                             .filter { it.category == selectedCategory }
                             .groupBy { it.category.label }
                             .mapValues { (_, results) ->

@@ -1,6 +1,6 @@
 package com.aube.mysize.presentation.ui.component.button
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,11 +25,11 @@ fun SizeButton(
     onClick: () -> Unit
 ) {
     OutlinedButton(
-        onClick = onClick,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
         shape = RoundedCornerShape(16.dp),
-        modifier = modifier
-            .border(1.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(16.dp)),
-        contentPadding = PaddingValues(4.dp)
+        contentPadding = PaddingValues(4.dp),
+        modifier = modifier,
+        onClick = onClick
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

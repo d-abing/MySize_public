@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.aube.mysize.presentation.model.AgeGroup
+import com.aube.mysize.presentation.model.Gender
 import com.aube.mysize.presentation.model.PriceRange
 import com.aube.mysize.presentation.model.Style
 import com.aube.mysize.presentation.model.UserPreference
@@ -92,6 +93,7 @@ object SettingsDataStore {
     }
 
     object PreferenceKeys {
+        val GENDER = stringPreferencesKey("gender")
         val STYLE = stringPreferencesKey("style")
         val AGE = stringPreferencesKey("age")
         val PRICE = stringPreferencesKey("price")
@@ -99,14 +101,16 @@ object SettingsDataStore {
 
     suspend fun saveUserPreference(context: Context, value: UserPreference) {
         context.dataStore.edit { prefs ->
+            prefs[PreferenceKeys.GENDER] = value.gender.name
             prefs[PreferenceKeys.STYLE] = value.styles.joinToString(",")
-            prefs[PreferenceKeys.AGE] = value.ageGroup.name
-            prefs[PreferenceKeys.PRICE] = value.priceRange.name
+            prefs[PreferenceKeys.AGE] = value.ageGroups.joinToString(",")
+            prefs[PreferenceKeys.PRICE] = value.priceRanges.joinToString(",")
         }
     }
 
     suspend fun clearUserPreference(context: Context) {
         context.dataStore.edit { prefs ->
+            prefs.remove(PreferenceKeys.GENDER)
             prefs.remove(PreferenceKeys.STYLE)
             prefs.remove(PreferenceKeys.AGE)
             prefs.remove(PreferenceKeys.PRICE)
@@ -115,19 +119,26 @@ object SettingsDataStore {
 
     fun getUserPreference(context: Context): Flow<UserPreference?> {
         return context.dataStore.data.map { prefs ->
+            val genderString = prefs[PreferenceKeys.GENDER]
             val styleString = prefs[PreferenceKeys.STYLE]
             val ageString = prefs[PreferenceKeys.AGE]
             val priceString = prefs[PreferenceKeys.PRICE]
+
+            val gender = Gender.entries.find { it.name == genderString }
 
             val styles = styleString
                 ?.split(",")
                 ?.mapNotNull { raw -> Style.entries.find { it.name == raw } }
 
-            val ageGroup = ageString?.let { str -> AgeGroup.entries.find { it.name == str } }
-            val priceRange = priceString?.let { str -> PriceRange.entries.find { it.name == str } }
+            val ageGroup = ageString
+                ?.split(",")
+                ?.mapNotNull { raw -> AgeGroup.entries.find { it.name == raw } }
+            val priceRange = priceString
+                ?.split(",")
+                ?.mapNotNull { raw -> PriceRange.entries.find { it.name == raw } }
 
-            if (!styles.isNullOrEmpty() && ageGroup != null && priceRange != null) {
-                UserPreference(styles, ageGroup, priceRange)
+            if (gender != null && !styles.isNullOrEmpty() && !ageGroup.isNullOrEmpty() && !priceRange.isNullOrEmpty()) {
+                UserPreference(gender, styles, ageGroup, priceRange)
             } else {
                 null
             }

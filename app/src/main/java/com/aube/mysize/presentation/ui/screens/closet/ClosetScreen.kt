@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.domain.model.clothes.Clothes
+import com.aube.mysize.presentation.ui.component.EmptyList
 import com.aube.mysize.presentation.ui.component.chip_tap.MSTabRow
 import com.aube.mysize.presentation.ui.screens.closet.component.ClosetViewModeTabs
 import com.aube.mysize.presentation.ui.screens.closet.my_closet.ColorGrid
@@ -93,6 +94,10 @@ fun ClosetScreen(
                     }
                 }
 
+                if (clothesList.isEmpty()) {
+                    EmptyList("empty1.json")
+                }
+
                 FloatingActionButton(
                     onClick = onNavigateToAddClothes,
                     containerColor = MaterialTheme.colorScheme.secondary,
@@ -106,26 +111,36 @@ fun ClosetScreen(
         } else {
             clothesList = clothes.filter{ it.createUserId != 1L}
 
-            val closetViewModes = listOf(
-                Icons.Default.GridView,       // 사진 보기
-                Icons.Default.Favorite,       // 좋아요 보기
-                Icons.Default.Tag,            // 태그 보기
-                Icons.Default.History         // 최근에 본 옷 보기
-            )
-            ClosetViewModeTabs(
-                closetViewModes = closetViewModes,
-                selectedTabIndex = selectedViewMode,
-                onTabSelected = { selectedViewMode = it }
-            )
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Column {
+                    val closetViewModes = listOf(
+                        Icons.Default.GridView,       // 사진 보기
+                        Icons.Default.Favorite,       // 좋아요 보기
+                        Icons.Default.Tag,            // 태그 보기
+                        Icons.Default.History         // 최근에 본 옷 보기
+                    )
+                    ClosetViewModeTabs(
+                        closetViewModes = closetViewModes,
+                        selectedTabIndex = selectedViewMode,
+                        onTabSelected = { selectedViewMode = it }
+                    )
 
-            if (selectedViewMode == 0) {
-                PictureGrid(clothesList = clothesList, onClick = onClothesClick)
-            } else if (selectedViewMode == 1) {
-                /* TODO */
-            } else if (selectedViewMode == 2) {
-                TagGrid(clothesList = clothesList, onClick = onClothesClick)
-            } else if (selectedViewMode == 3) {
-                /* TODO */
+                    if (selectedViewMode == 0) {
+                        PictureGrid(clothesList = clothesList, onClick = onClothesClick)
+                    } else if (selectedViewMode == 1) {
+                        /* TODO */
+                    } else if (selectedViewMode == 2) {
+                        TagGrid(clothesList = clothesList, onClick = onClothesClick)
+                    } else if (selectedViewMode == 3) {
+                        /* TODO */
+                    }
+                }
+
+                if (clothesList.isEmpty()) {
+                    EmptyList("empty1.json")
+                }
             }
         }
     }

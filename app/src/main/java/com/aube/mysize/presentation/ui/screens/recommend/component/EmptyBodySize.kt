@@ -3,6 +3,7 @@ package com.aube.mysize.presentation.ui.screens.recommend.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.aube.mysize.presentation.ui.component.lottie.Animation
 
 @Composable
 fun EmptyBodySize(
@@ -25,6 +27,12 @@ fun EmptyBodySize(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Animation(
+            name = "bubble_effect.json",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+        )
         Text(
             text = "사이즈, 쇼핑몰 추천을 위해서\n" +
                     "신체 정보 등록이 필요합니다.\n",

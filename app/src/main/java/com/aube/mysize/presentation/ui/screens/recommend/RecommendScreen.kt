@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aube.mysize.R
 import com.aube.mysize.domain.model.size.BodySize
+import com.aube.mysize.presentation.model.Gender
 import com.aube.mysize.presentation.model.RecommendedSizeResult
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.UserPreference
@@ -186,6 +187,7 @@ fun RecommendScreen(
 
                 if (recommendShopStep == 1) {
                     UserPreferenceScreen(
+                        gender = Gender.entries.find { it.displayName == bodySize.gender } ?: Gender.UNISEX,
                         onSave = { userPref ->
                             userPreference = userPref
                             coroutineScope.launch {

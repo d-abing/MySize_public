@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.aube.mysize.presentation.model.AgeGroup
+import com.aube.mysize.presentation.model.Gender
 import com.aube.mysize.presentation.model.PriceRange
 import com.aube.mysize.presentation.model.Style
 import com.aube.mysize.presentation.model.UserPreference
@@ -29,11 +30,10 @@ fun UserPreferenceBottomSheet(
     currentPreference: UserPreference,
     preferenceType: String,
     onSave: (UserPreference) -> Unit,
-    onCancel: () -> Unit
 ) {
     var selectedStyles by remember { mutableStateOf(currentPreference.styles) }
-    var selectedAge by remember { mutableStateOf(currentPreference.ageGroup) }
-    var selectedPrice by remember { mutableStateOf(currentPreference.priceRange) }
+    var selectedAges by remember { mutableStateOf(currentPreference.ageGroups) }
+    var selectedPrices by remember { mutableStateOf(currentPreference.priceRanges) }
 
     Column(
         modifier = Modifier
@@ -42,6 +42,7 @@ fun UserPreferenceBottomSheet(
     ) {
         Text(
             text = when (preferenceType) {
+                "Gender" -> "성별을 선택해주세요"
                 "Styles" -> "선호하는 스타일을 선택해주세요"
                 "AgeGroup" -> "연령대를 선택해주세요"
                 "PriceRange" -> "선호하는 가격대를 선택해주세요"
@@ -53,6 +54,17 @@ fun UserPreferenceBottomSheet(
         Spacer(Modifier.height(16.dp))
 
         when (preferenceType) {
+            "Gender" -> {
+                SingleSelectableChipGroup(
+                    options = Gender.entries.map { it.displayName },
+                    selectedOption = currentPreference.gender,
+                    onSelect = { gender ->
+                        val selectedGender = Gender.entries.find { it.displayName == gender }
+                        onSave(currentPreference.copy(gender = selectedGender!!))
+                    }
+                )
+            }
+
             "Styles" -> {
                 MultiSelectableChipGroup(
                     options = Style.entries,
@@ -64,24 +76,36 @@ fun UserPreferenceBottomSheet(
                             selectedStyles + style
                         }
                     },
-                    optionTextSelector = { it.displayName } // 스타일에 displayName 프로퍼티가 있다고 가정
+                    optionTextSelector = { it.displayName }
                 )
             }
 
             "AgeGroup" -> {
-                SingleSelectableChipGroup(
+                MultiSelectableChipGroup(
                     options = AgeGroup.entries,
-                    selectedOption = selectedAge,
-                    onSelect = { selectedAge = it },
+                    selectedOptions = selectedAges,
+                    onSelectToggle = { age ->
+                        selectedAges = if (selectedAges.contains(age)) {
+                            selectedAges - age
+                        } else {
+                            selectedAges + age
+                        }
+                    },
                     optionTextSelector = { it.displayName }
                 )
             }
 
             "PriceRange" -> {
-                SingleSelectableChipGroup(
+                MultiSelectableChipGroup(
                     options = PriceRange.entries,
-                    selectedOption = selectedPrice,
-                    onSelect = { selectedPrice = it },
+                    selectedOptions = selectedPrices,
+                    onSelectToggle = { price ->
+                        selectedPrices = if (selectedPrices.contains(price)) {
+                            selectedPrices - price
+                        } else {
+                            selectedPrices + price
+                        }
+                    },
                     optionTextSelector = { it.displayName }
                 )
             }
@@ -96,8 +120,8 @@ fun UserPreferenceBottomSheet(
                 onSave(
                     when (preferenceType) {
                         "Styles" -> currentPreference.copy(styles = selectedStyles.toList())
-                        "AgeGroup" -> currentPreference.copy(ageGroup = selectedAge)
-                        "PriceRange" -> currentPreference.copy(priceRange = selectedPrice)
+                        "AgeGroup" -> currentPreference.copy(ageGroups = selectedAges)
+                        "PriceRange" -> currentPreference.copy(priceRanges = selectedPrices)
                         else -> currentPreference
                     }
                 )

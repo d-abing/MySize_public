@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,8 +83,92 @@ fun RecommendedShopsView(
                     onPreferenceChange(updated)
                     showBottomSheet = false
                 },
-                onCancel = { showBottomSheet = false }
             )
+        }
+    }
+
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp, start = 16.dp, end = 16.dp)
+    ) {
+        item {
+            AssistChip(
+                onClick = {
+                    showBottomSheet = true
+                    preferenceType = "Gender"
+                },
+                label = {
+                    Text(
+                        text = userPreference.gender.displayName,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                },
+                colors = AssistChipDefaults.assistChipColors().copy(
+                    containerColor = MaterialTheme.colorScheme.tertiary.copy(0.3f)
+                )
+            )
+        }
+
+        userPreference.styles.forEach { style ->
+            item {
+                AssistChip(
+                    onClick = {
+                        showBottomSheet = true
+                        preferenceType = "Styles"
+                    },
+                    label = {
+                        Text(
+                            text = style.displayName,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
+                    colors = AssistChipDefaults.assistChipColors().copy(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(0.3f)
+                    )
+                )
+            }
+        }
+
+        userPreference.ageGroups.forEach { ageGroup ->
+            item {
+                AssistChip(
+                    onClick = {
+                        showBottomSheet = true
+                        preferenceType = "AgeGroup"
+                    },
+                    label = {
+                        Text(
+                            text = ageGroup.displayName,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
+                    colors = AssistChipDefaults.assistChipColors().copy(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(0.3f)
+                    )
+                )
+            }
+        }
+
+        userPreference.priceRanges.forEach { priceRange ->
+            item {
+                AssistChip(
+                    onClick = {
+                        showBottomSheet = true
+                        preferenceType = "PriceRange"
+                    },
+                    label = {
+                        Text(
+                            text = priceRange.displayName,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
+                    colors = AssistChipDefaults.assistChipColors().copy(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(0.3f)
+                    )
+                )
+            }
         }
     }
 
@@ -100,66 +185,12 @@ fun RecommendedShopsView(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "추천 가능한 쇼핑몰이 아직 없어요!",
+                        text = "추천 가능한 쇼핑몰이 없어요!",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             } else {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp, start = 16.dp, end = 16.dp)
-                ) {
-                    userPreference.styles.forEach { style ->
-                        item {
-                            AssistChip(
-                                onClick = {
-                                    showBottomSheet = true
-                                    preferenceType = "Styles"
-                                },
-                                label = {
-                                    Text(
-                                        text = style.displayName,
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                }
-                            )
-                        }
-                    }
-
-                    item {
-                        AssistChip(
-                            onClick = {
-                                showBottomSheet = true
-                                preferenceType = "AgeGroup"
-                            },
-                            label = {
-                                Text(
-                                    text = userPreference.ageGroup.displayName,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-                        )
-                    }
-
-                    item {
-                        AssistChip(
-                            onClick = {
-                                showBottomSheet = true
-                                preferenceType = "PriceRange"
-                            },
-                            label = {
-                                Text(
-                                    text = userPreference.priceRange.displayName,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-                        )
-                    }
-                }
-
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
@@ -235,11 +266,20 @@ fun RecommendedShopsView(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = result.message,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error
-                )
+                Column {
+                    Animation(
+                        name = "bubble_effect.json",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp)
+                    )
+                    Text(
+                        text = result.message,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }

@@ -56,6 +56,7 @@ import com.aube.mysize.domain.model.size.TopSize
 import com.aube.mysize.presentation.model.BodySizeCardUiModel
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeContentUiModel
+import com.aube.mysize.presentation.ui.component.EmptyList
 import com.aube.mysize.presentation.ui.component.HighlightedTitle
 import com.aube.mysize.presentation.ui.component.chip_tap.CategoryChip
 import com.aube.mysize.presentation.ui.component.chip_tap.MSTabRow
@@ -478,10 +479,12 @@ fun MySizeContent(
                         }
                     }
                 }
-
                 currentIndex++
             }
         }
+    }
+    if (categoryGroupedData.values.all { it.isEmpty() }) {
+        EmptyList("empty2.json")
     }
 }
 

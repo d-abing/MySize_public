@@ -13,7 +13,7 @@ sealed class RecommendedSizeResult {
 
 
 data class SizeDetail(
-    val measurements: Map<String, Float>
+    val measurements: Map<String, String>
 )
 
 sealed class RecommendedShopResult {

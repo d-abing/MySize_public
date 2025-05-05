@@ -1,13 +1,14 @@
 package com.aube.mysize.presentation.model
 
 data class UserPreference(
+    val gender: Gender,
     val styles: List<Style>,
-    val ageGroup: AgeGroup,
-    val priceRange: PriceRange
+    val ageGroups: List<AgeGroup>,
+    val priceRanges: List<PriceRange>
 )
 
 enum class Style(val displayName: String) {
-    ALL("전체"),
+    ALL("전체 스타일"),
     MINIMAL("미니멀"),
     CASUAL("캐주얼"),
     STREET("스트릿"),
@@ -32,8 +33,10 @@ enum class PriceRange(val displayName: String) {
     PREMIUM("프리미엄")
 }
 
-enum class Gender {
-    MALE, FEMALE, UNISEX
+enum class Gender(val displayName: String) {
+    MALE("남성"),
+    FEMALE("여성"),
+    UNISEX("남녀 공용")
 }
 
 enum class BodyType(
@@ -51,8 +54,8 @@ enum class BodyType(
     AVERAGE_AVERAGE("보통 체형 · 평균 키", 161..175, 60..75),
     AVERAGE_TALL("보통 체형 · 키 큼", 176..190, 65..80),
 
-    PLUS_SHORT("통통한 체형 · 키 작음", 140..160, 65..85),
-    PLUS_AVERAGE("통통한 체형 · 평균 키", 161..175, 75..95),
-    PLUS_TALL("통통한 체형 · 키 큼", 176..190, 85..110)
+    PLUS_SHORT("플러스 체형 · 키 작음", 140..160, 65..85),
+    PLUS_AVERAGE("플러스 체형 · 평균 키", 161..175, 75..95),
+    PLUS_TALL("플러스 체형 · 키 큼", 176..190, 85..110)
 }
 

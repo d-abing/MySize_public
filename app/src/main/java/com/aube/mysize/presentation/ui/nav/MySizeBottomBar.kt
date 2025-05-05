@@ -68,14 +68,14 @@ fun MySizeBottomBar(
                         imageVector = screen.icon,
                         contentDescription = screen.title,
                         tint = if (selected) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.onSurfaceVariant
+                        else MaterialTheme.colorScheme.primary.copy(0.6f)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = screen.title,
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = if (selected) MaterialTheme.colorScheme.onSecondary
-                            else MaterialTheme.colorScheme.onSurfaceVariant
+                            else MaterialTheme.colorScheme.primary.copy(0.6f)
                         )
                     )
                 }
