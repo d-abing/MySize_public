@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -114,54 +115,28 @@ fun MySizeContent(
         }
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        state = listState
+    Column(
+        modifier = Modifier.fillMaxSize()
     ) {
-        // 1. 바디 사이즈 카드
-        if (isBodySizeCardSticky != null && !isBodySizeCardSticky && onBodySizeEdit != null && onBodySizeDelete != null) {
-            bodySizeCard?.let { card ->
-                item {
-                    SensitiveBodySizeCard(
-                        bodySizeCard = card,
-                        isBodySizeCardSticky = isBodySizeCardSticky,
-                        onEdit = { onBodySizeEdit(bodySizeCard.id) },
-                        onDelete = { onBodySizeDelete(bodySizeCard.id) },
-                        modifier = Modifier
-                            .padding(vertical = 4.dp, horizontal = 16.dp)
-                            .onGloballyPositioned { coordinates ->
-                                bodySizeCardHeightPx.value = coordinates.size.height
-                            },
-                        onBodySizeCardStickyChanged = {
-                            if (onBodySizeCardStickyChanged != null) {
-                                onBodySizeCardStickyChanged()
-                            }
-                        }
-                    )
-                }
-            }
-        }
-
-        // 2. TabRow (Sticky)
-        stickyHeader {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
-                    .onGloballyPositioned { layoutCoordinates ->
-                        stickyHeaderHeightPx.value = layoutCoordinates.size.height
-                    }
-            ) {
-                if (isBodySizeCardSticky != null && isBodySizeCardSticky && onBodySizeEdit != null && onBodySizeDelete != null) {
-                    bodySizeCard?.let { card ->
+        LazyColumn(
+            modifier = Modifier
+                .wrapContentHeight(),
+            state = listState
+        ) {
+            // 1. 바디 사이즈 카드
+            if (isBodySizeCardSticky != null && !isBodySizeCardSticky && onBodySizeEdit != null && onBodySizeDelete != null) {
+                bodySizeCard?.let { card ->
+                    item {
                         SensitiveBodySizeCard(
                             bodySizeCard = card,
                             isBodySizeCardSticky = isBodySizeCardSticky,
                             onEdit = { onBodySizeEdit(bodySizeCard.id) },
                             onDelete = { onBodySizeDelete(bodySizeCard.id) },
                             modifier = Modifier
-                                .padding(vertical = 4.dp, horizontal = 16.dp),
+                                .padding(vertical = 4.dp, horizontal = 16.dp)
+                                .onGloballyPositioned { coordinates ->
+                                    bodySizeCardHeightPx.value = coordinates.size.height
+                                },
                             onBodySizeCardStickyChanged = {
                                 if (onBodySizeCardStickyChanged != null) {
                                     onBodySizeCardStickyChanged()
@@ -170,321 +145,352 @@ fun MySizeContent(
                         )
                     }
                 }
+            }
 
-                MSTabRow(
-                    listOf("종류별 보기", "브랜드별 보기"),
-                    selectedTabIndex = selectedTab,
-                    onTabSelected = { selectedTab = it }
-                )
-
-                HorizontalDivider(thickness = 0.5.dp)
-
-                if (selectedTab == 0) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(top = 1.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(60.dp),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            CategoryChip(
-                                addLikeChip = true,
-                                onLikeChipClick = { /* TODO */ },
-                                categories = categorySectionIndices.keys.toList(),
-                                selectedCategory = selectedCategory,
-                                enableColorHighlight = isFullDetailMode,
-                                onClick = { category ->
-                                    selectedCategory = category
-
-                                    if (!isFullDetailMode) {
-                                        highlightedCategory.value = category
-
-                                        categorySectionIndices[category]?.let { index ->
-                                            coroutineScope.launch {
-                                                val offset = if (isBodySizeCardSticky == false) {
-                                                    -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
-                                                } else {
-                                                    -stickyHeaderHeightPx.value
-                                                }
-                                                listState.animateScrollToItem(index, offset)
-                                            }
-                                        }
+            // 2. TabRow (Sticky)
+            stickyHeader {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .onGloballyPositioned { layoutCoordinates ->
+                            stickyHeaderHeightPx.value = layoutCoordinates.size.height
+                        }
+                ) {
+                    if (isBodySizeCardSticky != null && isBodySizeCardSticky && onBodySizeEdit != null && onBodySizeDelete != null) {
+                        bodySizeCard?.let { card ->
+                            SensitiveBodySizeCard(
+                                bodySizeCard = card,
+                                isBodySizeCardSticky = isBodySizeCardSticky,
+                                onEdit = { onBodySizeEdit(bodySizeCard.id) },
+                                onDelete = { onBodySizeDelete(bodySizeCard.id) },
+                                modifier = Modifier
+                                    .padding(vertical = 4.dp, horizontal = 16.dp),
+                                onBodySizeCardStickyChanged = {
+                                    if (onBodySizeCardStickyChanged != null) {
+                                        onBodySizeCardStickyChanged()
                                     }
                                 }
                             )
                         }
-
-                        Column(
-                            modifier = Modifier
-                                .wrapContentWidth()
-                                .height(56.dp),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            GuideButton(
-                                onClick = { showGuideDialog = true },
-                            )
-                        }
                     }
-                } else {
-                    val keyboardController = LocalSoftwareKeyboardController.current
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
+                    MSTabRow(
+                        listOf("종류별 보기", "브랜드별 보기"),
+                        selectedTabIndex = selectedTab,
+                        onTabSelected = { selectedTab = it }
+                    )
+
+                    HorizontalDivider(thickness = 0.5.dp)
+
+                    if (selectedTab == 0) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(top = 1.dp)
                         ) {
-                            OutlinedTextField(
-                                value = searchQuery,
-                                onValueChange = { onSearchQueryChanged(it) },
-                                placeholder = {
-                                    Text(
-                                        "브랜드명 검색",
-                                        style = MaterialTheme.typography.labelLarge
-                                    )
-                                },
-                                textStyle = MaterialTheme.typography.labelLarge,
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 16.dp),
-                                singleLine = true,
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Default.Search,
-                                        contentDescription = null,
-                                        modifier = Modifier.clickable {
-                                            val matchedBrand = brandSectionIndices.keys.firstOrNull {
-                                                it.contains(searchQuery, ignoreCase = true)
-                                            }
-                                            matchedBrand?.let {
-                                                highlightedBrand.value = it
+                                    .weight(1f)
+                                    .height(60.dp),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                CategoryChip(
+                                    addLikeChip = true,
+                                    onLikeChipClick = { /* TODO */ },
+                                    categories = categorySectionIndices.keys.toList(),
+                                    selectedCategory = selectedCategory,
+                                    enableColorHighlight = isFullDetailMode,
+                                    onClick = { category ->
+                                        selectedCategory = category
+
+                                        if (!isFullDetailMode) {
+                                            highlightedCategory.value = category
+
+                                            categorySectionIndices[category]?.let { index ->
                                                 coroutineScope.launch {
                                                     val offset = if (isBodySizeCardSticky == false) {
                                                         -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
                                                     } else {
                                                         -stickyHeaderHeightPx.value
                                                     }
+                                                    listState.animateScrollToItem(index, offset)
+                                                }
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .height(56.dp),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                GuideButton(
+                                    onClick = { showGuideDialog = true },
+                                )
+                            }
+                        }
+                    } else {
+                        val keyboardController = LocalSoftwareKeyboardController.current
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                OutlinedTextField(
+                                    value = searchQuery,
+                                    onValueChange = { onSearchQueryChanged(it) },
+                                    placeholder = {
+                                        Text(
+                                            "브랜드명 검색",
+                                            style = MaterialTheme.typography.labelLarge
+                                        )
+                                    },
+                                    textStyle = MaterialTheme.typography.labelLarge,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 16.dp),
+                                    singleLine = true,
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Default.Search,
+                                            contentDescription = null,
+                                            modifier = Modifier.clickable {
+                                                val matchedBrand = brandSectionIndices.keys.firstOrNull {
+                                                    it.contains(searchQuery, ignoreCase = true)
+                                                }
+                                                matchedBrand?.let {
+                                                    highlightedBrand.value = it
+                                                    coroutineScope.launch {
+                                                        val offset = if (isBodySizeCardSticky == false) {
+                                                            -(stickyHeaderHeightPx.value + bodySizeCardHeightPx.value)
+                                                        } else {
+                                                            -stickyHeaderHeightPx.value
+                                                        }
+                                                        listState.animateScrollToItem(
+                                                            brandSectionIndices[it] ?: 0,
+                                                            offset
+                                                        )
+                                                    }
+                                                }
+                                                keyboardController?.hide()
+                                            }
+                                        )
+                                    },
+                                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                                    keyboardActions = KeyboardActions(
+                                        onSearch = {
+                                            val matchedBrand = brandSectionIndices.keys.firstOrNull {
+                                                it.contains(searchQuery, ignoreCase = true)
+                                            }
+                                            matchedBrand?.let {
+                                                highlightedBrand.value = it
+                                                coroutineScope.launch {
                                                     listState.animateScrollToItem(
                                                         brandSectionIndices[it] ?: 0,
-                                                        offset
+                                                        -stickyHeaderHeightPx.value
                                                     )
                                                 }
                                             }
                                             keyboardController?.hide()
                                         }
+                                    ),
+                                    colors = TextFieldDefaults.colors(
+                                        unfocusedContainerColor = Color.Transparent,
+                                        focusedContainerColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        focusedIndicatorColor = Color.Transparent,
+                                        disabledIndicatorColor = Color.Transparent
                                     )
-                                },
-                                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                                keyboardActions = KeyboardActions(
-                                    onSearch = {
-                                        val matchedBrand = brandSectionIndices.keys.firstOrNull {
-                                            it.contains(searchQuery, ignoreCase = true)
-                                        }
-                                        matchedBrand?.let {
-                                            highlightedBrand.value = it
-                                            coroutineScope.launch {
-                                                listState.animateScrollToItem(
-                                                    brandSectionIndices[it] ?: 0,
-                                                    -stickyHeaderHeightPx.value
-                                                )
-                                            }
-                                        }
-                                        keyboardController?.hide()
-                                    }
-                                ),
-                                colors = TextFieldDefaults.colors(
-                                    unfocusedContainerColor = Color.Transparent,
-                                    focusedContainerColor = Color.Transparent,
-                                    disabledContainerColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    disabledIndicatorColor = Color.Transparent
                                 )
-                            )
 
-                            HorizontalDivider(
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .padding(start = 16.dp),
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                )
+                            }
+
+                            Column(
                                 modifier = Modifier
-                                    .padding(start = 16.dp),
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                            )
+                                    .wrapContentWidth()
+                                    .height(56.dp),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                GuideButton(
+                                    onClick = { showGuideDialog = true },
+                                )
+                            }
                         }
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+                }
+            }
 
+            // 3. 종류별 보기 or 브랜드별 보기
+            if (selectedTab == 0) {
+                var currentIndex = if (isBodySizeCardSticky != null && !isBodySizeCardSticky) 2 else 1
+
+                categoryGroupedData.forEach { (categoryLabel, subTypeMap) ->
+
+                    val category = allCategories.firstOrNull { it.label == categoryLabel }
+                    category?.let {
+                        categorySectionIndices[category] = currentIndex
+                    }
+
+                    if (isFullDetailMode && category != selectedCategory) return@forEach
+
+                    item {
                         Column(
                             modifier = Modifier
-                                .wrapContentWidth()
-                                .height(56.dp),
-                            verticalArrangement = Arrangement.Center
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp, horizontal = 16.dp)
                         ) {
-                            GuideButton(
-                                onClick = { showGuideDialog = true },
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-            }
-        }
-
-        // 3. 종류별 보기 or 브랜드별 보기
-        if (selectedTab == 0) {
-            var currentIndex = if (isBodySizeCardSticky != null && !isBodySizeCardSticky) 2 else 1
-
-            categoryGroupedData.forEach { (categoryLabel, subTypeMap) ->
-
-                val category = allCategories.firstOrNull { it.label == categoryLabel }
-                category?.let {
-                    categorySectionIndices[category] = currentIndex
-                }
-
-                if (isFullDetailMode && category != selectedCategory) return@forEach
-
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp, horizontal = 16.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            HighlightedTitle(
-                                text = categoryLabel,
-                                isHighlighted = highlightedCategory.value == category,
-                                onAnimationEnd = { highlightedCategory.value = null }
-                            )
-
-                            if (onNavigateToFullDetailByCategory != null) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .clickable {
-                                            if (category != null) {
-                                                onNavigateToFullDetailByCategory(category)
-                                            }
-                                        },
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "전체 보기",
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                        contentDescription = "전체 보기 이동",
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(12.dp)
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary.copy(0.1f)
-                            )
-                        ) {
-                            Column(
+                            Row(
                                 modifier = Modifier
-                                    .padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
-                                subTypeMap.forEach { (typeName, contents) ->
-                                    SubListBlock(typeName = typeName, contents = contents)
+                                HighlightedTitle(
+                                    text = categoryLabel,
+                                    isHighlighted = highlightedCategory.value == category,
+                                    onAnimationEnd = { highlightedCategory.value = null }
+                                )
+
+                                if (onNavigateToFullDetailByCategory != null) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .clickable {
+                                                if (category != null) {
+                                                    onNavigateToFullDetailByCategory(category)
+                                                }
+                                            },
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "전체 보기",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                            contentDescription = "전체 보기 이동",
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                    }
                                 }
-
                             }
-                        }
-                    }
-                }
 
-                currentIndex++
-            }
-        } else {
-            var currentIndex = if (isBodySizeCardSticky != null && !isBodySizeCardSticky) 2 else 1
+                            Spacer(modifier = Modifier.height(8.dp))
 
-            brandGroupedData.forEach { (brand, categoryMap) ->
-                brandSectionIndices[brand] = currentIndex
-
-                if (isFullDetailMode && !brand.contains(searchQuery, ignoreCase = true)) return@forEach
-
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-
-                            .padding(vertical = 4.dp, horizontal = 16.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            HighlightedTitle(
-                                text = brand,
-                                isHighlighted = highlightedBrand.value == brand,
-                                onAnimationEnd = { highlightedBrand.value = null }
-                            )
-
-                            if (onNavigateToFullDetailByBrand != null) {
-                                Row(
+                            Card(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary.copy(0.1f)
+                                )
+                            ) {
+                                Column(
                                     modifier = Modifier
-                                        .fillMaxHeight()
-                                        .clickable {
-                                            onNavigateToFullDetailByBrand(brand)
-                                        },
-                                    verticalAlignment = Alignment.CenterVertically
+                                        .padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    Text(
-                                        text = "전체 보기",
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                        contentDescription = "전체 보기 이동",
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(12.dp)
-                                    )
-                                }
-                            }
-                        }
+                                    subTypeMap.forEach { (typeName, contents) ->
+                                        SubListBlock(typeName = typeName, contents = contents)
+                                    }
 
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary.copy(0.1f)
-                            )
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                categoryMap.forEach { (category, contents) ->
-                                    SubListBlock(typeName = category, contents = contents)
                                 }
                             }
                         }
                     }
+
+                    currentIndex++
                 }
-                currentIndex++
+            } else {
+                var currentIndex = if (isBodySizeCardSticky != null && !isBodySizeCardSticky) 2 else 1
+
+                brandGroupedData.forEach { (brand, categoryMap) ->
+                    brandSectionIndices[brand] = currentIndex
+
+                    if (isFullDetailMode && !brand.contains(searchQuery, ignoreCase = true)) return@forEach
+
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+
+                                .padding(vertical = 4.dp, horizontal = 16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                HighlightedTitle(
+                                    text = brand,
+                                    isHighlighted = highlightedBrand.value == brand,
+                                    onAnimationEnd = { highlightedBrand.value = null }
+                                )
+
+                                if (onNavigateToFullDetailByBrand != null) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .clickable {
+                                                onNavigateToFullDetailByBrand(brand)
+                                            },
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "전체 보기",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                            contentDescription = "전체 보기 이동",
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Card(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary.copy(0.1f)
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    categoryMap.forEach { (category, contents) ->
+                                        SubListBlock(typeName = category, contents = contents)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    currentIndex++
+                }
             }
         }
-    }
-    if (categoryGroupedData.values.all { it.isEmpty() }) {
-        EmptyList("empty2.json")
+
+        if (categoryGroupedData.values.all { it.isEmpty() }) {
+            EmptyList("empty2.json")
+        }
     }
 }
 

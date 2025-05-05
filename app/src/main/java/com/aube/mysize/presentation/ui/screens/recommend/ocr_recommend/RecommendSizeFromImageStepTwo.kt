@@ -37,6 +37,7 @@ import com.aube.mysize.presentation.model.RecommendedSizeResult
 import com.aube.mysize.presentation.model.SizeCategory
 import com.aube.mysize.presentation.model.SizeContentUiModel
 import com.aube.mysize.presentation.ui.component.lottie.Animation
+import com.aube.mysize.presentation.ui.component.ocr.SizeLabelOcrManager
 import com.aube.mysize.presentation.ui.component.ocr.SizeOcrButton
 import com.aube.mysize.presentation.ui.screens.my_size.component.SubListBlock
 import com.aube.mysize.presentation.ui.screens.recommend.component.EmptyShoeSize
@@ -94,37 +95,55 @@ fun RecommendSizeFromImageStepTwo(
     var extractedLabelList by remember { mutableStateOf<List<String>>(emptyList()) }
     var bestLabelsMap by remember{ mutableStateOf<Map<String, List<SizeContentUiModel>>>(emptyMap()) }
 
-    var isExtractionSuccessful by remember { mutableStateOf(true) }
+    var pendingFullImage by remember { mutableStateOf<InputImage?>(null) }
+    var labelOcrCompleted by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val cropLauncher = rememberLauncherForActivityResult(
-        CropImageContract()
-    ) { result ->
+    val cropLauncher2 = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
-            result.uriContent?.let { croppedUri ->
-                val image = InputImage.fromFilePath(context, croppedUri)
-                extractedImageUri = croppedUri
+            result.uriContent?.let { labelUri ->
+                val labelImage = InputImage.fromFilePath(context, labelUri)
 
-                SizeOcrManager(keyList, keyMapping).recognize(image) { ocrResult ->
-                    when (ocrResult) {
-                        is SizeExtractionResult.Success -> {
-                            extractedLabelList = ocrResult.sizeLabels
-                            extractedSizeMap = ocrResult.sizeMap
-                            isExtractionSuccessful = true
-                        }
-                        else -> {
-                            Log.e("TopSizeInputFrom", "OCR 실패: ${result::class.simpleName}")
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("사이즈 추출 실패. 다시 시도하거나 수동으로 입력해주세요.")
-                            }
+                SizeLabelOcrManager().recognize(
+                    image = labelImage,
+                    onResult = { labels ->
+                        extractedLabelList = labels
+                        labelOcrCompleted = true
+                    },
+                    onFailure = { errorMessage ->
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(errorMessage)
                         }
                     }
-                }
+                )
             }
         } else {
-            Log.e("TopSizeInputFrom", "Crop 실패: ${result.error}")
+            Log.e("OCR", "라벨 크롭 실패: ${result.error}")
+        }
+    }
+
+    val cropLauncher1 = rememberLauncherForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            result.uriContent?.let { croppedUri ->
+                val fullImage = InputImage.fromFilePath(context, croppedUri)
+                pendingFullImage = fullImage
+                extractedImageUri = croppedUri
+                labelOcrCompleted = false
+                extractedLabelList = emptyList()
+
+                cropLauncher2.launch(
+                    CropImageContractOptions(
+                        uri = croppedUri,
+                        cropImageOptions = CropImageOptions().apply {
+                            fixAspectRatio = false
+                        }
+                    )
+                )
+            }
+        } else {
+            Log.e("OCR", "전체 크롭 실패: ${result.error}")
         }
     }
 
@@ -132,7 +151,7 @@ fun RecommendSizeFromImageStepTwo(
         ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
-            cropLauncher.launch(
+            cropLauncher1.launch(
                 CropImageContractOptions(
                     uri = it,
                     cropImageOptions = CropImageOptions().apply {
@@ -154,6 +173,24 @@ fun RecommendSizeFromImageStepTwo(
                 galleryLauncher.launch("image/*")
                 hasLaunchedGallery = true
             }
+        }
+    }
+
+    LaunchedEffect(labelOcrCompleted) {
+        if (labelOcrCompleted && extractedLabelList.isNotEmpty() && pendingFullImage != null) {
+            SizeOcrManager(keyList, keyMapping, extractedLabelList)
+                .recognize(pendingFullImage!!) { ocrResult ->
+                    when (ocrResult) {
+                        is SizeExtractionResult.Success -> {
+                            extractedSizeMap = ocrResult.sizeMap
+                        }
+                        else -> {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("사이즈 추출 실패. 다시 시도해주세요.")
+                            }
+                        }
+                    }
+                }
         }
     }
 
@@ -211,10 +248,6 @@ fun RecommendSizeFromImageStepTwo(
                                     result.typeToSizeMap.mapNotNull { (type, sizeDetail) ->
                                         val best = findBestMatchedLabel(sizeDetail.measurements, extractedSizeMap)
                                         best?.let { sizeLabel ->
-                                            if (sizeLabel.contains("임시")) {
-                                                isExtractionSuccessful = false
-                                            }
-
                                             SizeContentUiModel(
                                                 title = type,
                                                 sizeLabel = sizeLabel,
@@ -235,19 +268,11 @@ fun RecommendSizeFromImageStepTwo(
                                 modifier = Modifier.padding(16.dp)
                             ) {
                                 if (extractedSizeMap.isNotEmpty()) {
-                                    if (isExtractionSuccessful) {
-                                        bestLabelsMap.forEach { (category, contents) ->
-                                            SubListBlock(
-                                                typeName = category,
-                                                contents = contents,
-                                                maxColumnCount = 4
-                                            )
-                                        }
-                                    } else {
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            text = "죄송합니다. 사이즈 추출에 실패했어요 😥",
-                                            textAlign = TextAlign.Center
+                                    bestLabelsMap.forEach { (category, contents) ->
+                                        SubListBlock(
+                                            typeName = category,
+                                            contents = contents,
+                                            maxColumnCount = 4
                                         )
                                     }
                                 }

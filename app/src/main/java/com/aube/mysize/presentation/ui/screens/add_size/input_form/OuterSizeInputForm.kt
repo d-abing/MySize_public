@@ -188,11 +188,7 @@ fun OuterSizeInputForm(
                 length = ""
             },
             onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
-                if (!selectedExtractedLabel.contains("임시 사이즈")) {
-                    sizeLabel = selectedExtractedLabel
-                } else {
-                    focusRequester.requestFocus()
-                }
+                sizeLabel = selectedExtractedLabel
                 extractedSizeMap[selectedExtractedLabel]?.let {
                     shoulder = it["SHOULDER"] ?: ""
                     chest = it["CHEST"] ?: ""

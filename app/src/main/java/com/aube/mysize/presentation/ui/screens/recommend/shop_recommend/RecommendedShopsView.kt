@@ -105,6 +105,7 @@ fun RecommendedShopsView(
                         style = MaterialTheme.typography.bodySmall
                     )
                 },
+                border = null,
                 colors = AssistChipDefaults.assistChipColors().copy(
                     containerColor = MaterialTheme.colorScheme.tertiary.copy(0.3f)
                 )
@@ -124,6 +125,7 @@ fun RecommendedShopsView(
                             style = MaterialTheme.typography.bodySmall
                         )
                     },
+                    border = null,
                     colors = AssistChipDefaults.assistChipColors().copy(
                         containerColor = MaterialTheme.colorScheme.primaryContainer.copy(0.3f)
                     )
@@ -144,6 +146,7 @@ fun RecommendedShopsView(
                             style = MaterialTheme.typography.bodySmall
                         )
                     },
+                    border = null,
                     colors = AssistChipDefaults.assistChipColors().copy(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(0.3f)
                     )
@@ -164,6 +167,7 @@ fun RecommendedShopsView(
                             style = MaterialTheme.typography.bodySmall
                         )
                     },
+                    border = null,
                     colors = AssistChipDefaults.assistChipColors().copy(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(0.3f)
                     )

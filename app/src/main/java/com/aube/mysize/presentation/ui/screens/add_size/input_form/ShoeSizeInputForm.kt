@@ -170,11 +170,7 @@ fun ShoeSizeInputForm(
                 footWidth = ""
             },
             onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
-                if (!selectedExtractedLabel.contains("임시 사이즈")) {
-                    sizeLabel = selectedExtractedLabel
-                } else {
-                    focusRequester.requestFocus()
-                }
+                sizeLabel = selectedExtractedLabel
                 extractedSizeMap[selectedExtractedLabel]?.let {
                     footLength = it["FOOT LENGTH"] ?: ""
                     footWidth = it["FOOT WIDTH"] ?: ""

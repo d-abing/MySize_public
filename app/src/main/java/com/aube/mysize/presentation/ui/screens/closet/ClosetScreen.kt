@@ -46,7 +46,6 @@ fun ClosetScreen(
 ) {
     val clothes by viewModel.clothesList.collectAsState()
     var clothesList by remember { mutableStateOf(clothes) }
-    val colors = clothes.map { it.dominantColor }.sortedBy { it }
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var selectedViewMode by rememberSaveable { mutableIntStateOf(0) }
@@ -66,6 +65,7 @@ fun ClosetScreen(
 
         if (selectedTab == 0) {
             clothesList = clothes.filter{ it.createUserId == 1L}
+            val colors = clothesList.map { it.dominantColor }.sortedBy { it }
 
             Box(
                 modifier = Modifier.fillMaxSize()

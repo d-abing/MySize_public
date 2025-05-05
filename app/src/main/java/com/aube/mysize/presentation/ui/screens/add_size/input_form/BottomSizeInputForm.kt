@@ -208,11 +208,7 @@ fun BottomSizeInputForm(
                 length = ""
             },
             onLabelSelected = { extractedSizeMap, selectedExtractedLabel ->
-                if (!selectedExtractedLabel.contains("임시 사이즈")) {
-                    sizeLabel = selectedExtractedLabel
-                } else {
-                    focusRequester.requestFocus()
-                }
+                sizeLabel = selectedExtractedLabel
                 extractedSizeMap[selectedExtractedLabel]?.let {
                     waist = it["WAIST"] ?: ""
                     rise = it["RISE"] ?: ""
