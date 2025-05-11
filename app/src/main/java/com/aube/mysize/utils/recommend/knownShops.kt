@@ -71,7 +71,7 @@ val knownShops = listOf(
         shopUrl = "https://www.spao.com",
         styles = listOf(Style.ALL),
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
-        priceRange = PriceRange.LOW,
+        priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
         body = listOf(BodyType.ALL)
     ),
@@ -150,7 +150,7 @@ val knownShops = listOf(
         shopName = "타미 힐피거",
         shopUrl = "https://www.hfashionmall.com/display/brand?brndCtgryNo=BDMA08",
         styles = listOf(Style.CLASSIC),
-        ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
+        ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
         body = listOf(BodyType.ALL)
@@ -163,7 +163,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.ALL)
+        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_TALL, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
@@ -173,7 +173,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.ALL)
+        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_TALL, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
@@ -213,7 +213,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -223,7 +223,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -232,8 +233,9 @@ val knownShops = listOf(
         styles = listOf(Style.MINIMAL, Style.CASUAL),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
-        gender = Gender.MALE,
-        body = listOf(BodyType.AVERAGE_TALL, BodyType.SLIM_TALL)
+        gender = Gender.UNISEX,
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL, BodyType.PLUS_AVERAGE, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
@@ -241,9 +243,10 @@ val knownShops = listOf(
         shopUrl = "https://mardimercredi.com",
         styles = listOf(Style.ROMANTIC, Style.CLASSIC),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
-        priceRange = PriceRange.HIGH,
+        priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -253,7 +256,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_TALL, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -263,7 +266,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -273,7 +276,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_SHORT, BodyType.AVERAGE_SHORT)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -283,7 +287,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -293,7 +298,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -303,7 +309,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.MALE,
-        body = listOf(BodyType.AVERAGE_TALL, BodyType.PLUS_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -313,7 +320,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL, BodyType.SLIM_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -323,7 +331,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -333,7 +342,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_SHORT)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -341,9 +351,10 @@ val knownShops = listOf(
         shopUrl = "https://sisun.com/ITMICHAA",
         styles = listOf(Style.MINIMAL),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
-        priceRange = PriceRange.MEDIUM,
+        priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -353,7 +364,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_SHORT, BodyType.AVERAGE_SHORT)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -363,7 +375,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -381,9 +394,10 @@ val knownShops = listOf(
         shopUrl = "https://rockfish-weatherwear.co.kr",
         styles = listOf(Style.CASUAL, Style.CLASSIC, Style.MINIMAL),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
-        priceRange = PriceRange.MEDIUM,
-        gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        priceRange = PriceRange.HIGH,
+        gender = Gender.FEMALE,
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -423,7 +437,9 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.LOW,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_SHORT, BodyType.AVERAGE_SHORT)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL,
+            BodyType.PLUS_SHORT)
     ),
 
     RecommendedShop(
@@ -433,7 +449,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.MALE,
-        body = listOf(BodyType.AVERAGE_TALL, BodyType.PLUS_TALL)
+        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_TALL, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
@@ -447,23 +463,14 @@ val knownShops = listOf(
     ),
 
     RecommendedShop(
-        shopName = "클루",
-        shopUrl = "https://www.clue.co.kr",
-        styles = listOf(Style.ROMANTIC, Style.CLASSIC),
-        ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
-        priceRange = PriceRange.MEDIUM,
-        gender = Gender.FEMALE,
-        body = listOf(BodyType.ALL)
-    ),
-
-    RecommendedShop(
         shopName = "빈폴",
         shopUrl = "https://www.beanpole.com",
         styles = listOf(Style.CLASSIC),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -497,13 +504,13 @@ val knownShops = listOf(
     ),
 
     RecommendedShop(
-        shopName = "샘소나이트",
+        shopName = "쌤소나이트",
         shopUrl = "https://www.samsonite.co.kr",
         styles = listOf(Style.MINIMAL),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL, BodyType.PLUS_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -513,7 +520,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -523,7 +530,9 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL,
+            BodyType.PLUS_SHORT)
     ),
 
     RecommendedShop(
@@ -533,7 +542,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
     ),
 
     RecommendedShop(
@@ -543,7 +552,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.PLUS_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL, BodyType.PLUS_AVERAGE, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
@@ -553,7 +563,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -563,7 +574,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -573,7 +585,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.PLUS_AVERAGE, BodyType.PLUS_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -583,17 +595,18 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
         shopName = "몽클레르",
         shopUrl = "https://www.moncler.com",
-        styles = listOf(Style.CLASSIC),
+        styles = listOf(Style.CLASSIC, Style.MINIMAL),
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_TALL, BodyType.PLUS_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -603,7 +616,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_TALL, BodyType.PLUS_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -613,7 +627,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -623,7 +637,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.PLUS_AVERAGE)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -631,9 +645,9 @@ val knownShops = listOf(
         shopUrl = "https://www.eider.co.kr",
         styles = listOf(Style.SPORTS, Style.CASUAL),
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
-        priceRange = PriceRange.MEDIUM,
+        priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.PLUS_AVERAGE)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -641,9 +655,9 @@ val knownShops = listOf(
         shopUrl = "https://www.nepa.co.kr",
         styles = listOf(Style.SPORTS, Style.CASUAL),
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
-        priceRange = PriceRange.HIGH,
+        priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_TALL, BodyType.PLUS_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -653,17 +667,18 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
-        shopName = "콜롬비아",
+        shopName = "컬럼비아",
         shopUrl = "https://www.columbiasportswear.co.kr",
         styles = listOf(Style.SPORTS, Style.CASUAL),
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.PLUS_AVERAGE)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -672,8 +687,9 @@ val knownShops = listOf(
         styles = listOf(Style.SPORTS, Style.MINIMAL),
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
-        gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        gender = Gender.UNISEX,
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -682,8 +698,9 @@ val knownShops = listOf(
         styles = listOf(Style.SPORTS, Style.CASUAL),
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
-        gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.PLUS_AVERAGE)
+        gender = Gender.UNISEX,
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -692,8 +709,9 @@ val knownShops = listOf(
         styles = listOf(Style.SPORTS, Style.MINIMAL),
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
-        gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        gender = Gender.UNISEX,
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -703,7 +721,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -713,7 +732,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.LOW,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -723,7 +743,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -733,7 +754,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -743,7 +765,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.LOW,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE)
     ),
 
     RecommendedShop(
@@ -753,7 +776,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -763,7 +787,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS),
         priceRange = PriceRange.LOW,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_SHORT, BodyType.AVERAGE_SHORT)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE)
     ),
 
     RecommendedShop(
@@ -773,7 +798,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.LOW,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_SHORT, BodyType.AVERAGE_SHORT)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -783,17 +809,19 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
         shopName = "디어리스트",
         shopUrl = "https://maybe-baby.co.kr",
-        styles = listOf(Style.MINIMAL, Style.MINIMAL),
+        styles = listOf(Style.MINIMAL),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -803,7 +831,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -813,7 +842,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -823,7 +852,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -833,7 +863,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -843,7 +874,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -853,7 +885,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -863,7 +896,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -873,7 +907,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -883,7 +918,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -893,7 +929,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.MEDIUM,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -903,7 +940,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_SHORT, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL,
+            BodyType.AVERAGE_SHORT, BodyType.AVERAGE_AVERAGE, BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -913,7 +951,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -923,7 +962,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -933,7 +973,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -943,7 +984,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -953,7 +995,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -963,7 +1005,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.MALE,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL, BodyType.PLUS_AVERAGE, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
@@ -973,7 +1016,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.MALE,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL, BodyType.PLUS_AVERAGE, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
@@ -983,7 +1027,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -993,7 +1037,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -1003,7 +1047,7 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -1013,7 +1057,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.MALE,
-        body = listOf(BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL, BodyType.PLUS_AVERAGE, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
@@ -1023,7 +1068,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1032,8 +1078,9 @@ val knownShops = listOf(
         styles = listOf(Style.MINIMAL, Style.ROMANTIC, Style.CASUAL),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
-        gender = Gender.FEMALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        gender = Gender.UNISEX,
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1043,7 +1090,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.TWENTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1053,17 +1101,18 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL, BodyType.PLUS_AVERAGE, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
-        shopName = "에스에스에프샵",
+        shopName = "SSF SHOP",
         shopUrl = "https://www.ssfshop.com",
         styles = listOf(Style.ALL),
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.ALL, BodyType.SLIM_TALL)
+        body = listOf(BodyType.ALL)
     ),
 
     RecommendedShop(
@@ -1073,7 +1122,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.THIRTIES, AgeGroup.TWENTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1083,7 +1133,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TEENS, AgeGroup.TWENTIES, AgeGroup.THIRTIES, AgeGroup.FORTIES),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1093,7 +1144,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1102,8 +1154,9 @@ val knownShops = listOf(
         styles = listOf(Style.CASUAL, Style.STREET),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
-        gender = Gender.MALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
+        gender = Gender.UNISEX,
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1113,17 +1166,19 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.MALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL, BodyType.PLUS_AVERAGE, BodyType.PLUS_TALL)
     ),
 
     RecommendedShop(
-        shopName = "어파트프롬댓",
+        shopName = "apart from that",
         shopUrl = "https://apartfromthat-store.com",
         styles = listOf(Style.MINIMAL, Style.CLASSIC, Style.CASUAL),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.PREMIUM,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1133,7 +1188,8 @@ val knownShops = listOf(
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.TEENS),
         priceRange = PriceRange.HIGH,
         gender = Gender.UNISEX,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     ),
 
     RecommendedShop(
@@ -1142,7 +1198,8 @@ val knownShops = listOf(
         styles = listOf(Style.CLASSIC, Style.CASUAL),
         ageGroup = listOf(AgeGroup.TWENTIES, AgeGroup.THIRTIES),
         priceRange = PriceRange.HIGH,
-        gender = Gender.MALE,
-        body = listOf(BodyType.SLIM_AVERAGE, BodyType.AVERAGE_AVERAGE, BodyType.SLIM_TALL)
+        gender = Gender.UNISEX,
+        body = listOf(BodyType.SLIM_AVERAGE, BodyType.SLIM_TALL, BodyType.AVERAGE_AVERAGE,
+            BodyType.AVERAGE_TALL)
     )
 )
