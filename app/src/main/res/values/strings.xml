@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- APP -->
+    <string name="app_name">마이 사이즈</string>
+    <string name="app_version">1.0.0</string>
+    <string name="ad">광고</string>
+
+    <!-- COMMON -->
+    <string name="action_cancel">취소</string>
+    <string name="action_confirm">확인</string>
+    <string name="action_edit">수정</string>
+    <string name="action_delete">삭제</string>
+    <string name="action_add">추가</string>
+    <string name="action_previous">이전</string>
+    <string name="action_next">다음</string>
+    <string name="action_submit">등록</string>
+    <string name="action_save">저장</string>
+    <string name="action_search">검색</string>
+
+    <string name="label_app_logo">앱 로고</string>
+    <string name="label_profile_image">프로필 이미지</string>
+    <string name="image_mime_type">image/*</string>
+    <string name="label">Label</string>
+
+    <!-- GUIDE -->
+    <string name="guide_label">가이드</string>
+    <string name="guide_crop_title">사이즈 표 자르기 가이드\n</string>
+    <string name="guide_crop_description">
+    1. 표 영역만 잘라주세요. (제목이나 단위, 부가설명 등은 가능하면 제외해주세요.)\n\n
+    2. 사이즈 라벨 영역만 잘라주세요.
+    </string>
+    <string name="guide_size_label_title">어떤 사이즈가 표시되나요?</string>
+    <string name="guide_full_size_label_description">저장한 전체 사이즈 라벨을 보여드립니다.</string>
+    <string name="guide_size_label_description">
+    가장 많이 저장한 사이즈 라벨을 보여드립니다.\n여러 개가 같을 경우, 최신 사이즈를 보여드립니다.
+    </string>
+
+    <!-- REPORT -->
+    <string name="report_title">부적절한 %1$s 신고하기</string>
+    <string name="report_description">어떤 문제가 있는지 알려주세요.</string>
+    <string name="report_action">신고</string>
+    <string name="report_success">신고가 완료되었습니다.</string>
+
+    <!-- OCR -->
+    <string name="ocr_capture_guide_view">캡쳐 화면 가이드 보기</string>
+    <string name="ocr_auto_fill_from_capture">상세 사이즈 캡쳐 화면으로 자동 입력하기</string>
+    <string name="ocr_auto_extract">자동 추출</string>
+    <string name="ocr_preview">미리보기</string>
+    <string name="ocr_label_not_detected">라벨을 인식하지 못했습니다.</string>
+    <string name="ocr_extraction_failed">사이즈 추출 실패. 다시 시도하거나 수동으로 입력해 주세요.</string>
+    <string name="ocr_select_extracted_label">추출된 사이즈 선택</string>
+
+    <!-- BODY_SIZE_CARD -->
+    <string name="body_size_title">바디 사이즈</string>
+    <string name="label_expand">펼치기</string>
+    <string name="label_collapse">접기</string>
+    <string name="label_sticky">고정됨</string>
+    <string name="label_unsticky">고정 안 됨</string>
+    <string name="label_hide">숨기기</string>
+    <string name="label_show">보이기</string>
+
+    <string name="body_height">키</string>
+    <string name="body_weight">몸무게</string>
+    <string name="body_foot_length">발 길이</string>
+    <string name="body_foot_width">발 너비</string>
+    <string name="body_gender">성별</string>
+    <string name="body_chest">가슴둘레</string>
+    <string name="body_waist">허리둘레</string>
+    <string name="body_hip">엉덩이둘레</string>
+    <string name="body_neck">목둘레</string>
+    <string name="body_shoulder">어깨너비</string>
+    <string name="body_arm_length">팔 길이</string>
+    <string name="body_leg_length">다리 안쪽 길이</string>
+
+    <!-- ADD_SIZE -->
+    <string name="label_top_type">* 상의 종류</string>
+    <string name="label_bottom_type">* 하의 종류</string>
+    <string name="label_outer_type">* 아우터 종류</string>
+    <string name="label_one_piece_type">* 일체형 종류</string>
+    <string name="label_shoes_type">* 신발 종류</string>
+    <string name="label_accessory_type">* 악세사리 종류</string>
+
+    <string name="label_brand">* 브랜드</string>
+    <string name="placeholder_brand_add">브랜드 추가</string>
+
+    <string name="label_gender">* 성별</string>
+    <string name="label_height">* 키 (cm)</string>
+    <string name="label_weight">* 몸무게 (kg)</string>
+    <string name="label_chest">가슴둘레 (cm)</string>
+    <string name="label_waist">허리둘레 (cm)</string>
+    <string name="label_hip">엉덩이둘레 (cm)</string>
+    <string name="label_neck">목둘레 (cm)</string>
+    <string name="label_shoulder">어깨너비 (cm)</string>
+    <string name="label_arm">팔 길이 (cm)</string>
+    <string name="label_leg">다리 안쪽 길이 (cm)</string>
+    <string name="label_foot_length">발 길이 (mm)</string>
+    <string name="label_foot_width">발 너비 (mm)</string>
+
+    <string name="label_shoulder_width">어깨너비 (cm)</string>
+    <string name="label_chest_width">가슴 단면 (cm)</string>
+    <string name="label_waist_width">허리 단면 (cm)</string>
+    <string name="label_hip_width">엉덩이 단면 (cm)</string>
+    <string name="label_sleeve_length">소매 길이 (cm)</string>
+    <string name="label_rise_length">밑위길이 (cm)</string>
+    <string name="label_thigh_width">허벅지 단면 (cm)</string>
+    <string name="label_hem_width">밑단 단면 (cm)</string>
+    <string name="label_total_length">총장 (cm)</string>
+
+    <string name="label_size_label">* 사이즈 라벨 (예: S, M, L / 90, 95, 100)</string>
+    <string name="label_size_info">* 사이즈 정보 (예: 9호, M, Free 등)</string>
+    <string name="label_shoes_size_label">* 사이즈 라벨 (예: 250, 255)</string>
+
+    <string name="label_body_part">부위 (예: 약지)</string>
+
+    <string name="label_fit">핏</string>
+    <string name="label_memo">메모</string>
+
+    <string name="error_required_fields_incomplete">필수 입력 미완료</string>
+    <string name="error_check_input">입력값 확인</string>
+
+    <!-- CLOSET -->
+    <string name="closet_tab_my">내 옷장 보기</string>
+    <string name="closet_tab_others">다른 옷장 둘러보기</string>
+
+    <string name="label_gallery">갤러리에서 가져오기</string>
+
+    <string name="text_color_analysis_report_title">🎨 색상 분석 리포트 📑</string>
+    <string name="text_personal_tone_analysis_result">퍼스널 컬러 분석 "%1$s"</string>
+    <string name="text_tone">톤</string>
+    <string name="text_season">시즌</string>
+    <string name="text_detail">세부</string>
+    <string name="text_best_match_colors">내 옷장에서 가장 잘 어울리는 색상</string>
+    <string name="text_recommended_colors">추천 색상</string>
+    <string name="format_percentage">%1$d%%</string>
+
+    <string name="placeholder_tag_search">태그 검색</string>
+    <string name="text_tag_search">태그를 검색해 보세요</string>
+    <string name="text_tag_search_no_result">검색 결과가 없습니다</string>
+
+    <string name="placeholder_nickname_search">닉네임 검색</string>
+    <string name="label_search_user">유저 찾기</string>
+
+    <string name="action_delete_all_history">전체 기록 삭제</string>
+
+    <string name="placeholder_memo_add">메모 추가</string>
+    <string name="placeholder_tag_input">태그 입력</string>
+    <string name="format_tag">#%1$s</string>
+    <string name="error_required_image_incomplete">이미지를 추가해주세요</string>
+    <string name="error_required_color_incomplete">이미지를 클릭해 대표색을 추출해주세요</string>
+
+    <string name="text_add_size_title">사이즈 추가</string>
+    <string name="label_view_full">전체보기</string>
+
+    <string name="text_visibility_target_title">공개 대상</string>
+    <string name="text_public_body_info_title">전체 공개 시 공개할 신체 정보</string>
+    <string name="label_checked">checked</string>
+    <string name="label_unchecked">unchecked</string>
+    <string name="text_remember_this_choice">현재 선택을 다음에도 사용합니다</string>
+    <string name="action_register_new_size">새로운 사이즈 등록하기</string>
+    <string name="text_memo_visibility_title">사이즈의 메모 공개 여부</string>
+
+    <string name="label_clothes_image">옷 이미지</string>
+    <string name="label_more">더 보기</string>
+    <string name="text_delete_confirm_title">정말로 삭제하시겠어요?</string>
+    <string name="text_delete_confirm_description">게시글이 삭제되며 복구할 수 없습니다.</string>
+    <string name="text_body_info_public_title">공개된 신체 정보</string>
+    <string name="label_size_save">사이즈 저장</string>
+    <string name="action_unblock">차단 해제</string>
+    <string name="action_block">차단</string>
+    <string name="text_block_confirm_title">해당 유저를 차단하시겠습니까?</string>
+    <string name="text_unblock_confirm_title">해당 유저를 차단 해제하시겠습니까?</string>
+    <string name="text_block_confirm_description">차단한 유저의 게시물은 더 이상 표시되지 않으며, 해당 유저는 당신의 게시물을 볼 수 없습니다.</string>
+    <string name="text_unblock_confirm_description">차단을 해제하면 해당 유저의 게시물이 다시 표시되며, 해당 유저도 당신의 게시물을 볼 수 있게 됩니다.</string>
+    <string name="action_follow">팔로우</string>
+    <string name="action_unfollow">팔로우 취소</string>
+    <string name="text_no_posts">아직 게시물이 없습니다.</string>
+    <string name="text_blocked_user_message">차단된 유저의 게시물은 볼 수 없습니다.</string>
+    <string name="text_reported_user_message">신고된 게시물입니다.</string>
+
+    <!-- INFO -->
+    <string name="email">이메일</string>
+    <string name="nickname">닉네임</string>
+    <string name="password">비밀번호</string>
+
+    <string name="action_log_in">로그인</string>
+    <string name="action_sign_up">회원가입</string>
+    <string name="action_find_password">비밀번호 찾기</string>
+
+    <string name="google_logo">Google Logo</string>
+    <string name="action_log_in_with_google">Google 계정으로 로그인</string>
+    <string name="error_email_not_verified">이메일 인증이 완료되지 않았습니다.</string>
+    <string name="error_google_log_in_failed">Google 로그인 실패</string>
+
+    <string name="email_verification_sent">인증 메일을 보냈습니다. 스팸메일함까지 확인해주세요.</string>
+    <string name="email_check_verification">이메일 인증 확인</string>
+    <string name="email_verification_success">인증 완료!\n마이 사이즈 로그인 하기</string>
+    <string name="email_verification_resend">이메일 인증 다시 요청하기</string>
+    <string name="email_verification_resent">해당 이메일로 인증 메일을 보냈습니다. 스팸메일함까지 확인해주세요.</string>
+    <string name="email_verification_failed">인증 메일 보내기에 실패했습니다.</string>
+
+    <string name="password_requirement">비밀번호는 8자 이상이며, 영문과 숫자를 포함해야 합니다.</string>
+    <string name="password_reset">비밀번호 재설정</string>
+    <string name="password_reset_send_email">비밀번호 재설정 이메일 보내기</string>
+    <string name="password_reset_success">이메일이 전송되었습니다. 스팸메일함까지 확인해주세요.\n비밀번호는 보안을 위해 8자 이상, 영문과 숫자를 포함해야 합니다.</string>
+
+    <string name="follow_followers">팔로워</string>
+    <string name="follow_followings">팔로잉</string>
+    <string name="follow_follow_counts_format">팔로워 %1$d | 팔로잉 %2$d</string>
+    <string name="follow_followers_and_followings">팔로우 | 팔로잉</string>
+
+    <string name="text_edit_profile_title">회원 정보 수정</string>
+    <string name="label_change_profile_image_title">프로필 이미지 변경</string>
+    <string name="text_change_nickname_title">닉네임 변경</string>
+    <string name="placeholder_nickname">닉네임</string>
+    <string name="text_change_password_title">비밀번호 변경</string>
+    <string name="placeholder_current_password">현재 비밀번호</string>
+    <string name="placeholder_new_password">비밀번호</string>
+    <string name="placeholder_confirm_password">비밀번호 확인</string>
+    <string name="text_password_changed_success">비밀번호가 변경되었습니다</string>
+
+    <string name="text_delete_account">회원 탈퇴</string>
+    <string name="action_delete_account">탈퇴</string>
+    <string name="text_delete_account_success">회원 탈퇴가 완료되었습니다</string>
+    <string name="text_delete_account_title">정말로 탈퇴하시겠어요?</string>
+    <string name="text_delete_account_description">모든 계정 정보가 삭제되며 복구할 수 없습니다.</string>
+
+    <string name="text_default_body_setting_title">기본 공개 신체 정보 설정</string>
+    <string name="text_default_body_setting_description">옷장에서 전체 공개 시 공개할 신체 정보를 선택합니다</string>
+    <string name="text_blocked_users_list_title">차단한 유저 목록 보기</string>
+    <string name="text_blocked_users_title">차단한 유저</string>
+    <string name="text_no_blocked_users">차단한 유저가 없습니다</string>
+    <string name="text_privacy_policy_title">개인 정보 처리 방침</string>
+    <string name="text_privacy_policy_url">https://aubecompany.blogspot.com/2025/05/blog-post_25.html</string>
+    <string name="text_kakao_support_title">1:1 카톡 문의</string>
+    <string name="text_kakao_support_url">https://open.kakao.com/me/mysize</string>
+    <string name="text_app_version_title">앱 버전</string>
+    <string name="text_app_version_description">현재 버전: %1$s</string>
+    <string name="action_log_out">로그아웃</string>
+    <string name="text_log_out_success">로그아웃되었습니다.</string>
+
+    <!-- MY_SIZE -->
+    <string name="my_size_tab_category">종류별 보기</string>
+    <string name="my_size_tab_brand">브랜드별 보기</string>
+    <string name="placeholder_brand_search">브랜드명 검색</string>
+    <string name="action_see_all">전체 보기</string>
+
+    <string name="text_dimension">📏 치수</string>
+    <string name="text_style">🧥 스타일</string>
+    <string name="text_note">📝 메모</string>
+    <string name="label_with_colon">%1$s: </string>
+    <string name="shoulder_width">어깨너비</string>
+    <string name="chest_width">가슴 단면</string>
+    <string name="waist_width">허리 단면</string>
+    <string name="hip_width">엉덩이 단면</string>
+    <string name="sleeve_length">소매 길이</string>
+    <string name="rise_length">밑위길이</string>
+    <string name="thigh_width">허벅지 단면</string>
+    <string name="hem_width">밑단 단면</string>
+    <string name="total_length">총장</string>
+    <string name="body_part">부위</string>
+
+    <string name="text_heart">❤</string>
+    <string name="saved_size">저장된 사이즈</string>
+    <string name="text_delete_size_description">모든 사이즈 정보가 삭제되며 복구할 수 없습니다.</string>
+
+    <!-- RECOMMEND -->
+    <string name="text_empty_body_size_title">사이즈, 쇼핑몰 추천을 위해서\n신체 정보 등록이 필요합니다.</string>
+    <string name="text_empty_body_size_subtitle">정확한 추천을 받고 싶다면\n모든 입력을 채워주세요. 😉</string>
+    <string name="action_body_size_add">신체 사이즈 등록하기</string>
+    <string name="action_foot_length_add">발 길이 등록하기</string>
+
+    <string name="recommend_tab_size">추천 사이즈</string>
+    <string name="recommend_tab_shop">추천 쇼핑몰</string>
+
+    <string name="text_recommendation_title">사이즈 추천 받기</string>
+    <string name="text_recommendation_description1">캡쳐한 사이즈표로</string>
+    <string name="text_recommendation_description2">추천 사이즈를 받아보세요!</string>
+    <string name="action_get_recommendation">준비 중인 기능이에요\n조금만 기다려주세요!</string>
+
+    <string name="text_select_category_title">카테고리 선택</string>
+    <string name="text_accessory_label_in_recommend_step">악세사리\n(목걸이)</string>
+    <string name="error_ocr_extract_failed">사이즈 추출 실패. 다시 시도해주세요.</string>
+    <string name="text_best_fitting_size">사용자님께 가장 잘 어울리는 사이즈에요!</string>
+    <string name="action_retry_recommendation">다시 추천받기</string>
+    <string name="text_no_recommendable_shops">추천할 수 있는 쇼핑몰이 없어요!</string>
+    <string name="text_most_suitable_shop">사용자님께 가장 적합한 쇼핑몰이에요!</string>
+    <string name="text_perfect_fit_shop">내 체형에 딱 맞는 쇼핑몰</string>
+    <string name="text_shop_for_all_bodies">모든 체형을 위한 쇼핑몰</string>
+
+    <string name="text_select_gender_title">성별을 선택해 주세요</string>
+    <string name="text_select_styles_title">선호하는 스타일을 선택해 주세요</string>
+    <string name="text_select_age_group_title">연령대를 선택해 주세요</string>
+    <string name="text_select_price_range_title">선호하는 금액대를 선택해 주세요</string>
+    <string name="text_setting">설정</string>
+
+    <!-- AuthErrorMessageMapper -->
+    <string name="error_unknown">알 수 없는 오류가 발생했습니다.</string>
+    <string name="error_network">네트워크 연결을 확인해 주세요.</string>
+
+    <string name="error_invalid_password">비밀번호가 올바르지 않습니다.</string>
+    <string name="error_user_not_found">가입된 계정을 찾을 수 없습니다.</string>
+    <string name="error_invalid_email_format">이메일 형식이 올바르지 않습니다.</string>
+    <string name="error_signin_failed">로그인에 실패했습니다. 다시 시도해 주세요.</string>
+
+    <string name="error_email_already_exists">이미 가입된 이메일입니다.</string>
+    <string name="error_signup_failed">회원가입에 실패했습니다.</string>
+
+    <string name="error_signout_failed">로그아웃에 실패했습니다. 다시 시도해 주세요.</string>
+    <string name="error_google_signout_failed">Google 계정 로그아웃에 실패했습니다.</string>
+    <string name="error_generic_signout_failed">로그아웃 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.</string>
+
+    <string name="error_weak_password">비밀번호는 최소 6자 이상이어야 합니다.</string>
+    <string name="error_wrong_password">현재 비밀번호가 올바르지 않습니다.</string>
+    <string name="error_change_password_failed">비밀번호 변경에 실패했습니다. 다시 시도해 주세요.</string>
+
+    <string name="error_delete_account_failed">회원탈퇴에 실패했습니다. 다시 시도해 주세요.</string>
+    <string name="error_requires_recent_login">보안을 위해 다시 로그인한 후 탈퇴해 주세요.</string>
+
+    <string name="error_invalid_user">잘못된 인증 정보입니다.</string>
+    <string name="error_too_many_requests">요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="error_reset_password_failed">비밀번호 재설정에 실패했습니다. (%1$s)</string>
+</resources>
