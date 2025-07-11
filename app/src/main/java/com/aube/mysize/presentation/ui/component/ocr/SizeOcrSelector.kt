@@ -3,6 +3,7 @@ package com.aube.mysize.presentation.ui.component
 import SizeExtractionResult
 import SizeOcrManager
 import android.net.Uri
+import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,8 @@ import com.aube.mysize.presentation.ui.component.ocr.SizeLabelChip
 import com.aube.mysize.presentation.ui.component.ocr.SizeLabelOcrManager
 import com.aube.mysize.presentation.ui.component.ocr.SizeOcrButton
 import com.aube.mysize.ui.theme.MySizeTheme
+import com.aube.mysize.utils.resizeToFit
+import com.aube.mysize.utils.toGrayscale
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
@@ -52,15 +55,21 @@ fun SizeOcrSelector(
     var extractedLabelList by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedLabel by remember { mutableStateOf(initialSizeLabel) }
 
-    var pendingFullImage by remember { mutableStateOf<InputImage?>(null) }
     var labelOcrCompleted by remember { mutableStateOf(false) }
     var mapOcrCompleted by remember { mutableStateOf(false) }
 
     LaunchedEffect(labelOcrCompleted) {
-        if (labelOcrCompleted && extractedLabelList.isNotEmpty() && pendingFullImage != null) {
-            pendingFullImage?.let {
+        if (labelOcrCompleted && extractedLabelList.isNotEmpty() && extractedImageUri != null) {
+            extractedImageUri?.let { uri ->
+                val sourceBitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+                val processedBitmap = sourceBitmap
+                    .resizeToFit(1280)
+                    .toGrayscale()
+
+                val inputImage = InputImage.fromBitmap(processedBitmap, 0)
+
                 SizeOcrManager(keyList, keyMapping, extractedLabelList)
-                    .recognize(it) { ocrResult ->
+                    .recognizeWithRetry(inputImage) { ocrResult ->
                         when (ocrResult) {
                             is SizeExtractionResult.Success -> {
                                 mapOcrCompleted = true
@@ -77,6 +86,7 @@ fun SizeOcrSelector(
                     }
             }
         }
+
     }
 
     val sizeLabelCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
@@ -107,7 +117,6 @@ fun SizeOcrSelector(
 
         if (result.isSuccessful) {
             result.uriContent?.let { sizeTableUri ->
-                pendingFullImage = InputImage.fromFilePath(context, sizeTableUri)
                 extractedImageUri = sizeTableUri
 
                 sizeLabelCropLauncher.launch(

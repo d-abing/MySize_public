@@ -133,7 +133,7 @@ fun RecommendScreen(
                                 SizeOcrCard(
                                     onGuideButtonClick = { showGuideDialog = true },
                                     onRecommendationButtonClick = {
-                                        selectedCategory = SizeCategory.BODY
+                                        /*selectedCategory = SizeCategory.BODY*/
                                     }
                                 )
                             }

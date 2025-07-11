@@ -29,8 +29,11 @@ import com.aube.mysize.domain.model.size.BottomSize
 import com.aube.mysize.domain.model.size.SizeEntryType
 import com.aube.mysize.presentation.constants.OTHER_BRAND
 import com.aube.mysize.presentation.constants.bottomFits
+import com.aube.mysize.presentation.constants.bottomKeys
 import com.aube.mysize.presentation.constants.bottomTypes
+import com.aube.mysize.presentation.constants.normalizeBottomKey
 import com.aube.mysize.presentation.ui.component.BorderColumn
+import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.component.chip_tap.SingleSelectableChipGroup
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
@@ -170,7 +173,7 @@ fun BottomSizeInputForm(
 
         Spacer(Modifier.height(8.dp))
 
-       /* SizeOcrSelector(
+        SizeOcrSelector(
             keyList = bottomKeys,
             keyMapping = ::normalizeBottomKey,
             initialSizeLabel = sizeLabel.uppercase(),
@@ -218,7 +221,7 @@ fun BottomSizeInputForm(
                     length = it["LENGTH"] ?: ""
                 }
             }
-        )*/
+        )
 
         LabeledTextField(waist, { waist = it }, stringResource(R.string.label_waist_width), isError = waistError)
         LabeledTextField(rise, { rise = it }, stringResource(R.string.label_rise_length), isError = riseError)

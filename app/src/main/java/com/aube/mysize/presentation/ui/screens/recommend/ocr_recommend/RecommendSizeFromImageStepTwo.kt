@@ -188,7 +188,7 @@ fun RecommendSizeFromImageStepTwo(
     LaunchedEffect(labelOcrCompleted) {
         if (labelOcrCompleted && extractedLabelList.isNotEmpty() && pendingFullImage != null) {
             SizeOcrManager(keyList, keyMapping, extractedLabelList)
-                .recognize(pendingFullImage!!) { ocrResult ->
+                .recognizeWithRetry(pendingFullImage!!) { ocrResult ->
                     when (ocrResult) {
                         is SizeExtractionResult.Success -> {
                             extractedSizeMap = ocrResult.sizeMap

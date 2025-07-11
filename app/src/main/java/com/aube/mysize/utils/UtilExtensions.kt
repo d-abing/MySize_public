@@ -7,7 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.Matrix
+import android.graphics.Paint
 import android.media.ExifInterface
 import android.net.Uri
 import com.aube.mysize.LoginActivity
@@ -142,4 +146,32 @@ fun List<SizeContentUiModel>.sortedByPriority(selector: (SizeContentUiModel) -> 
 fun Map<String, List<SizeContentUiModel>>.sortByType(): Map<String, List<SizeContentUiModel>> {
     val (normal, etc) = entries.partition { !it.key.contains("기타") }
     return (normal.sortedBy { it.key } + etc.sortedBy { it.key }).associate { it.toPair() }
+}
+
+fun Bitmap.resizeToFit(maxSize: Int): Bitmap {
+    val ratio = width.toFloat() / height
+    val newWidth: Int
+    val newHeight: Int
+    if (ratio > 1) {
+        newWidth = maxSize
+        newHeight = (maxSize / ratio).toInt()
+    } else {
+        newHeight = maxSize
+        newWidth = (maxSize * ratio).toInt()
+    }
+    return Bitmap.createScaledBitmap(this, newWidth, newHeight, true)
+}
+
+fun Bitmap.toGrayscale(): Bitmap {
+    val grayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(grayscale)
+    val paint = Paint()
+    val matrix = ColorMatrix().apply { setSaturation(0f) }
+    paint.colorFilter = ColorMatrixColorFilter(matrix)
+    canvas.drawBitmap(this, 0f, 0f, paint)
+    return grayscale
+}
+
+fun String.isNumeric(): Boolean {
+    return this.matches(Regex("^\\d+(\\.\\d+)?$"))
 }

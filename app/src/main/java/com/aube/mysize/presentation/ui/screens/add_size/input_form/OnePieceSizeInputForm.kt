@@ -28,9 +28,12 @@ import com.aube.mysize.R
 import com.aube.mysize.domain.model.size.OnePieceSize
 import com.aube.mysize.domain.model.size.SizeEntryType
 import com.aube.mysize.presentation.constants.OTHER_BRAND
+import com.aube.mysize.presentation.constants.normalizeOnePieceKey
 import com.aube.mysize.presentation.constants.onePieceFits
+import com.aube.mysize.presentation.constants.onePieceKeys
 import com.aube.mysize.presentation.constants.onePieceTypes
 import com.aube.mysize.presentation.ui.component.BorderColumn
+import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.component.chip_tap.SingleSelectableChipGroup
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
@@ -187,7 +190,7 @@ fun OnePieceSizeInputForm(
 
         Spacer(Modifier.height(8.dp))
 
-        /*SizeOcrSelector(
+        SizeOcrSelector(
             keyList = onePieceKeys,
             keyMapping = ::normalizeOnePieceKey,
             initialSizeLabel = sizeLabel.uppercase(),
@@ -247,7 +250,7 @@ fun OnePieceSizeInputForm(
                     length = it["LENGTH"] ?: ""
                 }
             }
-        )*/
+        )
 
         LabeledTextField(shoulder, { shoulder = it }, stringResource(R.string.label_shoulder_width))
         LabeledTextField(chest, { chest = it }, stringResource(R.string.label_chest_width))

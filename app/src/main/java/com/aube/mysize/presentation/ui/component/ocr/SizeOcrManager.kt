@@ -1,5 +1,6 @@
-
-import androidx.core.text.isDigitsOnly
+import android.os.Handler
+import android.os.Looper
+import com.aube.mysize.utils.isNumeric
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -13,22 +14,32 @@ class SizeOcrManager(
 ) {
     private val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
 
-    fun recognize(image: InputImage, onResult: (SizeExtractionResult) -> Unit) {
+    fun recognizeWithRetry(
+        image: InputImage,
+        retryCount: Int = 3,
+        delayMillis: Long = 2000,
+        onResult: (SizeExtractionResult) -> Unit
+    ) {
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
                 processText(visionText, onResult)
             }
             .addOnFailureListener { e ->
-                Timber.tag("OCR").e(e, "OCR 실패: ${e.message}")
-                onResult(SizeExtractionResult.OcrFailed(e.message))
+                val isModelNotReady = e.message?.contains("Waiting for the text optional module") == true
+                if (isModelNotReady && retryCount > 0) {
+                    Timber.tag("OCR").w("모델 준비 중... ${retryCount}회 남음. 재시도 예정.")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        recognizeWithRetry(image, retryCount - 1, delayMillis, onResult)
+                    }, delayMillis)
+                } else {
+                    Timber.tag("OCR").e(e, "OCR 실패: ${e.message}")
+                    onResult(SizeExtractionResult.OcrFailed(e.message))
+                }
             }
     }
 
     private fun processText(visionText: Text, onResult: (SizeExtractionResult) -> Unit) {
-        val lines = visionText.text.lines()
-            .map { it.trim() }
-            .filter { it.isNotBlank() }
-
+        val lines = visionText.text.lines().map { it.trim() }.filter { it.isNotBlank() }
         Timber.tag("OCR").d("전체 인식 텍스트:\n${lines.joinToString(" | ")}")
 
         val tableType = detectTableType(lines)
@@ -45,14 +56,24 @@ class SizeOcrManager(
         val headerCount = lines.take(6).count { line ->
             keyList.any { key -> line.replace(" ", "").contains(key.replace(" ", ""), ignoreCase = true) }
         }
-        return if (headerCount >= 3) TableType.Vertical else if (headerCount >= 1) TableType.Horizontal else TableType.Unknown
+        return when {
+            headerCount >= 3 -> TableType.Vertical
+            else -> TableType.Horizontal
+        }
     }
 
     private fun handleHorizontalTable(
         lines: List<String>,
         onResult: (SizeExtractionResult) -> Unit,
     ) {
-        // 1. 데이터 시작 인덱스 (헤더 찾기)
+        val isMusinsa = lines.any { it.contains("사이즈를 직접 입력해주세요") }
+
+        if (isMusinsa) {
+            Timber.tag("OCR").d("🧬 무신사 전용 처리 시작")
+            handleHorizontalTableForMusinsa(lines, onResult)
+            return
+        }
+
         val dataStartIndex = lines.indexOfFirst { line ->
             keyList.any { key -> line.replace(" ", "").contains(key.replace(" ", ""), ignoreCase = true) }
         }
@@ -66,7 +87,6 @@ class SizeOcrManager(
         val dataLines = lines.drop(dataStartIndex)
         Timber.tag("OCR").d("📋 데이터 라인: ${dataLines.joinToString(" | ")}")
 
-        // 2. 열별로 데이터 재구성
         val columnMap = mutableMapOf<String, MutableList<String>>()
         var currentKey: String? = null
         var currentColumn = mutableListOf<String>()
@@ -79,7 +99,7 @@ class SizeOcrManager(
                 }
                 currentKey = keyList.first { key -> line.replace(" ", "").contains(key.replace(" ", ""), ignoreCase = true) }
                 currentColumn = mutableListOf()
-            } else if (line.isDigitsOnly()){
+            } else if (line.isNumeric()) {
                 currentColumn.add(line)
             }
         }
@@ -109,12 +129,77 @@ class SizeOcrManager(
         onResult(SizeExtractionResult.Success(sizeLabels, result))
     }
 
+    private fun handleHorizontalTableForMusinsa(
+        lines: List<String>,
+        onResult: (SizeExtractionResult) -> Unit
+    ) {
+        val filteredLines = lines.filterNot {
+            it.contains("내사이즈") || it.contains("내 사이즈") || it.contains("사이즈를 직접 입력해주세요")
+        }
+
+        val filteredLabels = sizeLabels.filterNot {
+            it.contains("내사이즈") || it.contains("내 사이즈")
+        }
+
+
+        Timber.tag("OCR").d("📋 무신사 필터링된 라인: ${filteredLines.joinToString(" | ")}")
+
+        val dataStartIndex = filteredLines.indexOfFirst { line ->
+            keyList.any { key -> line.replace(" ", "").contains(key.replace(" ", ""), ignoreCase = true) }
+        }
+
+        if (dataStartIndex == -1) {
+            Timber.tag("OCR").d("❌ 무신사: 헤더 못찾음")
+            onResult(SizeExtractionResult.NoHeaderFound)
+            return
+        }
+
+        val dataLines = filteredLines.drop(dataStartIndex)
+        val columnMap = mutableMapOf<String, MutableList<String>>()
+
+        var currentKey: String? = null
+        var currentColumn = mutableListOf<String>()
+
+        for (line in dataLines) {
+            val isKey = keyList.any { key -> line.replace(" ", "").contains(key.replace(" ", ""), ignoreCase = true) }
+            if (isKey) {
+                if (currentKey != null && currentColumn.isNotEmpty()) {
+                    columnMap[currentKey] = currentColumn.toMutableList()
+                }
+                currentKey = keyList.first { key -> line.replace(" ", "").contains(key.replace(" ", ""), ignoreCase = true) }
+                currentColumn = mutableListOf()
+            } else if (line.isNumeric()) {
+                currentColumn.add(line)
+            }
+        }
+        currentKey?.let { columnMap[it] = currentColumn }
+
+        Timber.tag("OCR").d("🧩 무신사 열 재구성 전: $columnMap")
+
+        // 보정 처리
+        adjustMussinsaColumnMapIfNeeded(columnMap, filteredLabels)
+
+        Timber.tag("OCR").d("🧩 무신사 열 재구성 결과: $columnMap")
+
+        // 최종 매핑
+        val result = mutableMapOf<String, Map<String, String>>()
+
+        for (i in filteredLabels.indices) {
+            val label = filteredLabels[i]
+            val values = columnMap.mapNotNull { (key, list) ->
+                list.getOrNull(i)?.let { keyMapping(key) to it }
+            }.toMap()
+            result[label.uppercase()] = values
+        }
+
+        Timber.tag("OCR").d("✅ 무신사 최종 결과: $result")
+        onResult(SizeExtractionResult.Success(filteredLabels, result))
+    }
 
     private fun handleVerticalTable(
         lines: List<String>,
         onResult: (SizeExtractionResult) -> Unit,
     ) {
-        // 1. 헤더 인덱스 찾기
         val headerIndices = lines.withIndex().filter { (_, line) ->
             keyList.any { key -> line.replace(" ", "").contains(key.replace(" ", ""), ignoreCase = true) }
         }.map { it.index }
@@ -131,9 +216,7 @@ class SizeOcrManager(
 
         Timber.tag("OCR").d("📋 세로형 헤더: $headers")
 
-        // 2. 데이터 시작 인덱스 찾기 (사이즈 라벨 or 숫자)
         val dataStartIndex = lines.indexOfFirst { it.trim().uppercase() in sizeLabels }
-
         val chunkSize = dataStartIndex - headerStart
         val dataLines = lines.drop(dataStartIndex)
         Timber.tag("OCR").d("📋 세로형 데이터 라인: ${dataLines.joinToString(" | ")}")
@@ -143,11 +226,9 @@ class SizeOcrManager(
         var currentSizeLabelIndex = 0
         var currentChunk = mutableListOf<String>()
 
-        // 3. 데이터 파싱
         for (line in dataLines) {
             val trimmedUpperLabel = line.trim().uppercase()
             if (isValidLabel(trimmedUpperLabel)) {
-                // 새 사이즈 라벨 시작
                 currentSizeLabel = trimmedUpperLabel
                 currentSizeLabelIndex++
                 Timber.tag("OCR").d("새 사이즈 라벨: $currentSizeLabel")
@@ -156,12 +237,10 @@ class SizeOcrManager(
 
                 if (currentChunk.size == chunkSize) {
                     if (currentSizeLabel == null) {
-                        currentSizeLabel = sizeLabels[currentSizeLabelIndex++]
+                        currentSizeLabel = sizeLabels.getOrNull(currentSizeLabelIndex++) ?: "UNKNOWN"
                     }
                     sizeMap[currentSizeLabel] = headers.zip(currentChunk).toMap()
                     Timber.tag("OCR").d("추출된 사이즈: $currentSizeLabel -> $currentChunk")
-
-                    // 초기화
                     currentSizeLabel = null
                     currentChunk = mutableListOf()
                 }
@@ -179,6 +258,34 @@ class SizeOcrManager(
     }
 
     private fun isValidLabel(label: String): Boolean = label in sizeLabels
+
+
+    private fun adjustMussinsaColumnMapIfNeeded(
+        columnMap: MutableMap<String, MutableList<String>>,
+        sizeLabels: List<String>
+    ) {
+        val expectedSizeCount = sizeLabels.size
+        val underfilled = columnMap.filterValues { it.size < expectedSizeCount }
+        val overfilled = columnMap.filterValues { it.size > expectedSizeCount }
+
+        Timber.tag("OCR").d("⛏ underfilled: $underfilled")
+        Timber.tag("OCR").d("⛏ overfilled: $overfilled")
+
+        if (underfilled.isEmpty() || overfilled.isEmpty()) return
+
+        underfilled.forEach { (shortKey, shortList) ->
+            val diff = expectedSizeCount - shortList.size
+            val donorEntry = overfilled.entries.firstOrNull { it.value.size >= expectedSizeCount + diff }
+            if (donorEntry != null) {
+                val donorKey = donorEntry.key
+                val donorList = donorEntry.value
+                val transferValues = donorList.take(diff)
+                donorList.subList(0, diff).clear()
+                shortList.addAll(transferValues)
+                Timber.tag("OCR").d("🔧 '$shortKey'에 '${donorKey}'에서 $transferValues 이동 보정")
+            }
+        }
+    }
 
 }
 

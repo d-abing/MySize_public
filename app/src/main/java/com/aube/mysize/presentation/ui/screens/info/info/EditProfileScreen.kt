@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -74,6 +75,7 @@ fun EditProfileScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val isProfileImageDeleting by profileViewModel.isProfileImageDeleting.collectAsState()
+    val isDeleting by authViewModel.isDeleting.collectAsState()
 
     val cropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
@@ -101,140 +103,182 @@ fun EditProfileScreen(
     val isPasswordUser = user?.providerData?.any { it.providerId == "password" } == true
 
     user?.let {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(32.dp)
-        ) {
-            Text(stringResource(R.string.text_edit_profile_title), style = MaterialTheme.typography.bodyLarge)
-
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {
-                Text(stringResource(R.string.label_change_profile_image_title), style = MaterialTheme.typography.bodySmall)
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
+                Text(
+                    stringResource(R.string.text_edit_profile_title),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(150.dp),
-                        contentAlignment = Alignment.Center
+                    Text(
+                        stringResource(R.string.label_change_profile_image_title),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape)
-                                .background(Color.LightGray)
-                                .clickable { cropLauncher.launch(cropRequest) },
+                                .size(150.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            if (isProfileImageDeleting) {
-                              CircularProgressIndicator(
-                                  modifier = Modifier.size(20.dp),
-                                  color = MaterialTheme.colorScheme.onBackground,
-                                  strokeWidth = 2.dp
-                              )
-                            } else if (userInfo.profileImageUrl.isNotEmpty()) {
-                                AsyncImage(
-                                    model = userInfo.profileImageUrl,
-                                    contentDescription = stringResource(R.string.label_profile_image),
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                                    .background(Color.LightGray)
+                                    .clickable { cropLauncher.launch(cropRequest) },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (isProfileImageDeleting) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        strokeWidth = 2.dp
+                                    )
+                                } else if (userInfo.profileImageUrl.isNotEmpty()) {
+                                    AsyncImage(
+                                        model = userInfo.profileImageUrl,
+                                        contentDescription = stringResource(R.string.label_profile_image),
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Default.ModeEdit,
+                                        contentDescription = stringResource(R.string.action_edit),
+                                        tint = Color.White,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+
+                            if (userInfo.profileImageUrl.isNotEmpty()) {
                                 Icon(
-                                    imageVector = Icons.Default.ModeEdit,
-                                    contentDescription = stringResource(R.string.action_edit),
-                                    tint = Color.White,
-                                    modifier = Modifier.size(20.dp)
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = stringResource(R.string.action_delete),
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier.size(16.dp)
+                                        .align(Alignment.TopEnd)
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            profileViewModel.deleteProfileImage()
+                                        }
                                 )
                             }
                         }
-
-                        if (userInfo.profileImageUrl.isNotEmpty()) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = stringResource(R.string.action_delete),
-                                tint = MaterialTheme.colorScheme.onBackground,
-                                modifier = Modifier.size(16.dp)
-                                    .align(Alignment.TopEnd)
-                                    .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null
-                                    ) {
-                                        profileViewModel.deleteProfileImage()
-                                    }
-                            )
-                        }
                     }
                 }
-            }
 
-            Column {
-                Text(stringResource(R.string.text_change_nickname_title), style = MaterialTheme.typography.bodySmall)
-                Spacer(Modifier.height(8.dp))
-                Row {
-                    TextField(
-                        value = nickname,
-                        onValueChange = { nickname = it },
-                        placeholder = { Text(stringResource(R.string.placeholder_nickname)) },
-                        textStyle = MaterialTheme.typography.bodyMedium,
-                        isError = !isNicknameValid && nickname.isNotEmpty(),
-                        singleLine = true,
-                        modifier = Modifier.weight(1f),
-                        keyboardOptions = KeyboardOptions.Default,
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
-                            errorContainerColor = Color.Transparent
+                Column {
+                    Text(
+                        stringResource(R.string.text_change_nickname_title),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Row {
+                        TextField(
+                            value = nickname,
+                            onValueChange = { nickname = it },
+                            placeholder = { Text(stringResource(R.string.placeholder_nickname)) },
+                            textStyle = MaterialTheme.typography.bodyMedium,
+                            isError = !isNicknameValid && nickname.isNotEmpty(),
+                            singleLine = true,
+                            modifier = Modifier.weight(1f),
+                            keyboardOptions = KeyboardOptions.Default,
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedContainerColor = Color.Transparent,
+                                errorContainerColor = Color.Transparent
+                            )
                         )
-                    )
-                    MSSmallButton(
-                        text = stringResource(R.string.action_edit),
-                        modifier = Modifier.padding(start = 8.dp),
-                        enabled = isNicknameValid,
-                        onClick = {
-                            profileViewModel.updateNickname(nickname, onMove = onMoveToMyInfoScreen)
-                        }
-                    )
+                        MSSmallButton(
+                            text = stringResource(R.string.action_edit),
+                            modifier = Modifier.padding(start = 8.dp),
+                            enabled = isNicknameValid,
+                            onClick = {
+                                profileViewModel.updateNickname(
+                                    nickname,
+                                    onMove = onMoveToMyInfoScreen
+                                )
+                            }
+                        )
+                    }
                 }
-            }
 
-            if (isPasswordUser) {
-                Row(
+                if (isPasswordUser) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { onPasswordChangeButtonClick() },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.Password,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.text_change_password_title),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
+                Text(
+                    text = stringResource(R.string.text_delete_account),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    textDecoration = TextDecoration.Underline,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
-                        ) { onPasswordChangeButtonClick() },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(Icons.Default.Password, contentDescription = null, modifier = Modifier.size(24.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.text_change_password_title), style = MaterialTheme.typography.bodyMedium)
-                }
+                        ) {
+                            if (isPasswordUser) onDeleteAccountButtonClick()
+                            else showDeleteDialog = true
+                        }
+                )
             }
 
-            Text(
-                text = stringResource(R.string.text_delete_account),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.tertiary,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) {
-                        if (isPasswordUser) onDeleteAccountButtonClick()
-                        else showDeleteDialog = true
-                    }
-            )
+            if (isDeleting) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                        .pointerInput(Unit) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    awaitPointerEvent()
+                                }
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 2.dp
+                    )
+                }
+            }
         }
 
         if (showDeleteDialog) {

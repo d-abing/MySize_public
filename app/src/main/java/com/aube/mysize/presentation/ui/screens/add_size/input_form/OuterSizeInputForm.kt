@@ -28,9 +28,12 @@ import com.aube.mysize.R
 import com.aube.mysize.domain.model.size.OuterSize
 import com.aube.mysize.domain.model.size.SizeEntryType
 import com.aube.mysize.presentation.constants.OTHER_BRAND
+import com.aube.mysize.presentation.constants.normalizeOuterKey
 import com.aube.mysize.presentation.constants.outerFits
+import com.aube.mysize.presentation.constants.outerKeys
 import com.aube.mysize.presentation.constants.outerTypes
 import com.aube.mysize.presentation.ui.component.BorderColumn
+import com.aube.mysize.presentation.ui.component.SizeOcrSelector
 import com.aube.mysize.presentation.ui.component.chip_tap.SingleSelectableChipGroup
 import com.aube.mysize.presentation.ui.screens.add_size.component.BrandChipInput
 import com.aube.mysize.presentation.ui.screens.add_size.component.LabeledTextField
@@ -156,7 +159,7 @@ fun OuterSizeInputForm(
 
         Spacer(Modifier.height(8.dp))
 
-       /* SizeOcrSelector(
+        SizeOcrSelector(
             keyList = outerKeys,
             keyMapping = ::normalizeOuterKey,
             initialSizeLabel = sizeLabel.uppercase(),
@@ -196,7 +199,7 @@ fun OuterSizeInputForm(
                     length = it["LENGTH"] ?: ""
                 }
             }
-        )*/
+        )
 
         LabeledTextField(shoulder, { shoulder = it }, stringResource(R.string.label_shoulder_width), isError = shoulderError)
         LabeledTextField(chest, { chest = it }, stringResource(R.string.label_chest_width), isError = chestError)

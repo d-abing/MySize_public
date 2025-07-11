@@ -38,19 +38,19 @@ val shoeFits = listOf("작음", "딱 맞음", "큼")
 val accessoryFits = listOf("작음", "딱 맞음", "큼")
 
 val topKeys = listOf(
-    "어깨", "가슴", "소매길이", "총장", "총기장", // 한글
+    "어깨", "가슴", "소매길이", "총", // 한글
     "SHOULDER", "CHEST", "SLEEVE", "LENGTH"  // 영어
 )
 val bottomKeys = listOf(
-    "허리", "밑위", "엉덩이", "허벅지", "힙", "밑단", "총장", "총기장", // 한글
+    "허리", "밑위", "엉덩이", "허벅지", "힙", "밑단", "총", // 한글
     "WAIST", "RISE", "HIP", "THIGH", "HEM", "LENGTH"  // 영어
 )
 val outerKeys = listOf(
-    "어깨", "가슴", "소매길이", "총장", "총기장", // 한글
+    "어깨", "가슴", "소매길이", "총", // 한글
     "SHOULDER", "CHEST", "SLEEVE", "LENGTH"  // 영어
 )
 val onePieceKeys = listOf(
-    "어깨", "가슴", "허리", "엉덩이", "소매길이", "밑위", "허벅지", "밑단", "총장", "총기장", // 한글
+    "어깨", "가슴", "허리", "엉덩이", "소매길이", "밑위", "허벅지", "밑단", "총", // 한글
     "SHOULDER", "CHEST", "WAIST", "HIP", "SLEEVE", "RISE", "THIGH", "HEM", "LENGTH"  // 영어
 )
 val shoeKeys = listOf(
@@ -64,8 +64,8 @@ fun normalizeTopKey(original: String): String {
     return when {
         "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
         "CHEST" in upper || "BUST" in upper || "가슴" in original -> "CHEST"
-        "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
-        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
+        ("SLEEVE" in upper || "소매 길이" in original || "소매길이" in original) && ("HEM" !in upper) -> "SLEEVE"
+        "LENGTH" in upper || "총" in original -> "LENGTH"
         else -> upper
     }
 }
@@ -78,7 +78,7 @@ fun normalizeBottomKey(original: String): String {
         "HIP" in upper || "엉덩이" in original || "힙" in original -> "HIP"
         "THIGH" in upper || "허벅지" in original -> "THIGH"
         "HEM" in upper || "밑단" in original -> "HEM"
-        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
+        "LENGTH" in upper || "총" in original -> "LENGTH"
         else -> upper
     }
 }
@@ -89,8 +89,8 @@ fun normalizeOuterKey(original: String): String {
     return when {
         "SHOULDER" in upper || "어깨" in original -> "SHOULDER"
         "CHEST" in upper || "BUST" in upper || "가슴" in original -> "CHEST"
-        "SLEEVE" in upper || "소매길이" in original -> "SLEEVE"
-        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
+        "SLEEVE" in upper || "소매 길이" in original || "소매길이" in original -> "SLEEVE"
+        "LENGTH" in upper || "총" in original -> "LENGTH"
         else -> upper
     }
 }
@@ -107,7 +107,7 @@ fun normalizeOnePieceKey(original: String): String {
         "RISE" in upper || "밑위" in original -> "RISE"
         "THIGH" in upper || "허벅지" in original -> "THIGH"
         "HEM" in upper || "밑단" in original -> "HEM"
-        "LENGTH" in upper || "총장" in original || "총기장" in original -> "LENGTH"
+        "LENGTH" in upper || "총" in original -> "LENGTH"
         else -> upper
     }
 }
